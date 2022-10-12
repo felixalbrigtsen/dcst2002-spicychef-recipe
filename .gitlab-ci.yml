@@ -4,9 +4,10 @@ stages:
   - install
   - test
 
-install:
+client_install:
   stage: install
   script:
+    - cd client/
     - npm prune
     - npm install
   
@@ -21,12 +22,13 @@ install:
     changes:
       - package.json
 
-test:
+client_test:
   stage: test
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
   dependencies:
     - install
   script:
+    - cd client/
     - npm test:ci
   artifacts:
     when: always
