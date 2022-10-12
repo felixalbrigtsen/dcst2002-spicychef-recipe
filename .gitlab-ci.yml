@@ -1,11 +1,11 @@
 image: node:latest
 
 stages:
-  - install
-  - test
+  - client_install
+  - client_test
 
 client_install:
-  stage: install
+  stage: client_install
   script:
     - cd client/
     - npm prune
@@ -14,24 +14,25 @@ client_install:
   cache:
     key: ${CI_COMMIT_REF_NAME}
     paths:
-      - node_modules/
+      - client/node_modules/
   artifacts:
     paths:
-      - node_modules/
+      - client/node_modules/
   only:
     changes:
       - package.json
 
 client_test:
-  stage: test
+  stage: client_test
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
   dependencies:
-    - install
+    - client_install
   script:
     - cd client/
-    - npm test:ci
+    - npm install
+    - npm run test:ci
   artifacts:
     when: always
     reports:
       junit:
-        - junit.xml
+        - client/junit.xml
