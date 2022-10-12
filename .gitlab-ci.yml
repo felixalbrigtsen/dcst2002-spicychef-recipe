@@ -1,0 +1,35 @@
+image: node:latest
+
+stages:
+  - install
+  - test
+
+install:
+  stage: install
+  script:
+    - npm prune
+    - npm install
+  
+  cache:
+    key: ${CI_COMMIT_REF_NAME}
+    paths:
+      - node_modules/
+  artifacts:
+    paths:
+      - node_modules/
+  only:
+    changes:
+      - package.json
+
+test:
+  stage: test
+  coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
+  dependencies:
+    - install
+  script:
+    - npm test:ci
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - junit.xml
