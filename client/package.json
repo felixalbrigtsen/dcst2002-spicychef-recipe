@@ -1,0 +1,10 @@
+{
+  "name": "recipe-client",
+  "version": "1.0.0",
+  "description": "Frontend for our recipe managemenet app",
+  "license": "MIT",
+  "scripts": {
+    "start": "webpack-dev-server --open --hot --inline --progress --colors --port 3000",
+    "build": "webpack --progress --colors"
+  }
+}
