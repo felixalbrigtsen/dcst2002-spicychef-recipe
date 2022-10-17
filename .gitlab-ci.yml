@@ -47,9 +47,9 @@ client_test:
 deploy_production:
   stage: deploy
   image: alpine:latest
-  #only:
-    # refs:
-    #   - merge_requests
+  only:
+    refs:
+      - merge_requests
     #changes:
     #  - client/*
     #  - client/**/*
