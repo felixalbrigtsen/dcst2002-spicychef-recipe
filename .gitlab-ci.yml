@@ -1,15 +1,17 @@
 image: node:latest
 
 stages:
-  - client_install
-  - client_test
+  - build
+  - test
+  - deploy
 
-client_install:
-  stage: client_install
+client_build:
+  stage: build
   script:
     - cd client/
     - npm prune
     - npm install
+    - npm run build
   
   cache:
     key: ${CI_COMMIT_REF_NAME}
@@ -17,22 +19,58 @@ client_install:
       - client/node_modules/
   artifacts:
     paths:
-      - client/node_modules/
-  only:
-    changes:
-      - package.json
+      - ./client/node_modules/
+      - ./client/build
+
+  environment:
+    name: production-mccoy
+    url: recipe.feal.no
 
 client_test:
-  stage: client_test
+  stage: test
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
   dependencies:
-    - client_install
+    - client_build
   script:
     - cd client/
-    - npm install
     - npm run test:ci
   artifacts:
     when: always
     reports:
       junit:
-        - client/junit.xml
+        - ./client/junit.xml
+  only:
+    changes:
+      - client/*
+
+
+deploy_production:
+  stage: deploy
+  image: alpine:latest
+  only:
+    refs:
+      - merge_requests
+    #changes:
+    #  - client/*
+    #  - client/**/*
+
+  environment:
+    name: production-mccoy
+    url: recipe.feal.no
+
+  needs:
+    - client_build
+  
+  dependencies:
+    - client_build
+
+  script:
+    - export CI=false
+    - apk add --no-cache rsync openssh
+    - mkdir -p ~/.ssh
+    - echo "$CI_SSH_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - ssh ci@192.168.0.103 "cd /var/www/dcst2002-recipe-gr2 && git checkout main && git pull origin main && exit"
+    - rsync -rav -e ssh --delete client/build/ ci@192.168.0.103:/var/www/dcst2002-recipe-gr2/client/build/
+
