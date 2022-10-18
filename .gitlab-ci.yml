@@ -1,4 +1,4 @@
-image: node:16.18.0
+image: node:16
 
 stages:
   - build
@@ -63,8 +63,10 @@ deploy_production:
     url: recipe.feal.no
   needs:
     - client_build
+    - client_jest
   dependencies:
     - client_build
+    - client_jest
   script:
     - export CI=false
     - apk add --no-cache rsync openssh
