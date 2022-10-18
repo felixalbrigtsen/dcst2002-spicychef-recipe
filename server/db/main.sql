@@ -6,11 +6,21 @@ CREATE TABLE `recipe` (
   `instructions` text NOT NULL,
   `servings` int(11) NOT NULL,
   `imageurl` varchar(255),
+  `videourl` varchar(255),
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  -- `minutes` int(11) NOT NULL,
-  -- add tags?
   PRIMARY KEY (`id`)
 );
+
+
+DROP TABLE IF EXISTS `recipe_tag`;
+CREATE TABLE `recipe_tag` (
+  `recipe_id` int(11) NOT NULL,
+  `name` varchar(32) NOT NULL,
+
+  PRIMARY KEY (`recipe_id`, `name`),
+  FOREIGN KEY (`recipe_id`) REFERENCES `recipe` (`id`)
+);
+
 
 DROP TABLE IF EXISTS `ingredient`;
 CREATE TABLE `ingredient` (
