@@ -1,4 +1,4 @@
-image: node:16.6.2-alpine
+image: node:16.18.0
 
 stages:
   - build
@@ -12,7 +12,6 @@ client_build:
     - npm prune
     - npm install
     - npm run build
-  
   cache:
     key: ${CI_COMMIT_REF_NAME}
     paths:
@@ -21,7 +20,6 @@ client_build:
     paths:
       - ./client/node_modules/
       - ./client/build
-
   environment:
     name: production-mccoy
     url: recipe.feal.no
@@ -60,17 +58,13 @@ deploy_production:
   only:
     refs:
       - merge_requests
-
   environment:
     name: production-mccoy
     url: recipe.feal.no
-
   needs:
     - client_build
-  
   dependencies:
     - client_build
-
   script:
     - export CI=false
     - apk add --no-cache rsync openssh
@@ -80,4 +74,3 @@ deploy_production:
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
     - ssh ci@192.168.0.103 "cd /var/www/dcst2002-recipe-gr2 && git checkout main && git pull origin main && exit"
     - rsync -rav -e ssh --delete client/build/ ci@192.168.0.103:/var/www/dcst2002-recipe-gr2/client/build/
-
