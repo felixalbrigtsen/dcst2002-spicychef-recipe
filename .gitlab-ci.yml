@@ -26,7 +26,7 @@ client_build:
     name: production-mccoy
     url: recipe.feal.no
 
-client_test:
+client_jest:
   stage: test
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
   dependencies:
@@ -43,6 +43,16 @@ client_test:
     changes:
       - client/*
 
+client_typescript:
+  stage: test
+  dependencies:
+    - client_build
+  script:
+    - cd client/
+    - ./node_modules/.bin/tsc --noEmit --skipLibCheck
+  only:
+    changes:
+      - client/*
 
 deploy_production:
   stage: deploy
@@ -50,9 +60,6 @@ deploy_production:
   only:
     refs:
       - merge_requests
-    #changes:
-    #  - client/*
-    #  - client/**/*
 
   environment:
     name: production-mccoy
