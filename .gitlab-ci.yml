@@ -1,4 +1,4 @@
-image: node:latest
+image: node:16
 
 stages:
   - build
@@ -12,7 +12,6 @@ client_build:
     - npm prune
     - npm install
     - npm run build
-  
   cache:
     key: ${CI_COMMIT_REF_NAME}
     paths:
@@ -21,12 +20,11 @@ client_build:
     paths:
       - ./client/node_modules/
       - ./client/build
-
   environment:
     name: production-mccoy
     url: recipe.feal.no
 
-client_test:
+client_jest:
   stage: test
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
   dependencies:
@@ -43,6 +41,16 @@ client_test:
     changes:
       - client/*
 
+client_typescript:
+  stage: test
+  dependencies:
+    - client_build
+  script:
+    - cd client/
+    - ./node_modules/.bin/tsc --noEmit --skipLibCheck
+  only:
+    changes:
+      - client/*
 
 deploy_production:
   stage: deploy
@@ -50,20 +58,15 @@ deploy_production:
   only:
     refs:
       - merge_requests
-    #changes:
-    #  - client/*
-    #  - client/**/*
-
   environment:
     name: production-mccoy
     url: recipe.feal.no
-
   needs:
     - client_build
-  
+    - client_jest
   dependencies:
     - client_build
-
+    - client_jest
   script:
     - export CI=false
     - apk add --no-cache rsync openssh
@@ -73,4 +76,3 @@ deploy_production:
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
     - ssh ci@192.168.0.103 "cd /var/www/dcst2002-recipe-gr2 && git checkout main && git pull origin main && exit"
     - rsync -rav -e ssh --delete client/build/ ci@192.168.0.103:/var/www/dcst2002-recipe-gr2/client/build/
-
