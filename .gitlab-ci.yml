@@ -19,7 +19,7 @@ client_build:
   artifacts:
     paths:
       - ./client/node_modules/
-      - ./client/build
+      - ./client/public
   environment:
     name: production-mccoy
     url: recipe.feal.no
@@ -75,4 +75,4 @@ deploy_production:
     - chmod 600 ~/.ssh/id_rsa
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
     - ssh ci@192.168.0.103 "cd /var/www/dcst2002-recipe-gr2 && git checkout main && git pull origin main && cd server && npm install && sudo systemctl restart recipe-app.service && exit"
-    - rsync -rav -e ssh --delete client/build/ ci@192.168.0.103:/var/www/dcst2002-recipe-gr2/client/build/
+    - rsync -rav -e ssh --delete client/public/ ci@192.168.0.103:/var/www/dcst2002-recipe-gr2/client/public/
