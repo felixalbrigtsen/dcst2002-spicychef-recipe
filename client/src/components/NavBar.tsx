@@ -19,12 +19,13 @@ export default function NavBar() {
               <Image
                 src="/logo.png"
                 alt="SpicyChef Logo"
-                size={48}
+                size={32}
               />
             </Navbar.Item>
-            <Navbar.Burger 
+            <Navbar.Burger
             className= {isActive ? "is-active" : ""}
-            onClick={handleClick} />
+            onClick={handleClick}
+            />
           </Navbar.Brand>
           <Navbar.Menu 
           id="navbar-example"
