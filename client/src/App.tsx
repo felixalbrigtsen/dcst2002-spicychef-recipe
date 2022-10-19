@@ -5,9 +5,7 @@ import {
   Routes 
 } from 'react-router-dom';
 
-function Home () {
-  return <h1>Home</h1>;
-}
+import Home from './Frontpage';
 
 function SearchPage () {
   return <h1>Search</h1>;
