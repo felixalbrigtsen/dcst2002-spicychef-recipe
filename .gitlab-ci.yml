@@ -57,9 +57,6 @@ deploy_production:
   environment:
     name: production-mccoy
     url: recipe.feal.no
-  needs:
-    - client_build
-    - client_jest
   dependencies:
     - client_build
     - client_jest
