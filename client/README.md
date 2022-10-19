@@ -5,6 +5,11 @@
 - `npm install`
 - `npm build`
 
+### Run client standalone for development
+- `npm start`
+
+### Automatically build client for development WITH a running server
+- `npm run dev`
 
 ### Run tests
 - `npm install`
