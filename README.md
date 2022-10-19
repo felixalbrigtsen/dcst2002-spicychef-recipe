@@ -1,6 +1,14 @@
 # dcst2002-recipe-gr2
 
+## Install:
+- Build the client as described in `client/README.md`
+- Start the server as described in `server/README.md`
 
+## See the demo
+- https://recipe.feal.no
+
+
+------------------
 
 ## Getting started
 
