@@ -59,6 +59,7 @@ deploy_production:
     url: recipe.feal.no
   dependencies:
     - client_build
+    - client_jest
   script:
     - export CI=false
     - apk add --no-cache rsync openssh
