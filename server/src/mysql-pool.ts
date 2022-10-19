@@ -1,4 +1,7 @@
 import mysql from 'mysql2';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 /**
  * MySQL connection pool with options specified in the following environment variables:

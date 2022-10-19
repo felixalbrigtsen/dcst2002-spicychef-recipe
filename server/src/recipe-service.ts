@@ -4,6 +4,7 @@ import type { RowDataPacket, ResultSetHeader } from 'mysql2';
 export type Ingredient = {
   id: number;
   name: string;
+
 };
 
 export type Unit = {
@@ -15,6 +16,10 @@ export type IngredientInstace = {
   ingredientId: number;
   amount: number;
   unitId: number;
+
+  // Virtual fields
+  ingredientName: Ingredient['name'];
+  unitName: Unit['name'];
 };
 
 export type Recipe = {
@@ -23,8 +28,9 @@ export type Recipe = {
   summary: string;
   instructions: string;
   servings: number;
-  imageurl: string;
-  created_at: string;
+  imageUrl: string | null;
+  videoUrl: string | null;
+  created_at: string | null;
   ingredients: IngredientInstace[];
 };
 
@@ -32,7 +38,7 @@ export type Recipe = {
 class RecipeService {
   getRecipes(): Promise<Recipe[]> {
     return new Promise((resolve, reject) => {
-      pool.query('SELECT * FROM recipes', (err, results: RowDataPacket[]) => {
+      pool.query('SELECT * FROM recipe', (err, results: RowDataPacket[]) => {
         if (err) {
           reject(err);
         } else {
@@ -44,7 +50,7 @@ class RecipeService {
 
   getRecipe(id: number): Promise<Recipe> {
     return new Promise((resolve, reject) => {
-      pool.query('SELECT * FROM recipes WHERE id = ?', [id], (err, results: RowDataPacket[]) => {
+      pool.query('SELECT * FROM recipe WHERE id = ?', [id], (err, results: RowDataPacket[]) => {
         if (err) {
           return reject(err);
         }
@@ -55,7 +61,7 @@ class RecipeService {
 
   getIngredients(): Promise<Ingredient[]> {
     return new Promise((resolve, reject) => {
-      pool.query('SELECT * FROM ingredients', (err, results) => {
+      pool.query('SELECT * FROM ingredient', (err, results) => {
         if (err) {
           return reject(err);
         }
@@ -67,7 +73,7 @@ class RecipeService {
 
   getIngredient(id: number): Promise<Ingredient> {
     return new Promise((resolve, reject) => {
-      pool.query('SELECT * FROM ingredients WHERE id = ?', [id], (err, results: RowDataPacket[]) => {
+      pool.query('SELECT * FROM ingredient WHERE id = ?', [id], (err, results: RowDataPacket[]) => {
         if (err) {
           return reject(err);
         } 
@@ -83,7 +89,7 @@ class RecipeService {
 
   getIngredientsInRecipe(recipeId: number): Promise<IngredientInstace[]> {
     return new Promise((resolve, reject) => {
-      pool.query('SELECT * FROM ingredients_in_recipe WHERE recipe_id = ?', [recipeId], (err, results: RowDataPacket[]) => {
+      pool.query('SELECT * FROM recipe_ingredient WHERE recipeId = ?', [recipeId], (err, results: RowDataPacket[]) => {
         if (err) {
           return reject(err);
         }
@@ -94,7 +100,7 @@ class RecipeService {
 
   getUnits(): Promise<Unit[]> {
     return new Promise((resolve, reject) => {
-      pool.query('SELECT * FROM units', (err, results) => {
+      pool.query('SELECT * FROM unit', (err, results) => {
         if (err) {
           return reject(err);
         }
@@ -105,7 +111,7 @@ class RecipeService {
 
   getUnit(id: number): Promise<Unit> {
     return new Promise((resolve, reject) => {
-      pool.query('SELECT * FROM units WHERE id = ?', [id], (err, results: RowDataPacket[]) => {
+      pool.query('SELECT * FROM unit WHERE id = ?', [id], (err, results: RowDataPacket[]) => {
         if (err) {
           return reject(err);
         }
@@ -116,7 +122,7 @@ class RecipeService {
 
   getIngredientByName(name: string): Promise<Ingredient> {
     return new Promise((resolve, reject) => {
-      pool.query('SELECT * FROM ingredients WHERE name = ?', [name], (err, results: RowDataPacket[]) => {
+      pool.query('SELECT * FROM ingredient WHERE name = ?', [name], (err, results: RowDataPacket[]) => {
         if (err) {
           return reject(err);
         }
@@ -127,7 +133,7 @@ class RecipeService {
 
   getRecipeByTitle(title: string): Promise<Recipe> {
     return new Promise((resolve, reject) => {
-      pool.query('SELECT * FROM recipes WHERE title = ?', [title], (err, results: RowDataPacket[]) => {
+      pool.query('SELECT * FROM recipe WHERE title = ?', [title], (err, results: RowDataPacket[]) => {
         if (err) {
           return reject(err);
         }
@@ -139,12 +145,28 @@ class RecipeService {
   getRecipeFull(id: number): Promise<Recipe> {
     return new Promise((resolve, reject) => {
       this.getRecipe(id)
-      .then((recipe) => {
-        this.getIngredientsInRecipe(id)
-        .then((ingredients) => {
-          recipe.ingredients = ingredients;
-          resolve(recipe);
-        });
+      .then(async (recipe) => {
+
+        recipe.ingredients = [];
+
+        let ingredientEntries = await this.getIngredientsInRecipe(recipe.id);
+
+        // TODO: Do SQL magic instead of this
+        for (let ingredientEntry of ingredientEntries) {
+          let entry = {...ingredientEntry};
+          console.log(entry);
+
+          let ingredient = await this.getIngredient(entry.ingredientId);
+          let unit = await this.getUnit(entry.unitId);
+
+          entry.ingredientName = ingredient.name;
+          entry.unitName = unit.name;
+          
+          recipe.ingredients.push(entry);
+        }
+
+        resolve(recipe);
+
       }).catch((err) => {
         reject(err);
       });

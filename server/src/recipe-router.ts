@@ -16,3 +16,24 @@ router.get('/allRecipes' , (req, res) => {
     res.status(500).send(err);
   });
 });
+
+router.get('/recipe/:id' , (req, res) => {
+  let id = parseInt(req.params.id);
+  if (isNaN(id)) {
+    res.status(400).send('Bad request');
+    return;
+  }
+  
+  recipeService.getRecipeFull(id)
+    .then((recipe) => {
+      if (recipe) {
+        res.json(recipe);
+      } else {
+        res.status(404).send('Recipe not found');
+      }
+
+    })
+    .catch((err) => {
+      res.status(500).send(err);
+    });
+});
