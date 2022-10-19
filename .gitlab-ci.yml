@@ -20,9 +20,6 @@ client_build:
     paths:
       - ./client/node_modules/
       - ./client/public
-  environment:
-    name: production-mccoy
-    url: recipe.feal.no
 
 client_jest:
   stage: test
