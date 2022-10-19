@@ -15,11 +15,11 @@ export default function NavBar() {
       <>
         <Navbar color="link">
           <Navbar.Brand>
-            <Navbar.Item renderAs="a" href="/" style={{padding: '0px', width: '70px'}} >
+            <Navbar.Item renderAs="a" href="/">
               <Image
                 src="/logo.png"
                 alt="SpicyChef Logo"
-                size={64}
+                size={48}
               />
             </Navbar.Item>
             <Navbar.Burger 
