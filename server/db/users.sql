@@ -16,7 +16,7 @@ CREATE TABLE `userlikes` (
   `googleid` varchar(11) NOT NULL,
   `recipe_id` int(11) NOT NULL,
 
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   
   FOREIGN KEY (`googleid`) REFERENCES `users`(`googleid`),
   FOREIGN KEY (`recipe_id`) REFERENCES `recipes`(`id`)

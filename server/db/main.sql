@@ -5,7 +5,7 @@ CREATE TABLE `recipe` (
   `summary` text NOT NULL,
   `instructions` text NOT NULL,
   `servings` int(11) NOT NULL,
-  `imageurl` varchar(255),
+  `imageurl` text,
   `videourl` varchar(255),
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
