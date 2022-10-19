@@ -1,6 +1,6 @@
 import React from 'react';
 import 'bulma/css/bulma.min.css';
-import { Button, Navbar } from 'react-bulma-components';
+import { Button, Navbar, Image } from 'react-bulma-components';
 import {useState} from 'react';
 
 export default function NavBar() {
@@ -15,10 +15,11 @@ export default function NavBar() {
       <>
         <Navbar color="link">
           <Navbar.Brand>
-            <Navbar.Item renderAs="a" href="#">
-              <img
-                src="https://bulma.io/images/bulma-logo.png"
-                alt="Bulma: a modern CSS framework based on Flexbox"
+            <Navbar.Item renderAs="a" href="/" style={{padding: '0px', width: '70px'}} >
+              <Image
+                src="/logo.png"
+                alt="SpicyChef Logo"
+                size={64}
               />
             </Navbar.Item>
             <Navbar.Burger 
