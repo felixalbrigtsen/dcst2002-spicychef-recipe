@@ -9,6 +9,9 @@ lerna-debug.log*
 
 # Build outputs
 build/
+bundle.js
+bundle.js
+bundle.js.LICENSE.txt
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
