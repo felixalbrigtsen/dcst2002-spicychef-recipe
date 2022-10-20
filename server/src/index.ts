@@ -21,5 +21,3 @@ app.use('/api', router);
 // Serve static files from the React frontend
 app.use(express.static(clientBuildPath));
 
-// Serve static files for the API documentation
-app.use('/api-docs', express.static(path.join(__dirname, '/../docs')));

@@ -22,7 +22,7 @@
   },
   "opts": {
     "template": "node_modules/better-docs",
-    "destination": "docs",
+    "destination": "../client/api-docs",
     "recurse": true,
     "readme": "README.md"
   }
