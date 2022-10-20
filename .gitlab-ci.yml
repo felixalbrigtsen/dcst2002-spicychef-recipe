@@ -49,6 +49,17 @@ client_typescript:
     changes:
       - client/*
 
+api_docs:
+  stage: build
+  artifacts:
+    when: always
+    paths:
+      - server/docs/*
+  script:
+    - cd server/
+    - npm install
+    - npm run docs
+
 deploy_production:
   stage: deploy
   image: alpine:latest
@@ -60,6 +71,7 @@ deploy_production:
   dependencies:
     - client_build
     - client_jest
+    - api_docs
   script:
     - export CI=false
     - apk add --no-cache rsync openssh
@@ -68,4 +80,5 @@ deploy_production:
     - chmod 600 ~/.ssh/id_rsa
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
     - ssh ci@192.168.0.103 "cd /var/www/dcst2002-recipe-gr2 && git checkout main && git pull origin main && cd server && npm ci && sudo systemctl restart recipe-app.service && exit"
+    - mv server/docs client/public/api-docs
     - rsync -rav -e ssh --delete client/public/ ci@192.168.0.103:/var/www/dcst2002-recipe-gr2/client/public/

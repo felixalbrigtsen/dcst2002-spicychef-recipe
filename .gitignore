@@ -137,4 +137,5 @@ dist
 .pnp.*
 
 # jsdoc output
-api-docs/
+/client/public/api-docs/
+/server/docs/
