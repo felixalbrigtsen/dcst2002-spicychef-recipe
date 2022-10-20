@@ -135,3 +135,7 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# jsdoc output
+/client/public/api-docs/
+/server/docs/

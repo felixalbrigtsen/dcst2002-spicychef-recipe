@@ -5,11 +5,11 @@ import * as path from 'path';
 import router from './recipe-router';
 
 dotenv.config();
-const port: number = Number(process.env.PORT) || 3000;
+const port = Number(process.env.PORT) || 3000;
 const clientBuildPath = path.join(__dirname, (process.env.CLIENT_BUILD_PATH || '/../../client/public'));
 console.log("Serving client from '" + clientBuildPath + "'");
 
-const app: Express = express();
+const app = express();
 app.use(morgan('dev'));
 
 app.listen(port, () => {
