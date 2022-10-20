@@ -19,6 +19,8 @@ router.get('/' , (req, res) => {
  *
  * @returns {Recipe[]} Array of Recipes in short form (no instructions or ingredients)
  * @throws {Error} 500 If there is a database error
+ * @example
+ * GET /recipes
  * 
  */
 router.get('/recipes' , (req, res) => {
@@ -78,6 +80,8 @@ router.get('/recipe/:id' , (req, res) => {
  * @throws {error} 400 If q is not between 3 and 100 characters long
  * @throws {error} 500 If there is a database error
  *
+ * @example
+ * GET /search?q=chicken
  */
 router.get('/search' , (req, res) => {
   let query = req.query.q;
@@ -99,3 +103,6 @@ router.get('/search' , (req, res) => {
     res.status(500).send(err);
   });
 });
+
+
+
