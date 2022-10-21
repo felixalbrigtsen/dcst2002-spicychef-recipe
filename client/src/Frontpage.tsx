@@ -18,19 +18,16 @@ function Home () {
     return (
         <>
             <Hero>
-                <Hero.Header>
-                    Home
-                </Hero.Header>
                 <Hero.Body>
                         <Tile kind="ancestor">
                             <Tile size={8} vertical>
-                                <Tile kind="parent">
+                                {/* <Tile kind="parent">
                                         <Tile kind="child" renderAs={Notification} color="danger">
                                             <Heading>Welcome</Heading>
                                             <Heading subtitle>This is the SpicyChef Recipe Book</Heading>
                                             <div className="content" />
                                         </Tile>
-                                    </Tile>
+                                    </Tile> */}
                                 <Tile>
                                 <Tile kind="parent">
                                         <Tile kind="child" renderAs={Notification} color="info">
@@ -46,7 +43,6 @@ function Home () {
                                                             </span>
                                                     </Form.Control>
                                                 </Form.Field>
-                                            <Image size="4by3" src="http://bulma.io/images/placeholders/640x480.png" />
                                         </Tile>
                                     </Tile>
                                     <Tile kind="parent" vertical>
