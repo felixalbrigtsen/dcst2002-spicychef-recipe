@@ -1,10 +1,8 @@
 import React from 'react';
 import 'bulma/css/bulma.min.css';
-import { Button, Card, Image, Media, Heading, Content } from 'react-bulma-components';
+import { Button, Card, Image, Media, Heading, Content, Icon } from 'react-bulma-components';
 import {useState} from 'react';
-import Icon from '@mdi/react'
-//@ts-ignore
-import { mdiThumbUp, mdiArrowRightThick } from '@mdi/js'
+import { FaArrowRight, FaThumbsUp } from 'react-icons/fa';
 
 function RecipeCard() {
     return(
@@ -33,13 +31,18 @@ function RecipeCard() {
                 <Card.Footer>
                     <Card.Footer.Item>
                         <Button className="is-rounded" color="primary">
-                            <Icon path={mdiThumbUp} size={1}  color="white"/>
+                            <Icon>
+                                {/* If person who is logged in has liked this recipe, change the colour o the icon */}
+                                <FaThumbsUp />
+                            </Icon>
                         </Button>
                     </Card.Footer.Item>
                     <Card.Footer.Item renderAs="a" href="/recipe/{id}">
                         Read more 
                         <br />
-                        <Icon path={mdiArrowRightThick} size={1} />
+                        <Icon>
+                            <FaArrowRight />
+                        </Icon>
                     </Card.Footer.Item>
                 </Card.Footer>
             </Card>
