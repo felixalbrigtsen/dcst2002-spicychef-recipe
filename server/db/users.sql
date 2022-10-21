@@ -31,6 +31,6 @@ CREATE TABLE `cartItems` (
   `quantity` int(11) NOT NULL,
 
   FOREIGN KEY (`googleId`) REFERENCES `users`(`googleId`),
-  FOREIGN KEY (`ingredientId`) REFERENCES `ingredients`(`id`)
+  FOREIGN KEY (`ingredientId`) REFERENCES `ingredients`(`id`),
   PRIMARY KEY (`googleId`, `ingredientId`)
 );
