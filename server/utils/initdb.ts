@@ -25,11 +25,28 @@ const pool = mysql.createPool({
     field.type == 'TINY' && field.length == 1 ? field.string() == '1' : next(),
 });
 
+function runQuery(sql: string):  Promise<any> {
+  return new Promise((resolve, reject) => {
+    pool.query(sql, (err, results) => {
+      if (err) {
+        reject(err);
+      } 
+      resolve(results);
+    });
+  });
+}
+
 async function main() {
   for (const [ i, sql ] of sqlFilesContent.entries()) {
     console.log(`Executing ${sqlFiles[i]}...`);
-    await pool.execute(sql);
-    console.log(`Done ${sqlFiles[i]}`);
+    try {
+      await runQuery(sql);
+      console.log(`Done ${sqlFiles[i]}`);
+    } catch (err) {
+      console.log(`Error ${sqlFiles[i]}`);
+      console.log(err);
+      break;
+    }
   }
   console.log(" --- Done --- ");
 }

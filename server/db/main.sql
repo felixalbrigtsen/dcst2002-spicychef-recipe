@@ -1,8 +1,12 @@
+DROP TABLE IF EXISTS `userlike`;
+DROP TABLE IF EXISTS `cartItem`;
+
 DROP TABLE IF EXISTS `recipe_tag`;
 DROP TABLE IF EXISTS `recipe_ingredient`;
 DROP TABLE IF EXISTS `recipe`;
 DROP TABLE IF EXISTS `unit`;
 DROP TABLE IF EXISTS `ingredient`;
+
 CREATE TABLE `recipe` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
@@ -41,7 +45,7 @@ CREATE TABLE `recipe_ingredient` (
   `recipeId` int(11) NOT NULL,
   `ingredientId` int(11) NOT NULL,
   `unitId` int(11) NOT NULL,
-  `quantity` int(11) NOT NULL,
+  `quantity` FLOAT NOT NULL,
   PRIMARY KEY (`recipeId`,`ingredientId`,`unitId`),
   FOREIGN KEY (`recipeId`) REFERENCES `recipe`(`id`),
   FOREIGN KEY (`ingredientId`) REFERENCES `ingredient`(`id`),
