@@ -6,11 +6,11 @@ import {
   Link
 } from 'react-router-dom';
 
-import { Hero, Section, Tile, Heading, Box, Image, Notification, Form, Button } from 'react-bulma-components';
+import { Hero, Section, Tile, Heading, Box, Image, Notification, Form, Button, Media, Content } from 'react-bulma-components';
 
 import Icon from '@mdi/react'
 // @ts-ignore
-import { mdiCart, mdiBasket, mdiShakerOutline, mdiFoodDrumstick, mdiFoodSteak, mdiCarrot, mdiMagnify } from '@mdi/js';
+import { mdiCart, mdiBasket, mdiShakerOutline, mdiFoodDrumstick, mdiFoodSteak, mdiCarrot, mdiMagnify, mdiArrowRight } from '@mdi/js';
 
 import Footer from '../components/Footer';
 import RecipeCard from '../components/RecipeCard';
@@ -22,13 +22,14 @@ function Home () {
                 <Hero.Body>
                         <Tile kind="ancestor">
                             <Tile size={8} vertical>
-                                {/* <Tile kind="parent">
+                                <Tile kind="parent">
                                         <Tile kind="child" renderAs={Notification} color="danger">
-                                            <Heading>Welcome</Heading>
+                                            {/* Implement if user is logged in */}
+                                            <Heading>Welcome User</Heading>
                                             <Heading subtitle>This is the SpicyChef Recipe Book</Heading>
                                             <div className="content" />
                                         </Tile>
-                                    </Tile> */}
+                                    </Tile>
                                 <Tile>
                                 <Tile kind="parent">
                                         <Tile kind="child" renderAs={Notification} color="info">
@@ -58,6 +59,10 @@ function Home () {
                                             <Icon path={mdiShakerOutline} size={1} color="white" />
                                             </Button>
                                             </Link>
+                                            <Content>
+                                                Ingredient of the Day
+                                                <Image src="https://cdn.discordapp.com/attachments/894239765430419549/1032295931435036772/unknown.png" />
+                                            </Content>
                                         </Tile>
                                         <Tile kind="child" renderAs={Notification} color="warning">
                                             <Heading>Shopping Cart</Heading>
@@ -75,7 +80,17 @@ function Home () {
                                     <Tile kind="child" renderAs={Notification} color="success">
                                         <div className="content">
                                             <Heading>Selected Recipe</Heading>
-                                            <RecipeCard />
+                                            <Image size={256} alt="256x256" src="https://bulma.io/images/placeholders/256x256.png" />
+                                            <Media>
+                                                <Media.Item>
+                                                    <Heading subtitle>Recipe Name</Heading>
+                                                    <Content>
+                                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec iaculis mauris.
+                                                    </Content>
+                                                </Media.Item>
+                                            </Media>
+                                            <br />
+                                            <Link to="/recipe">Read More <Icon path={mdiArrowRight} size={0.75} /></Link>
                                         </div>
                                     </Tile>
                                 </Tile>
