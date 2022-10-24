@@ -25,12 +25,13 @@ switch (action) {
     mealdbService.getMeal(id)
       .then(meal => displayMeal(meal))
       .catch(err => {console.log(err); process.exit(1);});
-
     break;
+
   case 'random':
     mealdbService.getRandomMeal()
       .then(meal => displayMeal(meal))
       .catch(err => {console.log(err); process.exit(1);});
+    break;
 
   case 'help':
   default:

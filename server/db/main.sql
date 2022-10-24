@@ -42,11 +42,12 @@ CREATE TABLE `unit` (
 );
 
 CREATE TABLE `recipe_ingredient` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `recipeId` int(11) NOT NULL,
   `ingredientId` int(11) NOT NULL,
   `unitId` int(11) NOT NULL,
   `quantity` FLOAT NOT NULL,
-  PRIMARY KEY (`recipeId`,`ingredientId`,`unitId`),
+  PRIMARY KEY (`id`),
   FOREIGN KEY (`recipeId`) REFERENCES `recipe`(`id`),
   FOREIGN KEY (`ingredientId`) REFERENCES `ingredient`(`id`),
   FOREIGN KEY (`unitId`) REFERENCES `unit`(`id`)

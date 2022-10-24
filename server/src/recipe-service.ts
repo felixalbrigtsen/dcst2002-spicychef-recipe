@@ -311,20 +311,20 @@ class RecipeService {
   getIngredientIds(names: string[]): Promise<number[]> {
     return new Promise(async (resolve, reject) => {
       let addCount = 0;
-      let ids = names.map(async (name) => {
+      let ids: number[] = [];
+      for (let name of names) {
         let ingredient = await this.getIngredientByName(name);
         if (ingredient) {
-          return ingredient.id;
+          ids.push(ingredient.id);
         } else {
-          addCount += 1;
-          return await this.addIngredient(name);
+          let id = await this.addIngredient(name);
+          ids.push(id);
+          addCount++;
         }
-      });
-      // console.log(`Added ${addCount} ingredients`);
-      // resolve(Promise.all(ids));
-      await Promise.all(ids);
-      console.log(`Added ${addCount} units`);
-      resolve(Promise.all(ids));
+      }
+      console.log(ids)
+      console.log(`Added ${addCount} ingredients`);
+      resolve(ids);
     });
   }
 
@@ -332,18 +332,20 @@ class RecipeService {
   getUnitIds(names: string[]): Promise<number[]> {
     return new Promise(async (resolve, reject) => {
       let addCount = 0;
-      let ids = names.map(async (name) => {
+      let ids: number[] = [];
+      for (let name of names) {
         let unit = await this.getUnitByName(name);
         if (unit) {
-          return unit.id;
+          ids.push(unit.id);
         } else {
-          addCount += 1;
-          return await this.addUnit(name);
+          let id = await this.addUnit(name);
+          ids.push(id);
+          addCount++;
         }
-      });
-      await Promise.all(ids);
+      }
+      console.log(ids)
       console.log(`Added ${addCount} units`);
-      resolve(Promise.all(ids));
+      resolve(ids);
     });
   }
 
@@ -434,8 +436,11 @@ class RecipeService {
       
       // Insert the tags
       for (let tag of meal.tags) {
-        this.addRecipeTag(recipeId, tag)
-          .catch((err) => reject(err));
+        try {
+          await this.addRecipeTag(recipeId, tag);
+        } catch(err) {
+          reject(err);
+        }
       }
 
       return resolve(recipeId);
