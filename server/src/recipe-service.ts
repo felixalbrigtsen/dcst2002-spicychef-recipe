@@ -159,10 +159,14 @@ class RecipeService {
     });
   }
 
-  getRecipeFull(id: number): Promise<Recipe> {
+  getRecipeFull(id: number): Promise<Recipe | null> {
     return new Promise((resolve, reject) => {
       this.getRecipe(id)
       .then(async (recipe) => {
+
+        if (!recipe) {
+          return resolve(null);
+        }
 
         let tags = await this.getTagsInRecipe(id);
         recipe.tags = tags;
@@ -322,7 +326,6 @@ class RecipeService {
           addCount++;
         }
       }
-      console.log(ids)
       console.log(`Added ${addCount} ingredients`);
       resolve(ids);
     });
@@ -343,7 +346,6 @@ class RecipeService {
           addCount++;
         }
       }
-      console.log(ids)
       console.log(`Added ${addCount} units`);
       resolve(ids);
     });

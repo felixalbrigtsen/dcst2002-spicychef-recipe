@@ -48,32 +48,57 @@ function normalizeMeasures(measures: string[]): string[] {
   return measures.map(measure => {
     measure = measure.trim();
 
-    // Regex to match integers, floats, fractions: /(([0-9]*[.|\/])?[0-9]+)/
+    // If the first character is not a digit, prepend 1
+    if (!(/^([0-9])/.test(measure))) {
+      return '1 ' + measure;
+    }
 
     // If the measure is just a number
     if (/^(([0-9]*[.|\/])?[0-9]+)$/.test(measure)) {
-      if (measure === '1' || measure === '1/2') {
-        return `${measure} unit`;
+      if (measure === '1') {
+        measure = `${measure} unit`;
       } else {
-        return `${measure} units`;
+        measure = `${measure} units`;
       }
     }
     
-    // If the measure starts with a number(int, fraction or float) followed by a space
-    if (measure.match(/^(([0-9]*[.|\/])?[0-9])\s/)) {
-      return measure;
+    // // If the measure starts with a number(int, fraction or float) followed by a space
+    // if (measure.match(/^(([0-9]*[.|\/])?[0-9])\s/)) {
+    //   return measure;
+    // }
+
+    //TODO: Detect and handle  other fraction-like forms, examples: "½ cup"
+    
+    // Parse and normalize mixed numbers into fractions, examples: "1 1/2 dl" => "3/2 dl"
+    if (measure.match(/^([0-9]+ [0-9]+\/[0-9]+)/)) {
+      const mixedNum = measure.match(/^([0-9]+) ([0-9]+\/[0-9]+)/);
+      if (mixedNum) {
+        const [_, wholeNum, fraction] = mixedNum;
+        const [numerator, denominator] = fraction.split('/');
+        const newNumerator = (parseInt(wholeNum) * parseInt(denominator)) + parseInt(numerator);
+        measure = measure.replace(/^([0-9]+ [0-9]+\/[0-9]+)/, `${newNumerator}/${denominator}`);
+      }
     }
 
-    // If the measure starts with a number(int, fraction or float), but not a space, add a space
-    if (measure.match(/^(([0-9]*[.|\/])?[0-9])/)) {
-      return measure.replace(/^(([0-9]*[.|\/])?[0-9]+)/, '$1 ');
+    // Parse and normalize fractions
+    if (measure.match(/^([0-9]*\/[0-9]*)/)) {
+      let fraction = measure.match(/^([0-9]*\/[0-9]*)/);
+      if (fraction) {
+        let numbers = fraction[0].split('/');
+        let value = Number(numbers[0]) / Number(numbers[1]);
+        measure = measure.replace(/^([0-9]*\/[0-9]*)/, value.toFixed(3));
+      }
+    }
+    
+    // If the number starts with a number followed by text, but no space, add a space
+    let missingSpaceCheck = measure.match(/^([0-9]*[\.]?[0-9]+)(\S)/);
+    if (missingSpaceCheck) {
+      if (!missingSpaceCheck[2].match(/[0-9]/)) { // If the second match group(ending) is not a number, add a space between them
+        measure = measure.replace(/^([0-9]*[\.]?[0-9]+)(\S)/, '$1 $2');
+      }
     }
 
-    //TODO: Detect and handle  other fraction-like forms, examples: "1 1/2 dl", "½ cup"
-
-    // None of the other patterns matched, prepend "1 "
-    return '1 ' + measure;
-
+    return measure;
   });
 }
 
@@ -125,6 +150,10 @@ export class MealDBService {
           ingredients: [],
           measures: [],
         };
+
+        if (mealObj.strArea) {
+          meal.tags.push(mealObj.strArea);
+        }
 
         // Parse ingredients and their measures
         for (let i = 1; i <= 20; i++) {
