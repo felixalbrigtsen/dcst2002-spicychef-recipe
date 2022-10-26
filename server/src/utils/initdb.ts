@@ -3,7 +3,7 @@ import * as path from 'path';
 import dotenv from 'dotenv';
 import { readFileSync } from 'fs';
 
-const sql_file_path = path.join(__dirname, '/../db/'); 
+const sql_file_path = path.join(__dirname, '/../../db/'); 
 const sqlFiles = [
   'main.sql',
   'users.sql',

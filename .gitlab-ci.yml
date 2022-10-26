@@ -49,6 +49,31 @@ client_typescript:
     changes:
       - client/*
 
+server_install:
+  stage: build
+  script:
+    - cd server/
+    - npm prune
+    - npm ci
+  cache:
+    key: ${CI_COMMIT_REF_NAME}
+    paths:
+      - server/node_modules/
+  artifacts:
+    paths:
+      - ./server/node_modules/
+
+server_typescript:
+  stage: test
+  dependencies:
+    - server_install
+  script:
+    - cd server
+    - ./node_modules/.bin/tsc --noEmit --skipLibCheck
+  only:
+    changes:
+      - server/*
+
 api_docs:
   stage: build
   artifacts:
