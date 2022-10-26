@@ -27,6 +27,7 @@ module.exports = {
     static: { directory: path.join(__dirname, 'public') },
     compress: true,
     port: 3000,
+    historyApiFallback: true,
   },
   plugins: [
     // Load environment variables from .env file
