@@ -8,6 +8,7 @@
  */
 
 const path = require('path');
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
   entry: './src/index.tsx', // Initial file to bundle
@@ -21,11 +22,22 @@ module.exports = {
   },
   // Makes original source code available to the browser for easier identification of error causes.
   devtool: 'source-map',
+  devServer: {
+    // Serve files from the public directory
+    static: { directory: path.join(__dirname, 'public') },
+    compress: true,
+    port: 3000,
+    historyApiFallback: true,
+  },
+  plugins: [
+    // Load environment variables from .env file
+    new Dotenv(),
+  ],
   module: {
     rules: [
       {
         // Use babel to parse .tsx files in the src folder
-        test: /\.tsx$/,
+        test: /\.(tsx|ts)$/,
         include: path.resolve(__dirname, 'src'),
         use: ['babel-loader'],
       },

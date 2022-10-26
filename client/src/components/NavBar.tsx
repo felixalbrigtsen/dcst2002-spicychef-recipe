@@ -19,12 +19,13 @@ export default function NavBar() {
               <Image
                 src="/logo.png"
                 alt="SpicyChef Logo"
-                size={48}
+                size={32}
               />
             </Navbar.Item>
-            <Navbar.Burger 
+            <Navbar.Burger
             className= {isActive ? "is-active" : ""}
-            onClick={handleClick} />
+            onClick={handleClick}
+            />
           </Navbar.Brand>
           <Navbar.Menu 
           id="navbar-example"
@@ -36,7 +37,7 @@ export default function NavBar() {
               <Navbar.Item href="/cart">Shopping Cart</Navbar.Item>
               <Navbar.Item href="/login">Login</Navbar.Item>
               <Navbar.Item href="/admin">Admin</Navbar.Item>
-              <Navbar.Item href="https://gitlab.stud.idi.ntnu.no/felixalb/dcst2002-recipe-gr2">Documentation</Navbar.Item>
+              <Navbar.Item href="/api-docs/">Documentation</Navbar.Item>
             </Navbar.Container>
           </Navbar.Menu>
         </Navbar>
