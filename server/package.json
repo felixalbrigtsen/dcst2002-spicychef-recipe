@@ -6,8 +6,8 @@
   "scripts": {
     "start": "nodemon src/index.ts ",
     "docs": "jsdoc -c jsdoc.conf.json",
-    "initdb": "ts-node utils/initdb.ts",
-    "mealdb": "ts-node utils/mealdb.ts"
+    "initdb": "ts-node src/utils/initdb.ts",
+    "mealdb": "ts-node src/utils/mealdb.ts"
   },
   "devDependencies": {
     "@types/express": "^4.17.14",
