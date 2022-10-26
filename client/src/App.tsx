@@ -12,6 +12,7 @@ import RecipePage from './pages/RecipePage';
 import IngredientPage from './pages/IngredientPage';
 import ShoppingCartPage from './pages/ShoppingCartPage';
 import LikePage from './pages/LikePage';
+// import Footer from './components/Footer';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="/likes" element={<LikePage />} />
       </Routes>
     </Router>
+    {/* <Footer /> */}
   </>
   );
 }
