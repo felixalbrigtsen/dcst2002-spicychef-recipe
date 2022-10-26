@@ -5,10 +5,27 @@ import {
   Routes 
 } from 'react-router-dom';
 
-export default function RecipePage() {
+import { useParams } from 'react-router-dom'
+
+import { Card, Container, Image, Media } from 'react-bulma-components'
+
+function RecipePage() {
+
+    const { id } = useParams();
+  
     return (
-        <div>
-        <h1>Recipe</h1>
-        </div>
+        <>
+        <Container className='has-text-centered'>
+          <Card>
+            <Card.Header>Recipe: {id}</Card.Header>
+            <Card.Content>
+                  {/* @ts-ignore */}
+                  {/* <iframe src="https://www.youtube.com/embed/70vwJy1dQ0c" allowfullscreen></iframe>                 */}
+            </Card.Content>
+          </Card>
+        </Container>
+        </>
     );
 }
+
+export default RecipePage;
