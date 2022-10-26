@@ -144,6 +144,10 @@ export class MealDBService {
           meal.tags.push(mealObj.strArea);
         }
 
+        if (mealObj.strCategory) {
+          meal.tags.push(mealObj.strCategory);
+        }
+
         // Parse ingredients and their measures
         for (let i = 1; i <= 20; i++) {
           const ingredient = mealObj[`strIngredient${i}`];
