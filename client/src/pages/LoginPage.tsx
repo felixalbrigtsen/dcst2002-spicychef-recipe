@@ -19,7 +19,7 @@ export default function LoginPage() {
                 </Link>
             </Card.Content>
             <Card.Content>
-              You need to login to use the app. If you don't have an account, one will be created when you login with Google. 
+              You need to log in to use the app. If you don't have an account, one will be created when you log in with Google. 
             </Card.Content>
           </Card>
         </Container>
