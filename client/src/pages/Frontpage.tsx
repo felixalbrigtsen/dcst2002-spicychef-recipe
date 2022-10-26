@@ -96,9 +96,6 @@ function Home () {
                                 </Tile>
                     </Tile>
                 </Hero.Body>
-                <Hero.Footer>
-                    <Footer />
-                </Hero.Footer>
             </Hero>
         </>
     );
