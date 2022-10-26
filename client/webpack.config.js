@@ -25,7 +25,7 @@ module.exports = {
     rules: [
       {
         // Use babel to parse .tsx files in the src folder
-        test: /\.tsx$/,
+        test: /\.(tsx|ts)$/,
         include: path.resolve(__dirname, 'src'),
         use: ['babel-loader'],
       },
