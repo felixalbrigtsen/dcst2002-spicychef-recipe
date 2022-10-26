@@ -1,11 +1,12 @@
 import * as React from 'react';
 
 import { MdDeleteForever } from 'react-icons/md';
-import { Box, Button, Container, Heading, Hero, Notification, Table, Tile } from 'react-bulma-components';
+import { Box, Button, Form, Container, Heading, Hero, Notification, Table, Tile } from 'react-bulma-components';
 
 
 export default function ShoppingCartPage() {
   // const [cart, setCart] = React.useState([]);
+  
 
   const totalProductPrice = (product: any) => {
     return product.price * product.quantity;
@@ -49,7 +50,7 @@ export default function ShoppingCartPage() {
                     <tr key={index}>
                       <td>{item.name}</td>
                       <td className='is-narrow'>
-                      <input className='input is-small' type='number' onChange={(event) => {item.quantity = event.target.value}} />
+                      <Form.Input type='number' value={item.quantity} onChange={(event) => {console.log(event.target.value); item.quantity = event.target.value}} min="1" />
                       </td>
                       <td style={{textAlign: 'right'}} className='is-narrow'>
                         {item.price}
