@@ -6,6 +6,9 @@ import {
   Link
 } from 'react-router-dom';
 
+import recipeService from '../services/recipe-service';
+import { useEffect } from 'react';
+
 import { Hero, Section, Tile, Heading, Box, Image, Notification, Form, Button, Media, Content } from 'react-bulma-components';
 
 import Icon from '@mdi/react'
@@ -16,6 +19,13 @@ import Footer from '../components/Footer';
 import RecipeCard from '../components/RecipeCard';
 
 function Home () {
+    useEffect(() => {
+        recipeService.getRecipesShort().then((recipes) => {
+            console.log(recipes);
+        });
+    }, []);
+
+
     return (
         <>
             <Hero>
