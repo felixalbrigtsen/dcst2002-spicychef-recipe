@@ -62,11 +62,6 @@ function normalizeMeasures(measures: string[]): string[] {
       }
     }
     
-    // // If the measure starts with a number(int, fraction or float) followed by a space
-    // if (measure.match(/^(([0-9]*[.|\/])?[0-9])\s/)) {
-    //   return measure;
-    // }
-
     //TODO: Detect and handle  other fraction-like forms, examples: "½ cup"
     
     // Parse and normalize mixed numbers into fractions, examples: "1 1/2 dl" => "3/2 dl"
