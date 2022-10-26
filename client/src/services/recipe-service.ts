@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Recipe } from '../models/recipe';
+import type { Recipe } from '../models/recipe';
 
 /**
  * @module
