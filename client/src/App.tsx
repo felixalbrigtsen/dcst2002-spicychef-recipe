@@ -8,6 +8,7 @@ import {
 import Home from './pages/Frontpage';
 import SearchPage from './pages/SearchPage';
 import LoginPage from './pages/LoginPage';
+import RecipeList from './pages/RecipeListPage';
 import RecipePage from './pages/RecipePage';
 import IngredientPage from './pages/IngredientPage';
 import ShoppingCartPage from './pages/ShoppingCartPage';
@@ -22,7 +23,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/recipes" element={<RecipePage />} />
+        <Route path="/recipes" element={<RecipeList />} />
+        <Route path="/recipe/:id" element={<RecipePage />} />
         <Route path="/ingredients" element={<IngredientPage />} />
         <Route path="/cart" element={<ShoppingCartPage />} />
         <Route path="/likes" element={<LikePage />} />
