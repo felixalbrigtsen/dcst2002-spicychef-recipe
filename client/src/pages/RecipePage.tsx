@@ -20,12 +20,14 @@ function RecipePage() {
             <Card.Header>Recipe: {id}</Card.Header>
             <Card.Content>
                   {/* @ts-ignore */}
-                  {/* <iframe src="https://www.youtube.com/embed/70vwJy1dQ0c" allowfullscreen></iframe>                 */}
+                  {/* <iframe src="https://www.youtube.com/embed/70vwJy1dQ0c" allowfullscreen></iframe> */}
             </Card.Content>
           </Card>
         </Container>
         </>
     );
+
+    
 }
 
 export default RecipePage;
