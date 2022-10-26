@@ -87,9 +87,19 @@ class RecipeService {
       pool.query('SELECT `id`,`title`,`summary`, `imageUrl` FROM recipe', (err, results: {id: number; title: string; summary: string; imageUrl: string;}[]) => {
         if (err) {
           reject(err);
-        } else {
-          resolve(results);
-        }
+        } 
+
+        const recipes = results.map(async (recipe) => {
+          return {
+            id: recipe.id,
+            title: recipe.title,
+            summary: recipe.summary,
+            imageUrl: recipe.imageUrl,
+            tags: await this.getTagsInRecipe(recipe.id),
+          };
+        });
+
+        resolve(Promise.all(recipes));
       });
     });
   }
