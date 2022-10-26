@@ -23,6 +23,16 @@ function Home () {
         recipeService.getRecipesShort().then((recipes) => {
             console.log(recipes);
         });
+        let id : number = 1
+        recipeService.getRecipe(id).then((recipe) => {
+            console.log("---------Recipe 1?:-------------")
+            console.log(recipe)
+        })
+        let querystring: string = "cho"
+        recipeService.search(querystring).then((recipes) => {
+            console.log("-----------Search---------------")
+            console.log(recipes)
+        })
     }, []);
 
 
