@@ -52,6 +52,7 @@
     "@types/react-router-dom": "^5.3.3",
     "babel-loader": "^8.2.5",
     "css-loader": "^6.7.1",
+    "dotenv": "^16.0.3",
     "dotenv-webpack": "^8.0.1",
     "jest-environment-jsdom": "^29.2.2",
     "jest-junit": "^14.0.1",

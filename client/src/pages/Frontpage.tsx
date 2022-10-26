@@ -19,21 +19,22 @@ import Footer from '../components/Footer';
 import RecipeCard from '../components/RecipeCard';
 
 function Home () {
-    useEffect(() => {
-        recipeService.getRecipesShort().then((recipes) => {
-            console.log(recipes);
-        });
-        let id : number = 1
-        recipeService.getRecipe(id).then((recipe) => {
-            console.log("---------Recipe 1?:-------------")
-            console.log(recipe)
-        })
-        let querystring: string = "cho"
-        recipeService.search(querystring).then((recipes) => {
-            console.log("-----------Search---------------")
-            console.log(recipes)
-        })
-    }, []);
+    // // Demo of how to use the recipe service
+    // useEffect(() => {
+    //     recipeService.getRecipesShort().then((recipes) => {
+    //         console.log(recipes);
+    //     });
+    //     let id : number = 1
+    //     recipeService.getRecipe(id).then((recipe) => {
+    //         console.log("---------Recipe 1?:-------------")
+    //         console.log(recipe)
+    //     })
+    //     let querystring: string = "cho"
+    //     recipeService.search(querystring).then((recipes) => {
+    //         console.log("-----------Search---------------")
+    //         console.log(recipes)
+    //     })
+    // }, []);
 
 
     return (
