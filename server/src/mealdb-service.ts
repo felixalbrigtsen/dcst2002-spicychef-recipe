@@ -2,14 +2,6 @@ import axios from 'axios';
 
 /**
  * @typedef {Object} Meal
- * @property {string} idMeal
- * @property {string} title
- * @property {string} instructions
- * @property {string} imgrurl
- * @property {string} youtubeurl
- * @property {string[]} tags
- * @property {string[]} ingredients
- * @property {string[]} measures
  */
 export type Meal = {
   idMeal: string;
