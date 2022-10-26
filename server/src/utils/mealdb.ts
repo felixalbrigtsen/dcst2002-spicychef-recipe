@@ -1,5 +1,5 @@
-import recipeService from '../recipe-service';
-import mealdbService, {Meal} from '../mealdb-service';
+import recipeService from '../services/recipe-service';
+import mealdbService, {Meal} from '../services/mealdb-service';
 
 // This script is invoked by `npm run mealdb [--] action [args]`
 

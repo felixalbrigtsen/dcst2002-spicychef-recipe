@@ -1,12 +1,15 @@
-/** Express router providing recipe related routes
+/** Express router providing recipe related routes and dispatching 
  * @module recipe-router
  */
 
 import express from 'express';
-import recipeService from './recipe-service';
+import recipeService from '../services/recipe-service';
+import authRouter from './auth-router';
 
 const router = express.Router();
 export default router;
+
+router.use('/auth', authRouter);
 
 router.get('/' , (req, res) => {
   res.send('Hello World! You have reached the Recipe API server. Did you mean to go <a href="/">home</a>?');

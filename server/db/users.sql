@@ -3,14 +3,13 @@ DROP TABLE IF EXISTS `cartItem`;
 DROP TABLE IF EXISTS `user`;
 
 CREATE TABLE `user` (
-  `googleId` varchar(11) NOT NULL,
+  `googleId` varchar(64) NOT NULL,
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
+  `picture` varchar(255) NOT NULL,
 
   `isadmin` tinyint(1) NOT NULL DEFAULT '0',
 
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  
   PRIMARY KEY (`googleId`)
 );
 

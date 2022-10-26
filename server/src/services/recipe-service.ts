@@ -1,55 +1,9 @@
-import pool from './mysql-pool';
+import pool from '../mysql-pool';
 import { RowDataPacket } from 'mysql2';
-import type { Meal } from './mealdb-service';
-
-/**
- * Ingredient
- * @alias Ingredient
- */
-export type Ingredient = {
-  id: number;
-  ingredientName: string;
-
-  /**
-   * Number of units of the ingredient
-   * @example 1
-   */
-  amount: number;
-  /**
-   * Unit ID from the table recipe_ingredient 
-   */
-  unitId: number;
-  /**
-   * Name of unit (dl, g, tbsp. etc.)
-   */
-  unitName: string;
-};
-
-/**
- * Unit
- * @alias Unit
- */
-export type Unit = {
-  id: number;
-  name: string;
-};
-
-/**
- * Recipe
- * @alias Recipe
- */
-export type Recipe = {
-  id: number;
-  title: string;
-  summary: string;
-  instructions: string;
-  servings: number;
-  imageUrl: string | null;
-  videoUrl: string | null;
-  created_at: string | null;
-  ingredients: Ingredient[];
-  tags: string[];
-};
+import type { Meal } from '../models/Meal';
+import type { Ingredient } from '../models/Ingredient';
+import type { Recipe } from '../models/Recipe';
+import type { Unit } from '../models/Unit';
 
 /*
 Grunnleggende typer har hver sin "enkle" getter.

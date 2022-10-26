@@ -1,22 +1,5 @@
 import axios from 'axios';
-
-/**
- * @typedef {Object} Meal
- */
-export type Meal = {
-  idMeal: string;
-  title: string;
-  instructions: string;
-  imgurl: string;
-  youtubeurl: string | null;
-  tags: string[];
-
-  ingredients: string[];
-  measures: string[];
-};
-//TODO: generate a summary using the data from the meal
-//TODO: Find or guess number of servings
-
+import type { Meal } from '../models/Meal';
 
 /**
  * @function
