@@ -20,4 +20,6 @@ app.use('/api', router);
 
 // Serve static files from the React frontend
 app.use(express.static(clientBuildPath));
-
+app.get('*', (req, res) => {
+  res.sendFile(path.join(clientBuildPath, '/index.html'));
+});
