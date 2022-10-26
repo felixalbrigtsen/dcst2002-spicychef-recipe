@@ -46,24 +46,13 @@ export type Meal = {
  */
 function normalizeMeasures(measures: string[]): string[] {
   return measures.map(measure => {
-    measure = measure.trim();
+    measure = measure.trim().normalize('NFKC').replace(/[\u2044]/, '/');
 
     // If the first character is not a digit, prepend 1
     if (!(/^([0-9])/.test(measure))) {
       return '1 ' + measure;
     }
 
-    // If the measure is just a number
-    if (/^(([0-9]*[.|\/])?[0-9]+)$/.test(measure)) {
-      if (measure === '1') {
-        measure = `${measure} unit`;
-      } else {
-        measure = `${measure} units`;
-      }
-    }
-    
-    //TODO: Detect and handle  other fraction-like forms, examples: "½ cup"
-    
     // Parse and normalize mixed numbers into fractions, examples: "1 1/2 dl" => "3/2 dl"
     if (measure.match(/^([0-9]+ [0-9]+\/[0-9]+)/)) {
       const mixedNum = measure.match(/^([0-9]+) ([0-9]+\/[0-9]+)/);
@@ -91,6 +80,11 @@ function normalizeMeasures(measures: string[]): string[] {
       if (!missingSpaceCheck[2].match(/[0-9]/)) { // If the second match group(ending) is not a number, add a space between them
         measure = measure.replace(/^([0-9]*[\.]?[0-9]+)(\S)/, '$1 $2');
       }
+    }
+
+    // If the measure is just a number, or a number with a space, add " units"
+    if (/^(([0-9]*[\.])?[0-9]+ ?)$/.test(measure)) {
+      return measure + ' units';
     }
 
     return measure;
