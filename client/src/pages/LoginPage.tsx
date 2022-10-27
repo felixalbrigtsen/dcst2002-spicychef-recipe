@@ -14,9 +14,9 @@ export default function LoginPage() {
         <Container>
           <Card className={'has-text-centered'}>
             <Card.Content>
-                <Link to={'/api/auth/login'}>
+                <a href={'/api/auth/login'}>
                   <img alt="Google Login" src="/btn_google_signing_dark.png" />
-                </Link>
+                </a>
             </Card.Content>
             <Card.Content>
               You need to log in to use the app. If you don't have an account, one will be created when you log in with Google. 

@@ -37,7 +37,7 @@ export default function NavBar() {
               <Navbar.Item href="/cart">Shopping Cart</Navbar.Item>
               <Navbar.Item href="/login">Login</Navbar.Item>
               <Navbar.Item href="/admin">Admin</Navbar.Item>
-              <Navbar.Item href="/api-docs/">Documentation</Navbar.Item>
+              <Navbar.Item target="_blank" href="/api-docs/">Documentation</Navbar.Item>
             </Navbar.Container>
           </Navbar.Menu>
         </Navbar>
