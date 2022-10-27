@@ -1,43 +1,73 @@
 import React from 'react';
 import { Button, Container, Notification } from 'react-bulma-components'
 
+const ALERT_TIMEOUT = 5000;
+
 type Message = {
-    message: string;
-    type: string;
+  message: string;
+  type: string;
 };
 
-interface AlertProps {
-    messages: Message[];
-    setMessages: (messages: Message[]) => void;
+const AlertContext = React.createContext({
+  alerts: [] as Message[],
+  appendAlert: (message: string, type: string) => {},
+  removeAlert: (index: number) => {},
+})
+
+interface AlertProviderChildren {
+  children: React.ReactNode | React.ReactNode[];
 }
 
-function Alerts(props: AlertProps) {
-    return ( 
-        <Container>
-            {props.messages.map((message, index) => (
-                <Notification
-                    key={index}
-                    color={message.type}
-                    onClick={() => {
-                        props.setMessages(props.messages.filter((_, i) => i !== index));
-                    }}
-                    className="mt-2"
-                >
-                    {message.message}
-                    <Button remove />
-                </Notification>
-            ))}
-        </Container>
-    );
+export const AlertProvider = ({ children }: AlertProviderChildren) => {
+  const [alerts, setAlerts] = React.useState<Message[]>([]);
 
-    function error(text: string): void {
-        let message = { message: text, type: 'danger' };
-        props.setMessages([...props.messages, message]);
-        setTimeout(
-            () => props.setMessages(props.messages.filter((_, i) => i !== props.messages.length - 1)),
-            5000
-        )
-    }
-};
+  const appendAlert = (message: string, type: string) => {
+    console.log("Append alert: " + message);
 
-export default Alerts;
+    setAlerts([...alerts, { message, type }]);
+    setTimeout(() => {
+      removeAlert(0);
+    }, ALERT_TIMEOUT);
+  };
+
+  const removeAlert = (index: number) => {
+    setAlerts(alerts.filter((_, i) => i !== index));
+  };
+
+  return (
+      <AlertContext.Provider 
+        value={{ 
+          alerts, 
+          appendAlert, 
+          removeAlert 
+        }}>
+      {children}
+      </AlertContext.Provider>
+      );
+}
+
+export const useAlert = () => React.useContext(AlertContext);
+
+export const Alerts = () => {
+  const { alerts, removeAlert } = useAlert();
+  return ( 
+      <Container>
+      {alerts.map((alert, index) => (
+          <Notification
+            key={index}
+            color={alert.type}
+            onClick={() => {
+              removeAlert(index);
+            }}
+            className="mt-2"
+          >
+            {alert.message}
+          <Button remove />
+          </Notification>
+      ))}
+      </Container>
+      );
+}
+
+
+export default AlertProvider

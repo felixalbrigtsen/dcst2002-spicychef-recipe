@@ -9,7 +9,7 @@ import userService from './services/user-service';
 import type { User } from './models/User';
 
 import NavBar from './components/NavBar';
-import Alerts from './components/Alerts';
+import { Alerts, useAlert } from './components/Alerts';
 
 import Home from './pages/Frontpage';
 import SearchPage from './pages/SearchPage';
@@ -32,11 +32,17 @@ export const globalStateContext = React.createContext(globalState);
 
 function App() {
   const setUser = React.useContext(globalStateContext).setUser;
+  const { appendAlert } = useAlert();
   // Fetch the current user in the active session
   React.useEffect(() => {
     userService.getSessionUser()
       .then((user) => {
-        setUser(user);
+        if (user) {
+          setUser(user);
+          console.log('User is logged in as ' + user.email);
+        } else {
+          console.log('No user in session');
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -48,6 +54,7 @@ function App() {
   <>
     <globalStateContext.Provider value={globalState}>
     <NavBar />
+    <Alerts />
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
