@@ -5,6 +5,9 @@ const config : Config.InitialOptions = {
   testEnvironment: 'jsdom',
   testMatch: ["**/*.test.js", "**/*.test.tsx"],
   extensionsToTreatAsEsm: [".ts", ".tsx"],
+  moduleNameMapper: {
+    "\\.(css|less|scss|sass)$": "<rootDir>/src/test/styleMock.ts",
+  },
   coverageReporters: ["html", "text", "text-summary" ],
   transformIgnorePatterns: ["node_modules/(?!@testing-library)"],
   setupFiles: [
