@@ -5,6 +5,11 @@ import {
   Routes 
 } from 'react-router-dom';
 
+import userService from './services/user-service';
+import type { User } from './models/User';
+
+import NavBar from './components/NavBar';
+
 import Home from './pages/Frontpage';
 import SearchPage from './pages/SearchPage';
 import LoginPage from './pages/LoginPage';
@@ -15,9 +20,31 @@ import ShoppingCartPage from './pages/ShoppingCartPage';
 import LikePage from './pages/LikePage';
 // import Footer from './components/Footer';
 
+const globalState = {
+  user: {} as User,
+  setUser: (user: User) => {
+    globalState.user = user;
+  },
+};
+export const globalStateContext = React.createContext(globalState);
+
 function App() {
+  const setUser = React.useContext(globalStateContext).setUser;
+  // Fetch the current user in the active session
+  React.useEffect(() => {
+    userService.getSessionUser()
+      .then((user) => {
+        setUser(user);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [setUser]);
+
   return (
   <>
+    <globalStateContext.Provider value={globalState}>
+    <NavBar />
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
@@ -31,6 +58,7 @@ function App() {
       </Routes>
     </Router>
     {/* <Footer /> */}
+    </globalStateContext.Provider>
   </>
   );
 }
