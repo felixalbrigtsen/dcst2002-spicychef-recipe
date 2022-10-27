@@ -28,7 +28,7 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         secure: process.env.SESSION_SECURE_COOKIE ? process.env.SESSION_SECURE_COOKIE != "false" : true,
-        sameSite: process.env.SESSION_SECURE_COOKIE ? process.env.SESSION_SECURE_COOKIE != "false" : true,
+        sameSite: 'strict',
         maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
     }
 }));
