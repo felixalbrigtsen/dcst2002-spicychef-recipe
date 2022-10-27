@@ -11,6 +11,7 @@ client_build:
     - cd client/
     - npm prune
     - npm ci
+    - echo "$CI_CLIENT_ENV" > .env
     - npm run build
   cache:
     key: ${CI_COMMIT_REF_NAME}
