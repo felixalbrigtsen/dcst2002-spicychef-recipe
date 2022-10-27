@@ -68,10 +68,7 @@ authRouter.get('/logout', (req, res) => {
 });
 
 authRouter.get('/profile', (req, res) => {
-  if (req.session.user) {
-    return res.json(req.session.user);
-  }
-  res.status(403).send('Not logged in');
+  res.json(req.session.user);
 });
 
 
