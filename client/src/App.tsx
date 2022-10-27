@@ -9,6 +9,7 @@ import userService from './services/user-service';
 import type { User } from './models/User';
 
 import NavBar from './components/NavBar';
+import Alerts from './components/Alerts';
 
 import Home from './pages/Frontpage';
 import SearchPage from './pages/SearchPage';
@@ -26,6 +27,7 @@ const globalState = {
     globalState.user = user;
   },
 };
+
 export const globalStateContext = React.createContext(globalState);
 
 function App() {
@@ -39,6 +41,7 @@ function App() {
       .catch((error) => {
         console.log(error);
       });
+
   }, [setUser]);
 
   return (
