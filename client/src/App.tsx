@@ -5,11 +5,9 @@ import {
   Routes 
 } from 'react-router-dom';
 
-import userService from './services/user-service';
-import type { User } from './models/User';
-
 import NavBar from './components/NavBar';
-import { Alerts, useAlert } from './components/Alerts';
+import { Alerts } from './components/Alerts';
+import { useLogin } from './hooks/Login';
 
 import Home from './pages/Frontpage';
 import SearchPage from './pages/SearchPage';
@@ -21,38 +19,16 @@ import ShoppingCartPage from './pages/ShoppingCartPage';
 import LikePage from './pages/LikePage';
 // import Footer from './components/Footer';
 
-const globalState = {
-  user: {} as User,
-  setUser: (user: User) => {
-    globalState.user = user;
-  },
-};
-
-export const globalStateContext = React.createContext(globalState);
 
 function App() {
-  const setUser = React.useContext(globalStateContext).setUser;
-  const { appendAlert } = useAlert();
-  // Fetch the current user in the active session
+  // Always resume session on page load
+  const { getSessionUser } = useLogin();
   React.useEffect(() => {
-    userService.getSessionUser()
-      .then((user) => {
-        if (user) {
-          setUser(user);
-          console.log('User is logged in as ' + user.email);
-        } else {
-          console.log('No user in session');
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-  }, [setUser]);
+    getSessionUser();
+  }, []);
 
   return (
   <>
-    <globalStateContext.Provider value={globalState}>
     <NavBar />
     <Alerts />
     <Router>
@@ -68,7 +44,6 @@ function App() {
       </Routes>
     </Router>
     {/* <Footer /> */}
-    </globalStateContext.Provider>
   </>
   );
 }
