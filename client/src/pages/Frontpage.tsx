@@ -8,6 +8,7 @@ import {
 
 import recipeService from '../services/recipe-service';
 import { useEffect } from 'react';
+import { useLogin } from '../hooks/Login';
 
 import { Hero, Section, Tile, Heading, Box, Image, Notification, Form, Button, Media, Content } from 'react-bulma-components';
 
@@ -18,7 +19,10 @@ import { mdiCart, mdiBasket, mdiShakerOutline, mdiFoodDrumstick, mdiFoodSteak, m
 import Footer from '../components/Footer';
 import RecipeCard from '../components/RecipeCard';
 
+
 function Home () {
+  const { user } = useLogin();
+
     // // Demo of how to use the recipe service
     // useEffect(() => {
     //     recipeService.getRecipesShort().then((recipes) => {
@@ -45,8 +49,7 @@ function Home () {
                             <Tile size={8} vertical>
                                 <Tile kind="parent">
                                         <Tile kind="child" renderAs={Notification} color="danger">
-                                            {/* Implement if user is logged in */}
-                                            <Heading>Welcome User</Heading>
+                                            <Heading>Welcome, {user.name || 'Guest'}</Heading>
                                             <Heading subtitle>This is the SpicyChef Recipe Book</Heading>
                                             <div className="content" />
                                         </Tile>
