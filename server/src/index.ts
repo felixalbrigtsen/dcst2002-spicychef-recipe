@@ -4,35 +4,19 @@ import morgan from 'morgan';
 import * as path from 'path';
 import router from './routers/recipe-router';
 import session from 'express-session';
-import { enablePassport } from './routers/auth-router';
+import { enablePassport, enableSession } from './routers/auth-router';
 import type { User } from './models/User';
 
 dotenv.config();
 const port = Number(process.env.PORT) || 3000;
 const clientBuildPath = path.join(__dirname, (process.env.CLIENT_BUILD_PATH || '/../../client/public'));
 console.log("Serving client from '" + clientBuildPath + "'");
+console.log("Loaded Google Client ID: " + process.env.GOOGLE_OAUTH_ID);
 
 const app = express();
 app.use(morgan('dev'));
 
-
-declare module 'express-session' {
-  interface SessionData {
-    user: User;
-  }
-}
-
-app.use(session({
-    secret: process.env.SESSION_SECRET || 'UNSAFE_SECRET',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        secure: process.env.SESSION_SECURE_COOKIE ? process.env.SESSION_SECURE_COOKIE != "false" : true,
-        sameSite: 'strict',
-        maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
-    }
-}));
-
+enableSession(app);
 enablePassport(app);
 
 app.listen(port, () => {

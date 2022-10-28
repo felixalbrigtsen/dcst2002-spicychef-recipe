@@ -1,4 +1,5 @@
 import express from 'express';
+import session from 'express-session';
 import userService from '../services/user-service';
 import type { User } from '../models/User';
 
@@ -26,14 +27,31 @@ passport.use(new GoogleStrategy(
   }
 ));
 
+declare module 'express-session' {
+  interface SessionData {
+    user: User;
+  }
+}
+export function enableSession(app: express.Application) {
+  app.use(session({
+    secret: process.env.SESSION_SECRET || 'UNSAFE_SECRET',
+    resave: true,
+    rolling: true,
+    proxy: (process.env.SESSION_SECURE_COOKIE == 'true'),
+    saveUninitialized: false,
+    cookie: {
+      secure: (process.env.SESSION_SECURE_COOKIE == 'true'),
+      sameSite: 'strict',
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+    }
+  }));
+}
+
 //@ts-ignore
-passport.serializeUser(function(user, done) {
-  done(null, user);
-});
+passport.serializeUser(function(user, done) { done(null, user); });
 //@ts-ignore
-passport.deserializeUser(function(user, done) {
-  done(null, user);
-});
+passport.deserializeUser(function(user, done) { done(null, user); });
 
 export function enablePassport(app: express.Application) {
   app.use(passport.initialize());
@@ -52,8 +70,12 @@ authRouter.get('/google/callback',
   passport.authenticate('google', {
     failureRedirect: '/api/auth/google/failure'
   }), (req, res) => {
-    console.log(req.user);
     req.session.user = req.user as User;
+    if (req.session.user.email) {
+      console.log("User logged in: " + req.session.user.email);
+    } else {
+      console.log("Invalid user logged in");
+    }
     res.redirect('/');
   }
 );
@@ -63,6 +85,7 @@ authRouter.get('/google/failure', (req, res) => {
 });
 
 authRouter.get('/logout', (req, res) => {
+  console.log("User logged out: " + req.session.user?.email );
   req.session.user = undefined;
   res.redirect('/');
 });
