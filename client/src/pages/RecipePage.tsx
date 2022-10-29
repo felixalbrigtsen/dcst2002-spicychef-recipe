@@ -27,6 +27,7 @@ function RecipePage() {
     return (
         <>
         <Container>
+        {/* TODO: Shift everything down from the navbar */}
         <Tile kind="ancestor">
           <Tile vertical>
             {/* TODO: Make the recipe page look better */}
@@ -42,6 +43,7 @@ function RecipePage() {
                 <Media.Item>
                 </Media.Item>
                 <Media.Item>
+                  {/* TODO: Implement this in a better way possibly? */}
                   <a href={recipe.videoUrl} target="_blank">
                   <Heading subtitle size={6}>Watch the video</Heading>
                   <Image size={128} alt="64x64" src="https://i.imgur.com/raE8eQy.png" />
@@ -49,6 +51,7 @@ function RecipePage() {
                 </Media.Item>
               </Tile>
               <Tile kind="child" size={8}>
+              {/* TODO: Format this better */}
                 <Heading subtitle size={4}>Instructions</Heading>
                 <Heading subtitle size={6}>{recipe.instructions}</Heading>
               </Tile>
@@ -65,6 +68,7 @@ function RecipePage() {
               }
             </Tile>
             <Tile kind="child">
+              {/* TODO: Link these to tag searches */}
                 {recipe.tags?.map((tag) => (
                   <Button key={tag}>{tag}</Button>
                 ))}
