@@ -58,11 +58,12 @@ function RecipePage() {
             </Tile>
             <Tile kind="parent" renderAs={Notification}>
             {/* TODO: Scale ingredient.amount with servings */}
+            {/* TODO: Import correct quantity */}
             <Tile kind="child">
               <Heading subtitle size={4}>Ingredients</Heading>
               { recipe.ingredients?.map((ingredient) => {
                   return (
-                    <Heading key={ingredient.id} subtitle size={6}>{ingredient.amount} {ingredient.unitId} {ingredient.unitName} {ingredient.ingredientName} </Heading>
+                    <Heading key={ingredient.id} subtitle size={6}> <b>{ingredient.ingredientName}</b> : {ingredient.amount} {ingredient.unitId} {ingredient.unitName} </Heading>
                   )
                 })
               }
