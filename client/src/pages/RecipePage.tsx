@@ -63,7 +63,7 @@ function RecipePage() {
               <Heading subtitle size={4}>Ingredients</Heading>
               { recipe.ingredients?.map((ingredient) => {
                   return (
-                    <Heading key={ingredient.id} subtitle size={6}> <b>{ingredient.ingredientName}</b> : {ingredient.amount} {ingredient.unitId} {ingredient.unitName} </Heading>
+                    <Heading key={ingredient.id} subtitle size={6}> <b>{ingredient.ingredientName}</b> : {ingredient.quantity} {ingredient.unitName} </Heading>
                   )
                 })
               }
