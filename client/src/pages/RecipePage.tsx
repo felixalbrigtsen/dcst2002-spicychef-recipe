@@ -7,7 +7,7 @@ import {
 
 import { useParams } from 'react-router-dom'
 
-import { Container, Image, Media, Tile, Heading, Notification, Button, Form } from 'react-bulma-components'
+import { Container, Image, Media, Tile, Heading, Notification, Button, Form, Box, Hero } from 'react-bulma-components'
 
 import recipeService from '../services/recipe-service';
 import { Recipe } from '../models/Recipe';
@@ -27,49 +27,24 @@ function RecipePage() {
     return (
         <>
         <Container>
-        {/* TODO: Shift everything down from the navbar */}
+        <Hero>
+        <Hero.Body>
         <Tile kind="ancestor">
-          <Tile vertical>
-            {/* TODO: Make the recipe page look better */}
-            <Tile kind="parent" renderAs={Notification}>
-              <Tile kind="child" renderAs={Media} object>
-                <Media.Item renderAs="figure">
-                  <Image size={128} alt="64x64" src={recipe.imageUrl} />
-                </Media.Item>
-                <Media.Item>
-                  <Heading size={4}>{recipe.title}</Heading>
-                  <Heading subtitle size={6}>{recipe.summary}</Heading>
-                </Media.Item>
-                <Media.Item>
-                </Media.Item>
-                <Media.Item>
-                  {/* TODO: Implement this in a better way possibly? */}
-                  <a href={recipe.videoUrl} target="_blank">
-                  <Heading subtitle size={6}>Watch the video</Heading>
-                  <Image size={128} alt="64x64" src="https://i.imgur.com/raE8eQy.png" />
-                  </a>
-                </Media.Item>
+          <Tile size={4} vertical>
+              <Tile kind="parent">
+                <Tile kind="child" renderAs={Notification}>
+                  <Media.Item renderAs="figure">
+                    <Image size={256} src={recipe.imageUrl} />
+                  </Media.Item>
+                  <Media.Item>
+                    <Heading size={4}>{recipe.title}</Heading>
+                    <Heading subtitle size={6}>{recipe.summary}</Heading>
+                  </Media.Item>
+                </Tile>
               </Tile>
-              <Tile kind="child" size={8}>
-              {/* TODO: Format this better */}
-                <Heading subtitle size={4}>Instructions</Heading>
-                <Heading subtitle size={6}>{recipe.instructions}</Heading>
-              </Tile>
-            </Tile>
-            <Tile kind="parent" renderAs={Notification}>
-            {/* TODO: Scale ingredient.amount with servings */}
-            {/* TODO: Import correct quantity */}
-            <Tile kind="child">
-              <Heading subtitle size={4}>Ingredients</Heading>
-              { recipe.ingredients?.map((ingredient) => {
-                  return (
-                    <Heading key={ingredient.id} subtitle size={6}> <b>{ingredient.ingredientName}</b> : {ingredient.quantity} {ingredient.unitName} </Heading>
-                  )
-                })
-              }
-            </Tile>
-            <Tile kind="child">
-              {/* TODO: Link these to tag searches */}
+              <Tile kind="parent">
+              <Tile kind="child" renderAs={Notification}>
+                {/* TODO: Link these to tag searches */}
                 {recipe.tags?.map((tag) => (
                   <Button key={tag}>{tag}</Button>
                 ))}
@@ -82,10 +57,33 @@ function RecipePage() {
                     </Form.Control>
                   </Form.Field>
               </Tile>
+              </Tile>
+              <Tile kind="parent" vertical>
+                <Tile kind="child" renderAs={Notification}>
+                  {/* TODO: Scale ingredient.amount with servings */}
+                <Heading subtitle size={4}>Ingredients</Heading>
+                  { recipe.ingredients?.map((ingredient) => {
+                      return (
+                        <Heading key={ingredient.id} subtitle size={6}> <b>{ingredient.ingredientName}</b> : {ingredient.quantity} {ingredient.unitName} </Heading>
+                      )
+                    })
+                  }
+                </Tile>
+              </Tile>
+            </Tile>
+            <Tile vertical kind="parent">
+              <Tile kind="child" renderAs={Notification}>
+                <Heading subtitle size={4}>Instructions</Heading>
+                <div style={{whiteSpace: "pre-wrap"}}>{recipe.instructions}</div>
+              </Tile>
+              <Tile kind="child" renderAs={Notification}>
+                <Heading subtitle size={4}>Youtube Video</Heading>
+              </Tile>
             </Tile>
           </Tile>
-        </Tile>
-        </Container>
+          </Hero.Body>
+          </Hero>
+          </Container>
         </>
     );
 }
