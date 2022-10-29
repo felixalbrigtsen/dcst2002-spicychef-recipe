@@ -9,25 +9,33 @@ import { useParams } from 'react-router-dom'
 
 import { Card, Container, Image, Media } from 'react-bulma-components'
 
+import recipeService from '../services/recipe-service';
+import { Recipe } from '../models/Recipe';
+
+
 function RecipePage() {
 
-    const { id } = useParams();
-  
+    let [ recipe, setRecipe ] = React.useState<Recipe>();
+
+    let id = Number(useParams().id);
+    React.useEffect(() => {
+        recipeService.getRecipe(id)
+        .then(data => {setRecipe(data)});
+    }, []);
+    
+
     return (
         <>
-        <Container className='has-text-centered'>
-          <Card>
-            <Card.Header>Recipe: {id}</Card.Header>
+        <Container>
+          <Card className='has-text-centered'>
+            <Card.Header>
+            </Card.Header>
             <Card.Content>
-                  {/* @ts-ignore */}
-                  {/* <iframe src="https://www.youtube.com/embed/70vwJy1dQ0c" allowfullscreen></iframe> */}
             </Card.Content>
           </Card>
         </Container>
         </>
     );
-
-    
 }
 
 export default RecipePage;

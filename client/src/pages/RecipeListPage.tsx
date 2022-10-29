@@ -16,9 +16,7 @@ export default function RecipeList() {
 
     React.useEffect(() => {
         recipeService.getRecipesShort()
-        .then(data => {
-            setRecipeList(data);
-        })
+        .then(data => {setRecipeList(data)});
     }, []);
     return (
         <>
