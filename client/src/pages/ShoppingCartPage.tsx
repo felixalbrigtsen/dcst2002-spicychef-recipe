@@ -29,7 +29,7 @@ export default function ShoppingCartPage() {
 
   return (
     <>
-      <Container className='margin-top-2'>
+      <Container className='mt-2'>
         <Tile kind="ancestor">
           <Tile kind="parent" className="is-vertical">
             <Tile kind="child" renderAs={Notification} color="warning" className="has-text-centered is-12">
