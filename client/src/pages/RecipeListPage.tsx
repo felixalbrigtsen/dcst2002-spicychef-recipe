@@ -9,7 +9,7 @@ import RecipeCard from '../components/RecipeCard';
 import recipeService from '../services/recipe-service';
 import { Recipe } from '../models/Recipe';
 
-import { Columns } from 'react-bulma-components';
+import { Columns, Box } from 'react-bulma-components';
 
 export default function RecipeList() {
     let [ recipeList, setRecipeList ] = React.useState<Recipe[]>([]);
@@ -20,9 +20,9 @@ export default function RecipeList() {
     }, []);
     return (
         <>
-          <Columns className="is-multiline">
+          <Columns className="is-multiline is-centered" style={{marginTop: '2rem', marginLeft: 'auto', marginRight: 'auto'}}>
           {recipeList.map((recipe) => (
-            <Columns.Column>
+            <Columns.Column className='is-narrow'>
               <RecipeCard recipe={recipe} />
             </Columns.Column>
           ))}
