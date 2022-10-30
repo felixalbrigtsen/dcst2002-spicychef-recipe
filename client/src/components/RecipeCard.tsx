@@ -18,7 +18,7 @@ function RecipeCard(props: RecipeCardProps) {
         {/* TODO: Fix standard card height */}
             <Card style={{ width: 300, margin: 'auto' }}>
                 <Card.Image size="4by3" src={props.recipe.imageUrl} />
-                <Card.Content>
+                <Card.Content style={{height: 200}}>
                     <Media>
                         <Media.Item>
                             <Heading size={4}>
