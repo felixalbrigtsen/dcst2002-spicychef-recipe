@@ -46,7 +46,10 @@ function RecipeCard(props: RecipeCardProps) {
                     </Card.Footer.Item>
                     <a href={`/recipe/${props.recipe.id}`}>
                         <Card.Footer.Item>
-                            Read more <FaArrowRight />
+                        <span>Read More</span>
+                        <span className="icon">
+                            <FaArrowRight />
+                        </span>
                         </Card.Footer.Item>
                     </a>
                 </Card.Footer>
