@@ -24,6 +24,10 @@ function RecipePage() {
         .then(data => {setRecipe(data)});
     }, []);
 
+    let [ actualServings, setActualServings ] = React.useState<number>(recipe.servings);
+    React.useEffect(() => {
+        setActualServings(recipe.servings);
+    }, [recipe.servings]);
 
     return (
         <>
@@ -52,20 +56,18 @@ function RecipePage() {
                   <Form.Field>
                     <Form.Label>Servings:</Form.Label>
                     <Form.Control>
-                      {/* TODO: Add functionality to servings */}
-                      <Form.Input type="number" placeholder="Servings" defaultValue={2} min={1}
-                      onChange={(event) => console.log(event?.currentTarget.value)} />
+                      <Form.Input type="number" value={actualServings} min={1}
+                      onChange={(event) => {setActualServings(parseInt(event.target.value))}} />
                     </Form.Control>
                   </Form.Field>
               </Tile>
               </Tile>
               <Tile kind="parent" vertical>
                 <Tile kind="child" renderAs={Notification}>
-                  {/* TODO: Scale ingredient.amount with servings */}
                 <Heading subtitle size={4}>Ingredients</Heading>
                   { recipe.ingredients?.map((ingredient) => {
                       return (
-                        <Heading key={ingredient.id} subtitle size={6}> <b>{ingredient.ingredientName}</b> : {ingredient.quantity} {ingredient.unitName} </Heading>
+                        <Heading key={ingredient.id} subtitle size={6}> <b>{ingredient.ingredientName}</b> : {ingredient.quantity * (actualServings/recipe.servings)} {ingredient.unitName} </Heading>
                       )
                     })
                   }
