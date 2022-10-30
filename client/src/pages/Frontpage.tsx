@@ -14,10 +14,11 @@ import { Hero, Section, Tile, Heading, Box, Image, Notification, Form, Button, M
 
 import Icon from '@mdi/react'
 // @ts-ignore
-import { mdiCart, mdiBasket, mdiShakerOutline, mdiFoodDrumstick, mdiFoodSteak, mdiCarrot, mdiMagnify, mdiArrowRight } from '@mdi/js';
-
+import { mdiCart, mdiShakerOutline, mdiFoodDrumstick, mdiFoodSteak, mdiCarrot, mdiMagnify, mdiArrowRight } from '@mdi/js';
 import Footer from '../components/Footer';
 import RecipeCard from '../components/RecipeCard';
+import { Recipe } from '../models/Recipe';
+import { Ingredient } from '../models/Ingredient';
 
 
 function Home () {
@@ -40,6 +41,19 @@ function Home () {
     //     })
     // }, []);
 
+    // choose a random recipe from the list of recipes
+    let [ recipeList, setRecipeList ] = React.useState<Recipe[]>([]);
+    let [ randomRecipe, setRandomRecipe ] = React.useState<Recipe>({id: 0, title: "", summary: "", instructions: "", servings: 0, imageUrl: "", videoUrl: "", created_at: "", ingredients: [], tags: []});
+
+    React.useEffect(() => {
+        recipeService.getRecipesShort()
+        .then(data => {setRecipeList(data)});
+    }, []);
+
+    React.useEffect(() => {
+        let randomRecipe = recipeList[Math.floor(Math.random() * recipeList.length)];
+        setRandomRecipe(randomRecipe);
+    }, [recipeList]);
 
     return (
         <>
@@ -104,17 +118,26 @@ function Home () {
                                     <Tile kind="child" renderAs={Notification} color="success">
                                         <div className="content">
                                             <Heading>Selected Recipe</Heading>
-                                            <Image size={256} alt="256x256" src="https://bulma.io/images/placeholders/256x256.png" />
+                                            <Image size={256} alt="256x256" src={randomRecipe ? randomRecipe.imageUrl : "https://bulma.io/images/placeholders/256x256.png" } />
                                             <Media>
                                                 <Media.Item>
-                                                    <Heading subtitle>Recipe Name</Heading>
+                                                    <Heading subtitle>{randomRecipe ? randomRecipe.title : ""}</Heading>
                                                     <Content>
-                                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec iaculis mauris.
+                                                    {randomRecipe ? randomRecipe.summary : ""}
                                                     </Content>
                                                 </Media.Item>
                                             </Media>
                                             <br />
-                                            <Link to="/recipe">Read More <Icon path={mdiArrowRight} size={0.75} /></Link>
+                                            {randomRecipe ? 
+                                            <Link to={`/recipe/${randomRecipe.id}`} style={{textDecoration: "none"}}>
+                                                <Button color="success" className="is-rounded">
+                                                    <span>Read more</span>
+                                                    <span className="icon">
+                                                        <Icon path={mdiArrowRight} size={1} />
+                                                    </span>
+                                                </Button>
+                                            </Link>
+                                            : ""}
                                         </div>
                                     </Tile>
                                 </Tile>
