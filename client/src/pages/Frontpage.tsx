@@ -74,7 +74,14 @@ function Home () {
                                             <Heading>Recipes</Heading>
                                                 <Form.Field>
                                                     <Form.Label style={{color:"white"}}>
-                                                        <Heading subtitle>Explore Recipes</Heading>
+                                                        <Link to={`/recipes`} style={{textDecoration: "none"}}>
+                                                            <Button color="info" className='is-rounded'>
+                                                            <span><Heading subtitle>Explore Recipes</Heading></span>
+                                                            <span className="icon">
+                                                                <Icon path={mdiArrowRight} size={1} />
+                                                            </span>
+                                                            </Button>
+                                                        </Link>
                                                     </Form.Label>
                                                     <Form.Control className="has-icons-right">
                                                         <Form.Input placeholder="Search for a recipe"/>
@@ -118,7 +125,11 @@ function Home () {
                                     <Tile kind="child" renderAs={Notification} color="success">
                                         <div className="content">
                                             <Heading>Selected Recipe</Heading>
+                                            {randomRecipe ? 
+                                            <Link to={`/recipe/${randomRecipe.id}`} style={{textDecoration: "none"}}>
                                             <Image size={256} alt="256x256" src={randomRecipe ? randomRecipe.imageUrl : "https://bulma.io/images/placeholders/256x256.png" } />
+                                            </Link>
+                                            : <Heading subtitle>There are no images to display</Heading>}
                                             <Media>
                                                 <Media.Item>
                                                     <Heading subtitle>{randomRecipe ? randomRecipe.title : ""}</Heading>
