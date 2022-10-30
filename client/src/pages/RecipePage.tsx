@@ -11,11 +11,12 @@ import { Container, Image, Media, Tile, Heading, Notification, Button, Form, Box
 
 import recipeService from '../services/recipe-service';
 import { Recipe } from '../models/Recipe';
+import { Ingredient } from '../models/Ingredient';
 
 
 function RecipePage() {
 
-    let [ recipe, setRecipe ] = React.useState<Recipe>([]);
+    let [ recipe, setRecipe ] = React.useState<Recipe>({id: 0, title: "", summary: "", instructions: "", servings: 0, imageUrl: "", videoUrl: "", created_at: "", ingredients: [], tags: []});
 
     let id = Number(useParams().id);
     React.useEffect(() => {
@@ -34,7 +35,7 @@ function RecipePage() {
               <Tile kind="parent">
                 <Tile kind="child" renderAs={Notification}>
                   <Media.Item renderAs="figure">
-                    <Image size={256} src={recipe.imageUrl} />
+                    {recipe.imageUrl ? <Image size={4} src={recipe.imageUrl} /> : <Image size={4} src="https://bulma.io/images/placeholders/128x128.png" />}
                   </Media.Item>
                   <Media.Item>
                     <Heading size={4}>{recipe.title}</Heading>
@@ -52,7 +53,7 @@ function RecipePage() {
                     <Form.Label>Servings:</Form.Label>
                     <Form.Control>
                       {/* TODO: Add functionality to servings */}
-                      <Form.Input type="number" placeholder="Servings" defaultValue={recipe.servings} min={1}
+                      <Form.Input type="number" placeholder="Servings" defaultValue={2} min={1}
                       onChange={(event) => console.log(event?.currentTarget.value)} />
                     </Form.Control>
                   </Form.Field>
