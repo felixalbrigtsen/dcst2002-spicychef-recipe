@@ -18,7 +18,7 @@ function RecipeCard(props: RecipeCardProps) {
         {/* TODO: Fix standard card height */}
             <Card style={{ width: 300, margin: 'auto' }}>
                 <Card.Image size="4by3" src={props.recipe.imageUrl} />
-                <Card.Content style={{height: 200}}>
+                <Card.Content style={{minHeight: 250}}>
                     <Media>
                         <Media.Item>
                             <Heading size={4}>
@@ -26,7 +26,12 @@ function RecipeCard(props: RecipeCardProps) {
                             </Heading>
                             <Heading subtitle size={6}>
                                 {props.recipe.tags.map((tag) => (
-                                    <span className="tag is-info">{tag}</span>
+                                    <Button color='dark' renderAs='span' style={{margin: '2px 2px'}} key={tag} onClick={
+                                        () => {
+                                            // search for tag
+                                            console.log(tag);
+                                        }
+                                    }>{tag}</Button>
                                 ))}
                             </Heading>
                         </Media.Item>
