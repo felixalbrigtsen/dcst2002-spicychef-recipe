@@ -52,7 +52,12 @@ function RecipePage() {
               <Tile kind="child" renderAs={Notification}>
                 {/* TODO: Link these to tag searches */}
                 {recipe.tags?.map((tag) => (
-                  <Button key={tag}>{tag}</Button>
+                  <Button key={tag} onClick={
+                    () => {
+                      // search for this tag
+                      console.log(tag)
+                    }
+                  }>{tag}</Button>
                 ))}
                 <Form.Field>
                     <Form.Label>Servings:</Form.Label>
