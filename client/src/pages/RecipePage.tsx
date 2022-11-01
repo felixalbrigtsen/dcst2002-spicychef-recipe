@@ -64,7 +64,7 @@ function RecipePage() {
                 <Columns>
                 <Columns.Column className='is-narrow'>
                 <Button color="danger" onClick={
-                  () => {setActualServings(actualServings - 1)}
+                  () => {actualServings > 1 ? setActualServings(actualServings - 1) : setActualServings(1)}
                 }>
                   <span className="icon">
                     <FaMinus />
