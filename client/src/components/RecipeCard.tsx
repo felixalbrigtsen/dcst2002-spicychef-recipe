@@ -3,6 +3,7 @@ import 'bulma/css/bulma.min.css';
 import { Button, Card, Image, Media, Heading, Content, Icon } from 'react-bulma-components';
 import {useState} from 'react';
 import { FaArrowRight, FaThumbsUp } from 'react-icons/fa';
+import { useLogin } from '../hooks/Login';
 
 import recipeService from '../services/recipe-service';
 import { Recipe } from '../models/Recipe';
@@ -12,6 +13,8 @@ interface RecipeCardProps {
 }
 
 function RecipeCard(props: RecipeCardProps) {
+
+    const { user } = useLogin();
 
     return(
         <>
@@ -42,14 +45,22 @@ function RecipeCard(props: RecipeCardProps) {
                 </Card.Content>
                 <Card.Footer>
                     <Card.Footer.Item>
-                        <Button className="is-rounded" color="primary">
+                    {/* TODO: If person who is logged in has liked this recipe, change the colour of the icon */}
+                    { user.googleId ?
+                        <Button className="is-rounded" color="success" outlined>
                             <Icon>
-                                {/* If person who is logged in has liked this recipe, change the colour o the icon */}
-                                <FaThumbsUp />
+                                 <FaThumbsUp size={18} />
+                            </Icon>
+                        </Button> 
+                        : 
+                        <Button className="is-rounded" color="danger" outlined>
+                            <Icon>
+                                 <FaThumbsUp size={18}/>
                             </Icon>
                         </Button>
+                    }
                     </Card.Footer.Item>
-                    <a href={`/recipe/${props.recipe.id}`}>
+                    <a href={`/recipe/${props.recipe.id}`} className='is-flex is-vcentered'>
                         <Card.Footer.Item>
                         <span>Read More</span>
                         <span className="icon">
