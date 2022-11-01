@@ -71,6 +71,12 @@ function RecipePage() {
                       )
                     })
                   }
+                  <Button renderAs={Notification} onClick={
+                    () => { recipe.ingredients?.forEach((ingredient) => {
+                      // recipeService.addIngredientToShoppingList(ingredient.id)
+                      console.log(ingredient.id)
+                    });}
+                  }>Add All Ingredients to Cart</Button>
                 </Tile>
               </Tile>
             </Tile>
