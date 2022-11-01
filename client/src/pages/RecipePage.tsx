@@ -52,7 +52,7 @@ function RecipePage() {
               <Tile kind="child" renderAs={Notification}>
                 {/* TODO: Link these to tag searches */}
                 {recipe.tags?.map((tag) => (
-                  <Button key={tag} onClick={
+                  <Button key={tag} color='dark' style={{margin: '2px 2px'}} renderAs='span' onClick={
                     () => {
                       // search for this tag
                       console.log(tag)
