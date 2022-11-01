@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `userlike`;
+DROP TABLE IF EXISTS `user_like`;
 DROP TABLE IF EXISTS `cartItem`;
 DROP TABLE IF EXISTS `user`;
 
@@ -13,8 +13,8 @@ CREATE TABLE `user` (
   PRIMARY KEY (`googleId`)
 );
 
-CREATE TABLE `userlike` (
-  `googleId` varchar(11) NOT NULL,
+CREATE TABLE `user_like` (
+  `googleId` varchar(64) NOT NULL,
   `recipeId` int(11) NOT NULL,
 
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,

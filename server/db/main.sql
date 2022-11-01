@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS `userlike`;
+DROP TABLE IF EXISTS `user_like`;
 DROP TABLE IF EXISTS `cartItem`;
 
 DROP TABLE IF EXISTS `recipe_tag`;

@@ -412,6 +412,35 @@ class RecipeService {
       return resolve(recipeId);
     });
   }
+
+  addLike(recipeId: number, userId: number): Promise<number> {
+    return new Promise((resolve, reject) => {
+      pool.query('INSERT INTO user_like (googleId, recipeId) VALUES (?, ?)', [userId, recipeId], (err, results) => {
+        if (err) {
+          return reject(err);
+        }
+        // Resolve id of inserted user_like
+        // TODO: mysql returns some combination of RowDataPacket and OkPacket, fix the ts-ignore
+        // @ts-ignore
+        resolve(results.insertId);
+      });
+    });
+  }
+
+  removeLike(recipeId: number, userId: number): Promise<number> {
+    return new Promise((resolve, reject) => {
+      pool.query('DELETE FROM user_like WHERE googleId = ? AND recipeId = ?', [userId, recipeId], (err, results) => {
+        if (err) {
+          return reject(err);
+        }
+        // Resolve id of inserted user_like
+        // TODO: mysql returns some combination of RowDataPacket and OkPacket, fix the ts-ignore
+        // @ts-ignore
+        resolve(results.insertId);
+      });
+    });
+  }
+
 }
 
 
