@@ -127,7 +127,7 @@ function Home () {
                                             <Heading>Selected Recipe</Heading>
                                             {randomRecipe ? 
                                             <Link to={`/recipe/${randomRecipe.id}`} style={{textDecoration: "none"}}>
-                                            <Image size={256} alt="256x256" src={randomRecipe ? randomRecipe.imageUrl : "https://bulma.io/images/placeholders/256x256.png" } />
+                                            <Image size={256} alt="256x256" src={(randomRecipe && randomRecipe.imageUrl) ? randomRecipe.imageUrl : "https://bulma.io/images/placeholders/256x256.png" } />
                                             </Link>
                                             : <Heading subtitle>There are no images to display</Heading>}
                                             <Media>
