@@ -7,7 +7,8 @@ import {
 
 import { useParams } from 'react-router-dom'
 
-import { Container, Image, Media, Tile, Heading, Notification, Button, Form, Box, Hero } from 'react-bulma-components'
+import { Container, Image, Media, Tile, Heading, Notification, Button, Form, Box, Hero, Columns } from 'react-bulma-components'
+import { FaPlus, FaMinus } from 'react-icons/fa';
 
 import recipeService from '../services/recipe-service';
 import { Recipe } from '../models/Recipe';
@@ -53,13 +54,35 @@ function RecipePage() {
                 {recipe.tags?.map((tag) => (
                   <Button key={tag}>{tag}</Button>
                 ))}
-                  <Form.Field>
+                <Form.Field>
                     <Form.Label>Servings:</Form.Label>
+                <Columns>
+                <Columns.Column className='is-narrow'>
+                <Button color="danger" onClick={
+                  () => {setActualServings(actualServings - 1)}
+                }>
+                  <span className="icon">
+                    <FaMinus />
+                  </span>
+                </Button>
+                </Columns.Column>
+                <Columns.Column>
                     <Form.Control>
                       <Form.Input type="number" value={actualServings} min={1}
                       onChange={(event) => {setActualServings(parseInt(event.target.value))}} />
                     </Form.Control>
-                  </Form.Field>
+                </Columns.Column>
+                <Columns.Column className='is-narrow'>
+                  <Button color="success" onClick={
+                    () => {setActualServings(actualServings + 1)}
+                  }>
+                    <span className="icon">
+                      <FaPlus />
+                    </span>
+                  </Button>
+                </Columns.Column>
+                </Columns>
+                </Form.Field>
               </Tile>
               </Tile>
               <Tile kind="parent" vertical>
@@ -85,8 +108,12 @@ function RecipePage() {
                 <Heading subtitle size={4}>Instructions</Heading>
                 <div style={{whiteSpace: "pre-wrap"}}>{recipe.instructions}</div>
               </Tile>
-              <Tile kind="child" renderAs={Notification}>
+              <Tile kind="child" renderAs={Notification} className="has-text-centered">
                 <Heading subtitle size={4}>Youtube Video</Heading>
+                { recipe.videoUrl ? 
+                  <iframe width="90%" height="70%" src={recipe.videoUrl.replace("watch?v=", "embed/")} allowFullScreen></iframe> :
+                  <Heading subtitle size={6}>No video available</Heading>
+                }
               </Tile>
             </Tile>
           </Tile>
