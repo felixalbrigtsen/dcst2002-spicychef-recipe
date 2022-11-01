@@ -38,7 +38,7 @@ export default function NavBar() {
           <Navbar.Item href="/">Home</Navbar.Item>
           <Navbar.Item href="/search">Search</Navbar.Item>
           <Navbar.Item href="/likes">Likes</Navbar.Item>
-          <Navbar.Item href="/cart">Shopping Cart</Navbar.Item>
+          <Navbar.Item href="/list">Shopping List</Navbar.Item>
           {user.googleId ? 
             <Navbar.Item href='' onClick={logout}>Log out</Navbar.Item>
           :
