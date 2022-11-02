@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Ingredient } from '../models/Ingredient';
 
 /**
  * @module
@@ -7,7 +8,28 @@ import axios from 'axios';
  * This module is a service for the shooping list using recipe.feal.no/api/list
  */
 
-export class ListService {
+class ListService {
+
+  /**
+   * @function
+   * @name addIngredients
+   * @argument {Ingredient[]} Ingredient
+   * @returns {Promise<undefined>}
+   * @description
+   * This function will add ingredients to the list
+   */
+
+  addIngredient(Ingredient: Ingredient[]): Promise<undefined> {
+    return new Promise((resolve, reject) => {
+      axios.post(process.env.REACT_APP_API_URL + '/list', Ingredient)
+        .then((response) => {
+          resolve(response.data);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
 
   /**
    * @function

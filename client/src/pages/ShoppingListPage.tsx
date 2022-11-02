@@ -1,22 +1,15 @@
 import * as React from 'react';
-import { listService } from '../services/list-service';
+import listService from '../services/list-service';
+import { Ingredient } from '../models/Ingredient';
+
 import { MdDeleteForever } from 'react-icons/md';
 import { Box, Button, Form, Container, Heading, Hero, Notification, Table, Tile } from 'react-bulma-components';
 
-interface ShoppingListPageProps {
-    id: number;
-    name: string;
-    quantity: number;
-}
 
 export default function ShoppingListPage() {
-  
-  function handleChange(props: ShoppingListPageProps) {
-    listService.updateIngredient(props.id, props.name, props.quantity);
-  };
 
-  function handleRemove(props: ShoppingListPageProps) {
-    listService.removeIngredient(props);
+  function handleRemove(ingredientId: number) {
+    listService.removeIngredient(ingredientId);
   };
 
   let listItems: Array<any> = [
@@ -45,7 +38,7 @@ export default function ShoppingListPage() {
                 <thead>
                   <tr>
                     <th>Item</th>
-                    <th>Quantity</th>
+                    {/* <th>Quantity</th> */}
                     <th></th>
                   </tr>
                 </thead>
@@ -53,11 +46,15 @@ export default function ShoppingListPage() {
                   {listItems.map((item, index) => (
                     <tr key={index}>
                       <td>{item.name}</td>
+                      {/* <td className='is-narrow'>{item.quantity}</td> */}
                       <td className='is-narrow'>
-                      <Form.Input type='number' value={item.quantity} onChange={(event) => {console.log(event); handleChange}} min="1" />
-                      </td>
-                      <td className='is-narrow'>
-                        <Button color="danger" className="is-rounded is-outlined" onClick={() => {console.log(); handleRemove}}>
+                        <Button 
+                          color="danger" 
+                          className="is-rounded is-outlined"
+                          onClick={() => {handleRemove(item.id)}}
+                          aria-label={`Remove ${item.name} from shopping list`}
+                          aria-required="true"
+                        >
                           <MdDeleteForever />
                         </Button>
                       </td>
