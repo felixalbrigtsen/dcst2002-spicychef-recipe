@@ -17,6 +17,7 @@ import RecipePage from './pages/RecipePage';
 import IngredientPage from './pages/IngredientPage';
 import ShoppingCartPage from './pages/ShoppingCartPage';
 import LikePage from './pages/LikePage';
+import AdminPage from './pages/AdminPage';
 // import Footer from './components/Footer';
 
 
@@ -41,6 +42,7 @@ function App() {
         <Route path="/ingredients" element={<IngredientPage />} />
         <Route path="/cart" element={<ShoppingCartPage />} />
         <Route path="/likes" element={<LikePage />} />
+        <Route path="/admin" element={<AdminPage />} />
       </Routes>
     </Router>
     {/* <Footer /> */}
