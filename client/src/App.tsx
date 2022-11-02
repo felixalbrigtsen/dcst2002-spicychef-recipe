@@ -35,7 +35,8 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/search" element={<SearchPage />} />
+        <Route path="/search/" element={<SearchPage />} />
+        <Route path="/search/:query" element={<SearchPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/recipes" element={<RecipeList />} />
         <Route path="/recipe/:id" element={<RecipePage />} />

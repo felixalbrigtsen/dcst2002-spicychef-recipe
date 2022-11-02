@@ -9,7 +9,7 @@ import type { Ingredient } from '../models/Ingredient';
  * This module is a service for recipes from recipe.feal.no/api
  */
 
-export class RecipeService {
+class RecipeService {
   /**
    * @function
    * @name getRecipesShort
@@ -54,13 +54,13 @@ export class RecipeService {
   /**
    * @function
    * @name search
-   * @argument {string} query
+   * @argument {string | undefined} query
    * @returns {Promise<Recipe[]>}
    * @description
    * This function will fetch recipes where the recipe name contains the query and return them as an array
    */
 
-  search(query : string): Promise<Recipe[]> {
+  search(query : string | undefined): Promise<Recipe[]> {
     return new Promise((resolve, reject) => {
       axios.get(process.env.REACT_APP_API_URL + '/search?q=' + query)
         .then((response) => {
