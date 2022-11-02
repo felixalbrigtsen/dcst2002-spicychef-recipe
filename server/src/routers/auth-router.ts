@@ -98,6 +98,15 @@ authRouter.get('/profile', (req, res) => {
   }
 });
 
+// @ts-ignore
+export async function refreshLogin(req, res) {
+  if (req.session.user.googleId) {
+    let user = await userService.getUser(req.session.user.googleId);
+    req.session.user = user;
+  }
+}
+
+
 
 // @ts-ignore
 export const requireLogin = function(req, res, next) {

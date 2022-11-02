@@ -170,11 +170,7 @@ class RecipeService {
           return reject(err);
         } 
 
-        if (results.length > 0) {
-          resolve(results[0] as Ingredient);
-        } else {
-          reject(undefined);
-        }
+        resolve(results[0] as Ingredient);
       });
     });
   }
@@ -445,6 +441,33 @@ class RecipeService {
     });
   }
 
+  addIngredientToList(ingredientId: number, userId: number): Promise<number> {
+    return new Promise((resolve, reject) => {
+      pool.query('INSERT INTO list_ingredient (googleId, ingredientId) VALUES (?, ?)', [userId, ingredientId], (err, results) => {
+        if (err) {
+          return reject(err);
+        }
+        // Resolve id of inserted user_ingredient
+        // TODO: mysql returns some combination of RowDataPacket and OkPacket, fix the ts-ignore
+        // @ts-ignore
+        resolve(results.insertId);
+      });
+    });
+  }
+
+  removeIngredientFromList(ingredientId: number, userId: number): Promise<number> {
+    return new Promise((resolve, reject) => {
+      pool.query('DELETE FROM list_ingredient WHERE googleId = ? AND ingredientId = ?', [userId, ingredientId], (err, results) => {
+        if (err) {
+          return reject(err);
+        }
+        // Resolve id of inserted user_ingredient
+        // TODO: mysql returns some combination of RowDataPacket and OkPacket, fix the ts-ignore
+        // @ts-ignore
+        resolve(results.insertId);
+      });
+    });
+  }
 }
 
 

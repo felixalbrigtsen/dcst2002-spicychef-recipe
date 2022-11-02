@@ -1,5 +1,5 @@
 DROP TABLE IF EXISTS `user_like`;
-DROP TABLE IF EXISTS `cartItem`;
+DROP TABLE IF EXISTS `list_ingredient`;
 DROP TABLE IF EXISTS `user`;
 
 CREATE TABLE `user` (
@@ -25,10 +25,10 @@ CREATE TABLE `user_like` (
 );
 
 
-CREATE TABLE `cartItem` (
-  `googleId` varchar(11) NOT NULL,
+CREATE TABLE `list_ingredient` (
+  `googleId` varchar(64) NOT NULL,
   `ingredientId` int(11) NOT NULL,
-  `quantity` int(11) NOT NULL,
+  /* `comment` varchar(30) NOT NULL, */
 
   FOREIGN KEY (`googleId`) REFERENCES `user`(`googleId`) ON DELETE CASCADE,
   FOREIGN KEY (`ingredientId`) REFERENCES `ingredient`(`id`) ON DELETE CASCADE,

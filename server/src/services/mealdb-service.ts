@@ -123,6 +123,9 @@ export class MealDBService {
           meal.tags.push(mealObj.strCategory);
         }
 
+        // Only allow unique tags
+        meal.tags = [...new Set(meal.tags)];
+
         // Parse ingredients and their measures
         for (let i = 1; i <= 20; i++) {
           const ingredient = mealObj[`strIngredient${i}`];
