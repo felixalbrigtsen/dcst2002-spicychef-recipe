@@ -1,75 +1,41 @@
 import * as React from 'react';
-import { Heading, Hero, Tile, Tabs, Box} from 'react-bulma-components';
+import { Heading, Hero, Tile, Tabs, Box, Form } from 'react-bulma-components';
 import { 
   BrowserRouter as Router, 
   Route, 
-  Routes 
+  Routes,
+  useParams
 } from 'react-router-dom';
 import { Recipe } from '../models/Recipe';
-
-type Tab = {id: number, name: string, recipes: Recipe[]}
-
-interface TabContent {
-  tabContent: Tab
-}
-
-function SingleTab(props : TabContent) {
-  return (
-    <>
-      <Heading>{props.tabContent.name}</Heading>
-        {props.tabContent.recipes.map((recipe) =>
-        <>
-          <Box>{recipe.title}</Box>
-          <Box>{recipe.summary}</Box>
-        </>
-        )}
-    </>
-  )
-}
-
-interface TabList {
-  tabList: Tab[]
-}
-
-function SearchTabs(props : TabList) {
-  let activeTab : number = 1
-
-  const changeActiveTab = (id: number) => {
-    activeTab = id
-  }
-
-  return (
-    <>
-      {props.tabList.map((tab) => {
-        <Tabs.Tab onClick={() => changeActiveTab(tab.id)} active={activeTab==tab.id}><SingleTab tabContent = {tab}/></Tabs.Tab>
-      })}
-    </>
-  )
-}
+import recipeService from '../services/recipe-service'
 
 export default function SearchPage() {
-  const tabList : Tab[] = [
-    {
-      id: 1,
-      name: "Oppskrifter",
-      recipes: []
-    },
-    {
-      id: 1,
-      name: "Ingredienser",
-      recipes: []
-    }
-  ]
+  let {query} = useParams()
+  const [recipes, setRecipes] = React.useState<Recipe[]>([])
+  const [newQuery, setNewQuery] = React.useState<string>("")
+
+  React.useEffect(() => {
+    setRecipes([])
+    recipeService.search(query).
+    then(res => {
+      console.log(res)
+      setRecipes(res)})
+  }, [])
 
   return (
     <Hero>
       <Hero.Body>
         <Heading>Search</Heading>
-        <Tile>
-          <Tabs>         
-             <SearchTabs tabList = {tabList}/>
-          </Tabs>
-        </Tile>
+          <input type="text" onChange={(event) => setNewQuery(event.currentTarget.value)}></input>
+          <button onClick={() => window.location.href = "/search/" + newQuery}>Search</button>
+          <Tile>      
+            {recipes.map((recipe) => 
+              <div key={recipe.id}>
+                <h4>{recipe.title}</h4>
+                <Box onClick={() => window.location.href = "/recipe/" + recipe.id}>{recipe.summary}</Box>
+              </div>
+            )}
+          </Tile>
       </Hero.Body>
     </Hero>
   );
