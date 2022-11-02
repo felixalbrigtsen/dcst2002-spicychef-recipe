@@ -15,7 +15,7 @@ import LoginPage from './pages/LoginPage';
 import RecipeList from './pages/RecipeListPage';
 import RecipePage from './pages/RecipePage';
 import IngredientPage from './pages/IngredientPage';
-import ShoppingCartPage from './pages/ShoppingCartPage';
+import ShoppingListPage from './pages/ShoppingListPage';
 import LikePage from './pages/LikePage';
 // import Footer from './components/Footer';
 
@@ -39,7 +39,7 @@ function App() {
         <Route path="/recipes" element={<RecipeList />} />
         <Route path="/recipe/:id" element={<RecipePage />} />
         <Route path="/ingredients" element={<IngredientPage />} />
-        <Route path="/cart" element={<ShoppingCartPage />} />
+        <Route path="/list" element={<ShoppingListPage />} />
         <Route path="/likes" element={<LikePage />} />
       </Routes>
     </Router>
