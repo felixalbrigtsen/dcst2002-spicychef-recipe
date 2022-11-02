@@ -5,19 +5,6 @@ import type { Ingredient } from '../models/Ingredient';
 import type { Recipe } from '../models/Recipe';
 import type { Unit } from '../models/Unit';
 
-/*
-Grunnleggende typer har hver sin "enkle" getter.
-  feks: getRecipe(id: number): Promise<Recipe>
-Disse gir BARE den rene dataen som er i databasen (Kun en SELECT, ingen JOINs)
-
-
-For å hente ut data som er relatert til hverandre, har vi "komplekse" getters.
-  feks getRecipeFull(id: number): Promise<Recipe>
-Disse gjør en SELECT, og JOINer på alle tabeller som er relatert til hverandre.
-I eksemplet utgjør det også alle ingrediensene med tilhørende enhet og antall, i tillegg til alle tags.
-
-*/
-
 class RecipeService {
   getRecipes(): Promise<Recipe[]> {
     return new Promise((resolve, reject) => {
