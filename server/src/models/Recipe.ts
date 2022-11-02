@@ -15,4 +15,5 @@ export type Recipe = {
   created_at: string | null;
   ingredients: Ingredient[];
   tags: string[];
+  likes: number;
 };

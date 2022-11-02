@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS `userlike`;
-DROP TABLE IF EXISTS `cartItem`;
+DROP TABLE IF EXISTS `user_like`;
+DROP TABLE IF EXISTS `list_ingredient`;
 
 DROP TABLE IF EXISTS `recipe_tag`;
 DROP TABLE IF EXISTS `recipe_ingredient`;

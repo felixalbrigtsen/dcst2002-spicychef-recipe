@@ -4,7 +4,6 @@ import type { Meal } from '../models/Meal';
 /**
  * @function
  * @name normalizeMeasures
- * @argument {string[]} measures
  * @returns {string[]}
  * @description
  * This function will normalize the measures array, so each measure is in the format "'number' 'unit'"
@@ -17,7 +16,7 @@ import type { Meal } from '../models/Meal';
  * If "measure" is a unit, will return "1 'unit'"
  *
  * @example
- * normalizeMeasures(['Dash', '2Cups', '1 tbsp', '2']) // Returns  ['1 Dash', '2 Cups', '1 tbsp', '2 units']
+ * normalizeMeasures(['Dash', '2Cups', '1 ½ tsp', '1 tbsp', '2']) // Returns  ['1 Dash', '2 Cups', '1.500 tsp', '1 tbsp', '2 units']
  */
 function normalizeMeasures(measures: string[]): string[] {
   return measures.map(measure => {
@@ -80,7 +79,6 @@ export class MealDBService {
     /**
      * @function
      * @name getMeal
-     * @argument {number} id
      * @returns {Promise<Meal>}
      * @description
      * This function will fetch a meal from the MealDB API, and return a normalized Meal object
@@ -122,6 +120,9 @@ export class MealDBService {
         if (mealObj.strCategory) {
           meal.tags.push(mealObj.strCategory);
         }
+
+        // Only allow unique tags
+        meal.tags = [...new Set(meal.tags)];
 
         // Parse ingredients and their measures
         for (let i = 1; i <= 20; i++) {

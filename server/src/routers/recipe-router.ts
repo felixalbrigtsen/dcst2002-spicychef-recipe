@@ -6,14 +6,35 @@ import express from 'express';
 import recipeService from '../services/recipe-service';
 import authRouter from './auth-router';
 
+import { requireLogin, requireAdmin, refreshLogin } from './auth-router';
+
 const router = express.Router();
 export default router;
+
+const ignoredErrors = ['ER_DUP_ENTRY', 'ER_NO_REFERENCED_ROW_2'];
 
 router.use('/auth', authRouter);
 
 router.get('/' , (req, res) => {
   res.send('Hello World! You have reached the Recipe API server. Did you mean to go <a href="/">home</a>?');
 });
+
+function handleServerError(res: any, err: any) {
+  if (!err.code || !ignoredErrors.includes(err.code)) {
+    console.error(err);
+  }
+  
+  if (process.env.DEBUG === 'true') {
+    res.status(500).send(err);
+    return;
+  }
+
+  if (err.code && err.code === 'ER_DUP_ENTRY') {
+    res.status(400).send('Entry already exists');
+    return;
+  }
+  res.status(500).send('Internal server error');
+}
 
 /**
  * @name GET /recipes
@@ -31,7 +52,7 @@ router.get('/recipes' , (req, res) => {
     res.json(recipes);
   })
   .catch((err) => {
-    res.status(500).send(err);
+    handleServerError(res, err);
   });
 });
 
@@ -67,7 +88,7 @@ router.get('/recipe/:id' , (req, res) => {
 
     })
     .catch((err) => {
-      res.status(500).send(err);
+      handleServerError(res, err);
     });
 });
 
@@ -103,9 +124,149 @@ router.get('/search' , (req, res) => {
     res.json(recipes);
   })
   .catch((err) => {
-    res.status(500).send(err);
+    handleServerError(res, err);
+  });
+});
+
+/**
+ * @name POST /like:recipeId
+ * @function
+ * @memberof module:recipe-router
+ * @param {number} recipeId - The ID of the recipe to like
+ *
+ * @requires {User} req.user - The user who is liking the recipe
+ * @description Adds a like to the recipe with the given ID, with the user who is logged in
+ *
+ * @throws {Error} 400 If the recipe ID is not a number
+ * @throws {Error} 404 If the recipe with the given ID does not exist
+ * @throws {Error} 500 If there is a database error
+ */
+router.post('/likes/:recipeId', requireLogin , async (req, res) => {
+  let recipeId = parseInt(req.params.recipeId);
+  if (isNaN(recipeId)) {
+    res.status(400).send('Bad request');
+    return;
+  }
+
+  let userId = req.session.user!.googleId;
+
+  const recipe = await recipeService.getRecipeFull(recipeId);
+  if (!recipe) {
+    return res.status(404).send('Recipe not found');
+  }
+
+  recipeService.addLike(recipeId, userId).then(async (insertedId) => {
+    await refreshLogin(req, res);
+    res.send("OK");
+  })
+  .catch((err) => {
+    handleServerError(res, err);
+  });
+});
+
+/**
+ * @name DELETE /like:recipeId
+ * @function
+ * @memberof module:recipe-router
+ * @param {number} recipeId - The ID of the recipe to like
+ *
+ * @requires {User} req.user - The user who is unliking the recipe
+ * @description Removes a like from the recipe with the given ID, with the user who is logged in
+ *
+ * @throws {Error} 400 If the recipe ID is not a number
+ * @throws {Error} 404 If the recipe with the given ID does not exist
+ * @throws {Error} 500 If there is a database error
+ */
+router.delete('/likes/:recipeId', requireLogin , async (req, res) => {
+  let recipeId = parseInt(req.params.recipeId);
+  if (isNaN(recipeId)) {
+    res.status(400).send('Bad request');
+    return;
+  }
+  let userId = req.session.user!.googleId;
+
+  const recipe = await recipeService.getRecipeFull(recipeId);
+  if (!recipe) {
+    return res.status(404).send('Recipe not found');
+  }
+
+  recipeService.removeLike(recipeId, userId).then(async (insertedId) => {
+    await refreshLogin(req, res);
+    res.send("OK");
+  })
+  .catch((err) => {
+    handleServerError(res, err);
   });
 });
 
 
+/**
+ * @name POST /list/:ingredientId
+ * @function
+ * @memberof module:recipe-router
+ * @param {number} ingredientId - The ID of the ingredient to add to the shopping list
+ *
+ * @requires {User} req.user - The user who is liking the recipe
+ * @description Adds an ingredient to the shopping list of the user who is logged in
+ *
+ * @throws {Error} 400 If the ingredient ID is not a number
+ * @throws {Error} 404 If the ingredient with the given ID does not exist
+ * @throws {Error} 500 If there is a database error
+ */
+router.post('/list/:ingredientId', requireLogin , async (req, res) => {
+  let ingredientId = parseInt(req.params.ingredientId);
+  if (isNaN(ingredientId)) {
+    res.status(400).send('Bad request');
+    return;
+  }
 
+  let userId = req.session.user!.googleId;
+
+  const ingredient = await recipeService.getIngredient(ingredientId);
+  if (!ingredient) {
+    return res.status(404).send('Ingredient not found');
+  }
+
+  recipeService.addIngredientToList(ingredientId, userId).then(async (insertedId) => {
+    await refreshLogin(req, res);
+    res.send("OK");
+  })
+  .catch((err) => {
+    handleServerError(res, err);
+  });
+});
+
+/**
+ * @name DELETE /list/:ingredientId
+ * @function
+ * @memberof module:recipe-router
+ * @param {number} ingredientId - The ID of the ingredient to remove from the shopping list
+ *
+ * @requires {User} req.user - The user who is unliking the recipe
+ * @description Removes an ingredient from the shopping list of the user who is logged in
+ *
+ * @throws {Error} 400 If the ingredient ID is not a number
+ * @throws {Error} 404 If the ingredient with the given ID does not exist
+ * @throws {Error} 500 If there is a database error
+ */
+router.delete('/list/:ingredientId', requireLogin , async (req, res) => {
+  let ingredientId = parseInt(req.params.ingredientId);
+  if (isNaN(ingredientId)) {
+    res.status(400).send('Bad request');
+    return;
+  }
+  let userId = req.session.user!.googleId;
+
+  const ingredient = await recipeService.getIngredient(ingredientId);
+  if (!ingredient) {
+    return res.status(404).send('Ingredient not found');
+  }
+
+  recipeService.removeIngredientFromList(ingredientId, userId).then(async (insertedId) => {
+    await refreshLogin(req, res);
+    res.send("OK");
+  })
+  .catch((err) => {
+    handleServerError(res, err);
+  });
+});
