@@ -44,6 +44,7 @@ function Home () {
     // choose a random recipe from the list of recipes
     let [ recipeList, setRecipeList ] = React.useState<Recipe[]>([]);
     let [ randomRecipe, setRandomRecipe ] = React.useState<Recipe>({id: 0, title: "", summary: "", instructions: "", servings: 0, imageUrl: "", videoUrl: "", created_at: "", ingredients: [], tags: []});
+    let [ query, setQuery ] = React.useState<string>("")
 
     React.useEffect(() => {
         recipeService.getRecipesShort()
@@ -84,10 +85,11 @@ function Home () {
                                                         </Link>
                                                     </Form.Label>
                                                     <Form.Control className="has-icons-right">
-                                                        <Form.Input placeholder="Search for a recipe"/>
+                                                        <Form.Input placeholder="Search for a recipe" onChange={(event) => setQuery(event.currentTarget.value)}/>
                                                             <span className="icon is-small is-right">
                                                                 <Icon path={mdiMagnify} size={1}/> 
                                                             </span>
+                                                        <Button onClick={() => window.location.href = "/search/" + query} renderAs={Notification} color="primary" className='is-rounded'>Search</Button>
                                                     </Form.Control>
                                                 </Form.Field>
                                         </Tile>
