@@ -18,30 +18,33 @@ I eksemplet utgjør det også alle ingrediensene med tilhørende enhet og antall
 
 */
 
-/*
-TODO:
-  - Add likes to recipe-getters
-*/
-
 class RecipeService {
   getRecipes(): Promise<Recipe[]> {
     return new Promise((resolve, reject) => {
-      pool.query('SELECT * FROM recipe', (err, results: RowDataPacket[]) => {
+      pool.query('SELECT * FROM recipe', async (err, results: RowDataPacket[]) => {
         if (err) {
           reject(err);
         } else {
-          resolve(results as Recipe[]);
+          let recipes = results as Recipe[];
+          resolve(recipes);
         }
       });
     });
   }
 
-  getRecipesShort(): Promise<{id: number; title: string; summary: string; imageUrl: string;}[]> {
+  getRecipesShort(): Promise<{id: number; title: string; summary: string; imageUrl: string; tags: string[]; likes: number}[]> {
     return new Promise((resolve, reject) => {
-      pool.query('SELECT `id`,`title`,`summary`, `imageUrl` FROM recipe', (err, results: {id: number; title: string; summary: string; imageUrl: string;}[]) => {
+      pool.query(`SELECT recipe.id, recipe.title, recipe.summary, recipe.imageUrl, likes.likes
+                  FROM recipe 
+                  LEFT JOIN ( 
+                            SELECT recipeId, COUNT(*) AS likes FROM user_like GROUP BY recipeId
+                      ) likes 
+                  ON recipe.id = likes.recipeId`, (err, results: {id: number; title: string; summary: string; imageUrl: string; likes: number}[]) => {
         if (err) {
           reject(err);
         } 
+
+        console.log(results);
 
         const recipes = results.map(async (recipe) => {
           return {
@@ -49,6 +52,7 @@ class RecipeService {
             title: recipe.title,
             summary: recipe.summary,
             imageUrl: recipe.imageUrl,
+            likes: recipe.likes,
             tags: await this.getTagsInRecipe(recipe.id),
           };
         });
@@ -60,7 +64,7 @@ class RecipeService {
 
   getRecipe(id: number): Promise<Recipe> {
     return new Promise((resolve, reject) => {
-      pool.query('SELECT * FROM recipe WHERE id = ?', [id], (err, results: RowDataPacket[]) => {
+      pool.query('SELECT * FROM recipe LEFT JOIN ( SELECT recipeId, COUNT(*) as likes FROM user_like GROUP BY recipeId) AS likes ON likes.recipeId = recipe.id WHERE recipe.id = ?', [id], (err, results: RowDataPacket[]) => {
         if (err) {
           return reject(err);
         }

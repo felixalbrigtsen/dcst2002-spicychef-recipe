@@ -6,7 +6,7 @@ export class UserService {
   getUser(googleId: number): Promise<User> {
     return new Promise((resolve, reject) => {
       pool.query(
-        'SELECT * FROM user WHERE googleId = ?',
+        'SELECT * FROM user LEFT JOIN (SELECT googleId, COUNT(*) AS likes FROM user_like GROUP BY googleId) AS likes ON user.googleId = likes.googleId WHERE user.googleId = ?',
         [googleId],
         (err, rows: RowDataPacket[]) => {
           if (err) {
