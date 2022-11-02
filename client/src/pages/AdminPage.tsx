@@ -10,6 +10,7 @@ import recipeService from '../services/recipe-service';
 import { useEffect } from 'react';
 import { useLogin } from '../hooks/Login';
 import { Recipe } from '../models/Recipe';
+import ScrollButton from '../components/ScrollUp';
 
 import { Table, Container, Heading, Tile, Box, Notification, Button } from 'react-bulma-components';
 import { MdDeleteForever, MdEdit, MdRemoveRedEye, MdAddCircle } from 'react-icons/md';
@@ -34,12 +35,14 @@ function AdminView() {
               <Heading> Recipe Overview  </Heading> 
             </Tile>
 
-            <Button color="success" style={{}}>
+            <Container style={{width: '80%'}} className='has-text-centered'>
+            <Button color="success" style={{width: '80%'}}>
                 <span>Create New</span>
                 <span className="icon">
                     <MdAddCircle />
                 </span>
             </Button>
+            </Container>
 
             <br />
             {/* Add search */}
@@ -54,7 +57,7 @@ function AdminView() {
                   </tr>
                 </thead>
                 <tbody>
-                  {recipeList.map((item, index) => (
+                {recipeList.map((item, index) => (
                     <tr key={index}>
                       <td>
                         <Link to={`/recipe/${item.id}`} style={{textDecoration: 'none', color: 'dark'}}>{item.title}</Link>
@@ -85,7 +88,9 @@ function AdminView() {
             </Box>
           </Tile>
         </Tile>
+        <ScrollButton />
       </Container>
+      
     </>
     )
 }
