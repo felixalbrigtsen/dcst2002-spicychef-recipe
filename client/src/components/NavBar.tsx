@@ -6,6 +6,7 @@ import { useLogin } from '../hooks/Login';
 
 import Icon from '@mdi/react';
 import { mdiAccountCircle, mdiLogout, mdiListBox, mdiHome, mdiMagnify, mdiThumbsUpDown } from '@mdi/js';
+import { MdAdminPanelSettings } from 'react-icons/md';
 
 export default function NavBar() {
   const [isActive, setIsActive] = useState(false);
@@ -62,7 +63,16 @@ export default function NavBar() {
             <span className="icon-text">
               <Icon path={mdiListBox} size={1} />
               <span>Shopping List</span>
-            </span></Navbar.Item>
+            </span>
+          </Navbar.Item>
+          { user.isadmin ? 
+          <Navbar.Item href="/admin">
+            <span className="icon-text">
+              <span className='icon'><MdAdminPanelSettings size={64}/></span>
+              <span>Admin</span>
+            </span>
+          </Navbar.Item> : null
+          }
           </Navbar.Container>
           <Navbar.Container align='right'>
             { user.googleId ? 
