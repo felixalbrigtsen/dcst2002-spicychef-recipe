@@ -13,15 +13,15 @@ class ListService {
   /**
    * @function
    * @name addIngredients
-   * @argument {Ingredient[]} Ingredient
+   * @argument {number} id
    * @returns {Promise<undefined>}
    * @description
    * This function will add ingredients to the list
    */
 
-  addIngredient(Ingredient: Ingredient[]): Promise<undefined> {
+  addIngredient(id: number): Promise<undefined> {
     return new Promise((resolve, reject) => {
-      axios.post(process.env.REACT_APP_API_URL + '/list', Ingredient)
+      axios.post(process.env.REACT_APP_API_URL + '/list/' + id)
         .then((response) => {
           resolve(response.data);
         })
@@ -42,7 +42,7 @@ class ListService {
 
   removeIngredient(id: number): Promise<undefined> {
     return new Promise((resolve, reject) => {
-      axios.delete(process.env.REACT_APP_API_URL + '/api/list/' + id)
+      axios.delete(process.env.REACT_APP_API_URL + '/list/' + id)
         .then((response) => {
           resolve(response.data);
         })
