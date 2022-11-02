@@ -14,7 +14,7 @@ import { Hero, Section, Tile, Heading, Box, Image, Notification, Form, Button, M
 
 import Icon from '@mdi/react'
 // @ts-ignore
-import { mdiCart, mdiShakerOutline, mdiFoodDrumstick, mdiFoodSteak, mdiCarrot, mdiMagnify, mdiArrowRight } from '@mdi/js';
+import { mdiListBox, mdiShakerOutline, mdiFoodDrumstick, mdiFoodSteak, mdiCarrot, mdiMagnify, mdiArrowRight } from '@mdi/js';
 import Footer from '../components/Footer';
 import RecipeCard from '../components/RecipeCard';
 import { Recipe } from '../models/Recipe';
@@ -110,11 +110,11 @@ function Home () {
                                             </Content>
                                         </Tile>
                                         <Tile kind="child" renderAs={Notification} color="warning">
-                                            <Heading>Shopping Cart</Heading>
-                                            <Heading subtitle>Check out Your Shopping Cart</Heading>
-                                            <Link to="/cart">
+                                            <Heading>Shopping List</Heading>
+                                            <Heading subtitle>Check out Your Shopping List</Heading>
+                                            <Link to="/list">
                                             <Button renderAs={Notification} color="warning" className="is-rounded">
-                                                <Icon path={mdiCart} size={1} />
+                                                <Icon path={mdiListBox} size={1} />
                                             </Button>
                                             </Link>                                            
                                         </Tile>
