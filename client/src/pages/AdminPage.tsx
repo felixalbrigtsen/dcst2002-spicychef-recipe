@@ -12,7 +12,7 @@ import { useLogin } from '../hooks/Login';
 import { Recipe } from '../models/Recipe';
 
 import { Table, Container, Heading, Tile, Box, Notification, Button } from 'react-bulma-components';
-import { MdDeleteForever, MdEdit, MdRemoveRedEye } from 'react-icons/md';
+import { MdDeleteForever, MdEdit, MdRemoveRedEye, MdAddCircle } from 'react-icons/md';
 
 function AdminView() {
 
@@ -30,9 +30,19 @@ function AdminView() {
         <Container className='mt-2'>
         <Tile kind="ancestor">
           <Tile kind="parent" className="is-vertical">
-            <Tile kind="child" renderAs={Notification} color="Dark" className="has-text-centered is-12">
-              <Heading> Admin View </Heading> 
+            <Tile kind="child" renderAs={Notification} className="has-text-centered is-12">
+              <Heading> Recipe Overview  </Heading> 
             </Tile>
+
+            <Button color="success" style={{}}>
+                <span>Create New</span>
+                <span className="icon">
+                    <MdAddCircle />
+                </span>
+            </Button>
+
+            <br />
+            {/* Add search */}
             <Box>
               <Table className='is-fullwidth is-hoverable is-striped'>
                 <thead>
@@ -58,7 +68,7 @@ function AdminView() {
                       </td>
                       <td className='is-narrow has-text-centered'>
                         <Link to={`/recipe/${item.id}/edit`}>
-                        <Button color="primary" className="is-rounded is-outlined">
+                        <Button color="success" className="is-rounded is-outlined">
                           <MdEdit />
                         </Button>
                         </Link>
