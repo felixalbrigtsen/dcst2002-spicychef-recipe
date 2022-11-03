@@ -18,6 +18,8 @@ import IngredientPage from './pages/IngredientPage';
 import ShoppingListPage from './pages/ShoppingListPage';
 import LikePage from './pages/LikePage';
 import AdminPage from './pages/AdminPage';
+import CreateRecipe from './pages/CreateRecipePage';
+import EditRecipe from './pages/EditRecipePage';
 // import Footer from './components/Footer';
 
 
@@ -44,6 +46,8 @@ function App() {
         <Route path="/list" element={<ShoppingListPage />} />
         <Route path="/likes" element={<LikePage />} />
         <Route path="/admin" element={<AdminPage />} />
+        <Route path="/create" element={<CreateRecipe />} />
+        <Route path="/edit/:id" element={<EditRecipe />} />
       </Routes>
     </Router>
     {/* <Footer /> */}
