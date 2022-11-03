@@ -28,7 +28,13 @@ export default function SearchPage() {
     <Hero>
       <Hero.Body>
         <Heading>Search</Heading>
-          <Form.Input type="text" onChange={(event) => setNewQuery(event.currentTarget.value)} /> 
+          <Form.Input type="text" onChange={(event) => setNewQuery(event.currentTarget.value)} 
+          onKeyDown={
+            (event) => {
+                if (event.key === "Enter") {
+                    window.location.href = `/search/${newQuery}`
+                }
+              }}/> 
           <Button onClick={() => window.location.href = "/search/" + newQuery}>Search</Button>
           <Tile>      
             {recipes.map((recipe) => 
