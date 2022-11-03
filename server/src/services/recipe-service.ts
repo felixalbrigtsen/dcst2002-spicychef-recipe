@@ -108,11 +108,21 @@ class RecipeService {
 
   getRecipesLikeTitle(title: string): Promise<Recipe[]> {
     return new Promise((resolve, reject) => {
-      pool.query('SELECT * FROM recipe WHERE title LIKE ?', [`%${title}%`], (err, results: RowDataPacket[]) => {
+      pool.query('SELECT id FROM recipe WHERE title LIKE ?', [`%${title}%`], (err, results: RowDataPacket[]) => {
         if (err) {
           return reject(err);
         }
-        resolve(results as Recipe[]);
+        if (results.length === 0) {
+          return resolve([]);
+        }
+
+        const recipeIds = results.map((recipe) => recipe.id);
+        this.getRecipesShort(recipeIds)
+        .then((recipes) => {
+          resolve(recipes);
+        }).catch((err) => {
+          reject(err);
+        });
       });
     });
   }
