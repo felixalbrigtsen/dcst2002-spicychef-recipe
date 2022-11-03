@@ -1,13 +1,15 @@
 import * as React from 'react';
-import { Heading, Hero, Tile, Tabs, Box, Form } from 'react-bulma-components';
+import { Heading, Hero, Tile, Tabs, Box, Form, Button, Columns } from 'react-bulma-components';
 import { 
   BrowserRouter as Router, 
   Route, 
   Routes,
+  Link, 
   useParams
 } from 'react-router-dom';
 import { Recipe } from '../models/Recipe';
 import recipeService from '../services/recipe-service'
+import RecipeCard from '../components/RecipeCard';
 
 export default function SearchPage() {
   let {query} = useParams()
@@ -26,13 +28,13 @@ export default function SearchPage() {
     <Hero>
       <Hero.Body>
         <Heading>Search</Heading>
-          <input type="text" onChange={(event) => setNewQuery(event.currentTarget.value)}></input>
-          <button onClick={() => window.location.href = "/search/" + newQuery}>Search</button>
+          <Form.Input type="text" onChange={(event) => setNewQuery(event.currentTarget.value)} /> 
+          <Button onClick={() => window.location.href = "/search/" + newQuery}>Search</Button>
           <Tile>      
             {recipes.map((recipe) => 
               <div key={recipe.id}>
-                <h4>{recipe.title}</h4>
-                <Box onClick={() => window.location.href = "/recipe/" + recipe.id}>{recipe.summary}</Box>
+                {/* TODO : Add RecipeCard here when functional in backend */}
+                <Link to={"/recipe/" + recipe.id}>{recipe.title}</Link>
               </div>
             )}
           </Tile>
