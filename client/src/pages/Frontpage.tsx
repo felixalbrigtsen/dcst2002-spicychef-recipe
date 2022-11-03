@@ -10,7 +10,7 @@ import recipeService from '../services/recipe-service';
 import { useEffect } from 'react';
 import { useLogin } from '../hooks/Login';
 
-import { Hero, Section, Tile, Heading, Box, Image, Notification, Form, Button, Media, Content } from 'react-bulma-components';
+import { Hero, Section, Tile, Heading, Box, Image, Notification, Form, Button, Media, Content, Columns } from 'react-bulma-components';
 
 import Icon from '@mdi/react'
 // @ts-ignore
@@ -84,13 +84,25 @@ function Home () {
                                                             </Button>
                                                         </Link>
                                                     </Form.Label>
-                                                    <Form.Control className="has-icons-right">
-                                                        <Form.Input placeholder="Search for a recipe" onChange={(event) => setQuery(event.currentTarget.value)}/>
+                                                        <Columns>
+                                                            <Columns.Column>
+                                                            <Form.Control className="has-icons-right">
+                                                            <Form.Input placeholder="Search for a recipe" onChange={(event) => setQuery(event.currentTarget.value)} onKeyDown={
+                                                            (event) => {
+                                                                if (event.key === "Enter") {
+                                                                    window.location.href = `/search/${query}`
+                                                                }
+                                                            }
+                                                            }/>
                                                             <span className="icon is-small is-right">
                                                                 <Icon path={mdiMagnify} size={1}/> 
                                                             </span>
-                                                        <Button onClick={() => window.location.href = "/search/" + query} renderAs={Notification} color="primary" className='is-rounded'>Search</Button>
-                                                    </Form.Control>
+                                                            </Form.Control>
+                                                            </Columns.Column>
+                                                            <Columns.Column className='is-one-quarter'>
+                                                            <Button size='small'onClick={() => window.location.href = "/search/" + query} renderAs={Notification} color="info" style={{fontSize: '0.75rem'}}>Search</Button>
+                                                            </Columns.Column>
+                                                        </Columns>
                                                 </Form.Field>
                                         </Tile>
                                     </Tile>
