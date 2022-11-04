@@ -28,6 +28,7 @@ export default function SearchPage() {
     <Hero>
       <Hero.Body>
         <Heading>Search</Heading>
+        <Form.Field>
           <Form.Input type="text" onChange={(event) => setNewQuery(event.currentTarget.value)} 
           onKeyDown={
             (event) => {
@@ -36,14 +37,14 @@ export default function SearchPage() {
                 }
               }}/> 
           <Button onClick={() => window.location.href = "/search/" + newQuery}>Search</Button>
-          <Tile>      
+          </Form.Field>
+          <Columns>      
             {recipes.map((recipe) => 
-              <div key={recipe.id}>
-                {/* TODO : Add RecipeCard here when functional in backend */}
-                <Link to={"/recipe/" + recipe.id}>{recipe.title}</Link>
-              </div>
+              <Columns.Column key={recipe.id} className="is-one-quarter">
+                <RecipeCard recipe={recipe} />
+              </Columns.Column>
             )}
-          </Tile>
+          </Columns>
       </Hero.Body>
     </Hero>
   );
