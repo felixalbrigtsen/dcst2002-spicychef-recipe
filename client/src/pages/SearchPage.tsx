@@ -27,8 +27,10 @@ export default function SearchPage() {
   return (
     <Hero>
       <Hero.Body>
-        <Heading>Search</Heading>
-        <Form.Field>
+        <Tile kind="ancestor">
+          <Tile kind="parent" vertical size={2}>
+          <Heading>Search</Heading>
+          <Form.Field>
           <Form.Input type="text" onChange={(event) => setNewQuery(event.currentTarget.value)} 
           onKeyDown={
             (event) => {
@@ -36,15 +38,23 @@ export default function SearchPage() {
                     window.location.href = `/search/${newQuery}`
                 }
               }}/> 
-          <Button onClick={() => window.location.href = "/search/" + newQuery}>Search</Button>
           </Form.Field>
+          {/* TODO: Add a "Add to search" for ingredients and display them below here */}
+          {/* TODO: Predictive completion for ingredients or recipes? At least list out Ingredients below when you search for them */}
+          {/* TODO: Make the search stay, unless you clicked one of the options, if we do that */}
+          {/* Perhaps make a place where you can select tags */}
+          <Button onClick={() => window.location.href = "/search/" + newQuery}>Search</Button>
+          </Tile>
+          <Tile kind="parent">
           <Columns>      
             {recipes.map((recipe) => 
-              <Columns.Column key={recipe.id} className="is-one-quarter">
+              <Columns.Column key={recipe.id} className='is-narrow'>
                 <RecipeCard recipe={recipe} />
               </Columns.Column>
             )}
           </Columns>
+          </Tile>
+        </Tile>
       </Hero.Body>
     </Hero>
   );
