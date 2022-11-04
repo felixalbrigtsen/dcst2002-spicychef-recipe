@@ -5,21 +5,49 @@ import type { User } from '../models/User';
 export class UserService {
   getUser(googleId: number): Promise<User> {
     return new Promise((resolve, reject) => {
-      pool.query(
-        'SELECT * FROM user WHERE googleId = ?',
-        [googleId],
-        (err, rows: RowDataPacket[]) => {
+      pool.query(`SELECT * FROM user WHERE user.googleId = ?`, [googleId],
+        async (err, rows: RowDataPacket[]) => {
           if (err) {
             return reject(err);
           }
           const user = rows[0] as User;
 
           if (user) {
+            user.isadmin = user.isadmin;
+            user.likes = await this.getLikes(googleId);
+            user.shoppingList = await this.getShoppingList(googleId);
             return resolve(user);
           }
 
           reject(new Error('User not found'));
         });
+    });
+  }
+
+  getLikes(googleId: number): Promise<number[]> {
+    return new Promise((resolve, reject) => {
+      pool.query(
+        'SELECT * FROM user_like WHERE googleId = ?',
+        [googleId],
+        (err, rows: RowDataPacket[]) => {
+          if (err) {
+            return reject(err);
+          }
+
+          resolve(rows.map((row) => row.recipeId));
+        });
+    });
+  }
+
+  getShoppingList(googleId: number): Promise<number[]> {
+    return new Promise((resolve, reject) => {
+      pool.query(`SELECT * FROM list_ingredient WHERE googleId = ?`, [googleId], (err, rows: RowDataPacket[]) => {
+        if (err) {
+          return reject(err);
+        }
+
+        resolve(rows.map((row) => row.ingredientId));
+      });
     });
   }
 
@@ -49,8 +77,8 @@ export class UserService {
               name: profile.displayName,
               email: profile.emails[0].value,
               picture: profile.photos[0].value,
-              isadmin: false
-            };
+              isadmin: false,
+            } as User;
             
             this.createUser(newUser)
               .then(user => resolve(user))

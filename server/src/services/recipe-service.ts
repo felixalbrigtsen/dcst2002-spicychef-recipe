@@ -5,43 +5,34 @@ import type { Ingredient } from '../models/Ingredient';
 import type { Recipe } from '../models/Recipe';
 import type { Unit } from '../models/Unit';
 
-/*
-Grunnleggende typer har hver sin "enkle" getter.
-  feks: getRecipe(id: number): Promise<Recipe>
-Disse gir BARE den rene dataen som er i databasen (Kun en SELECT, ingen JOINs)
-
-
-For å hente ut data som er relatert til hverandre, har vi "komplekse" getters.
-  feks getRecipeFull(id: number): Promise<Recipe>
-Disse gjør en SELECT, og JOINer på alle tabeller som er relatert til hverandre.
-I eksemplet utgjør det også alle ingrediensene med tilhørende enhet og antall, i tillegg til alle tags.
-
-*/
-
-/*
-TODO:
-  - Add likes to recipe-getters
-*/
-
 class RecipeService {
   getRecipes(): Promise<Recipe[]> {
     return new Promise((resolve, reject) => {
-      pool.query('SELECT * FROM recipe', (err, results: RowDataPacket[]) => {
+      pool.query('SELECT * FROM recipe', async (err, results: RowDataPacket[]) => {
         if (err) {
-          reject(err);
-        } else {
-          resolve(results as Recipe[]);
+          return reject(err);
         }
+        let recipes = results as Recipe[];
+        resolve(recipes);
       });
     });
   }
 
-  getRecipesShort(): Promise<{id: number; title: string; summary: string; imageUrl: string;}[]> {
+  getAllRecipesShort(): Promise<Recipe[]> {
     return new Promise((resolve, reject) => {
-      pool.query('SELECT `id`,`title`,`summary`, `imageUrl` FROM recipe', (err, results: {id: number; title: string; summary: string; imageUrl: string;}[]) => {
+      pool.query(`SELECT recipe.id, recipe.title, recipe.summary, recipe.imageUrl, likes.likes
+                  FROM recipe 
+                  LEFT JOIN ( 
+                            SELECT recipeId, COUNT(*) AS likes FROM user_like GROUP BY recipeId
+                      ) likes 
+                  ON recipe.id = likes.recipeId`, (err, results: {id: number; title: string; summary: string; imageUrl: string; likes: number}[]) => {
         if (err) {
-          reject(err);
+          return reject(err);
         } 
+
+        if (results.length === 0) {
+          return resolve([]);
+        }
 
         const recipes = results.map(async (recipe) => {
           return {
@@ -49,8 +40,9 @@ class RecipeService {
             title: recipe.title,
             summary: recipe.summary,
             imageUrl: recipe.imageUrl,
+            likes: recipe.likes,
             tags: await this.getTagsInRecipe(recipe.id),
-          };
+          } as Recipe;
         });
 
         resolve(Promise.all(recipes));
@@ -58,9 +50,43 @@ class RecipeService {
     });
   }
 
+  getRecipesShort(recipeIds: number[]): Promise<Recipe[]> {
+    return new Promise((resolve, reject) => {
+      pool.query(`SELECT recipe.id, recipe.title, recipe.summary, recipe.imageUrl, likes.likes
+                  FROM recipe 
+                  LEFT JOIN ( 
+                            SELECT recipeId, COUNT(*) AS likes FROM user_like GROUP BY recipeId
+                      ) likes 
+                  ON recipe.id = likes.recipeId
+                  WHERE recipe.id IN (?)`, [recipeIds], (err, results: any[]) => {
+        if (err) {
+          reject(err);
+        } 
+
+        if (results.length === 0) {
+          return resolve([]);
+        }
+
+        const recipes = results.map(async (recipe) => {
+          return {
+            id: recipe.id,
+            title: recipe.title,
+            summary: recipe.summary,
+            imageUrl: recipe.imageUrl,
+            likes: recipe.likes,
+            tags: await this.getTagsInRecipe(recipe.id),
+          } as Recipe;
+        });
+
+        resolve(Promise.all(recipes));
+      });
+    });
+  }
+
+
   getRecipe(id: number): Promise<Recipe> {
     return new Promise((resolve, reject) => {
-      pool.query('SELECT * FROM recipe WHERE id = ?', [id], (err, results: RowDataPacket[]) => {
+      pool.query('SELECT * FROM recipe LEFT JOIN ( SELECT recipeId, COUNT(*) as likes FROM user_like GROUP BY recipeId) AS likes ON likes.recipeId = recipe.id WHERE recipe.id = ?', [id], (err, results: RowDataPacket[]) => {
         if (err) {
           return reject(err);
         }
@@ -82,11 +108,21 @@ class RecipeService {
 
   getRecipesLikeTitle(title: string): Promise<Recipe[]> {
     return new Promise((resolve, reject) => {
-      pool.query('SELECT * FROM recipe WHERE title LIKE ?', [`%${title}%`], (err, results: RowDataPacket[]) => {
+      pool.query('SELECT id FROM recipe WHERE title LIKE ?', [`%${title}%`], (err, results: RowDataPacket[]) => {
         if (err) {
           return reject(err);
         }
-        resolve(results as Recipe[]);
+        if (results.length === 0) {
+          return resolve([]);
+        }
+
+        const recipeIds = results.map((recipe) => recipe.id);
+        this.getRecipesShort(recipeIds)
+        .then((recipes) => {
+          resolve(recipes);
+        }).catch((err) => {
+          reject(err);
+        });
       });
     });
   }
@@ -107,22 +143,6 @@ class RecipeService {
     });
   }
   
-  getRecipesWithIngredients(ingredientIds: number[]): Promise<Recipe[]> {
-    return new Promise((resolve, reject) => {
-      pool.query(`
-        SELECT recipe.id, recipe.title, recipe.summary
-        FROM recipe_ingredient
-        LEFT JOIN recipe ON recipe_ingredient.recipeId = recipe.id
-        WHERE recipe_ingredient.ingredientId IN (?)
-        GROUP BY recipe.id;`, [ingredientIds], (err, results: RowDataPacket[]) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve(results as Recipe[]);
-      });
-    });
-  }
-
   getRecipeFull(id: number): Promise<Recipe | null> {
     return new Promise((resolve, reject) => {
       this.getRecipe(id)
@@ -146,6 +166,51 @@ class RecipeService {
     });
   }
 
+  getRecipesWithAnyIngredients(ingredientIds: number[]): Promise<Recipe[]> {
+    return new Promise((resolve, reject) => {
+      pool.query('SELECT recipeId, COUNT(*) AS matchcount FROM recipe_ingredient WHERE ingredientId IN (?) GROUP BY recipeId', [ingredientIds], (err, results: RowDataPacket[]) => {
+        if (err) {
+          return reject(err);
+        }
+
+        if (results.length === 0) {
+          return resolve([]);
+        }
+
+        let recipeIds = results.map((result) => result.recipeId);
+        recipeIds.sort((a, b) => b.matchcount - a.matchcount);
+
+        this.getRecipesShort(recipeIds)
+        .then((recipes) => {
+          resolve(recipes);
+        }).catch((err) => {
+          reject(err);
+        });
+      });
+    });
+  }
+
+  getRecipesWithAllIngredients(ingredientIds: number[]): Promise<Recipe[]> {
+    return new Promise((resolve, reject) => {
+      pool.query('SELECT recipeId, COUNT(*) AS matchcount FROM recipe_ingredient WHERE ingredientId IN (?) GROUP BY recipeId HAVING matchcount = ?', [ingredientIds, ingredientIds.length], (err, results: RowDataPacket[]) => {
+        if (err) {
+          return reject(err);
+        }
+
+        if (results.length === 0) {
+          return resolve([]);
+        }
+
+        let recipeIds = results.map((result) => result.recipeId);
+        this.getRecipesShort(recipeIds)
+        .then((recipes) => {
+          resolve(recipes as Recipe[]);
+        }).catch((err) => {
+          reject(err);
+        });
+      });
+    });
+  }
 
   getIngredients(): Promise<Ingredient[]> {
     return new Promise((resolve, reject) => {
@@ -166,11 +231,7 @@ class RecipeService {
           return reject(err);
         } 
 
-        if (results.length > 0) {
-          resolve(results[0] as Ingredient);
-        } else {
-          reject(undefined);
-        }
+        resolve(results[0] as Ingredient);
       });
     });
   }
@@ -240,6 +301,9 @@ class RecipeService {
       pool.query('SELECT * FROM recipe_tag WHERE recipeId = ?', [recipeId], (err, results: RowDataPacket[]) => {
         if (err) {
           return reject(err);
+        }
+        if (results.length === 0) {
+          return resolve([]);
         }
         resolve(results.map((result) => result.name));
       });
@@ -410,6 +474,62 @@ class RecipeService {
       }
 
       return resolve(recipeId);
+    });
+  }
+
+  addLike(recipeId: number, userId: number): Promise<number> {
+    return new Promise((resolve, reject) => {
+      pool.query('INSERT INTO user_like (googleId, recipeId) VALUES (?, ?)', [userId, recipeId], (err, results) => {
+        if (err) {
+          return reject(err);
+        }
+        // Resolve id of inserted user_like
+        // TODO: mysql returns some combination of RowDataPacket and OkPacket, fix the ts-ignore
+        // @ts-ignore
+        resolve(results.insertId);
+      });
+    });
+  }
+
+  removeLike(recipeId: number, userId: number): Promise<number> {
+    return new Promise((resolve, reject) => {
+      pool.query('DELETE FROM user_like WHERE googleId = ? AND recipeId = ?', [userId, recipeId], (err, results) => {
+        if (err) {
+          return reject(err);
+        }
+        // Resolve id of inserted user_like
+        // TODO: mysql returns some combination of RowDataPacket and OkPacket, fix the ts-ignore
+        // @ts-ignore
+        resolve(results.insertId);
+      });
+    });
+  }
+
+  addIngredientToList(ingredientId: number, userId: number): Promise<number> {
+    return new Promise((resolve, reject) => {
+      pool.query('INSERT INTO list_ingredient (googleId, ingredientId) VALUES (?, ?)', [userId, ingredientId], (err, results) => {
+        if (err) {
+          return reject(err);
+        }
+        // Resolve id of inserted user_ingredient
+        // TODO: mysql returns some combination of RowDataPacket and OkPacket, fix the ts-ignore
+        // @ts-ignore
+        resolve(results.insertId);
+      });
+    });
+  }
+
+  removeIngredientFromList(ingredientId: number, userId: number): Promise<number> {
+    return new Promise((resolve, reject) => {
+      pool.query('DELETE FROM list_ingredient WHERE googleId = ? AND ingredientId = ?', [userId, ingredientId], (err, results) => {
+        if (err) {
+          return reject(err);
+        }
+        // Resolve id of inserted user_ingredient
+        // TODO: mysql returns some combination of RowDataPacket and OkPacket, fix the ts-ignore
+        // @ts-ignore
+        resolve(results.insertId);
+      });
     });
   }
 }

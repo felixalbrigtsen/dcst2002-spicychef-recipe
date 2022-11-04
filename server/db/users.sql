@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS `userlike`;
-DROP TABLE IF EXISTS `cartItem`;
+DROP TABLE IF EXISTS `user_like`;
+DROP TABLE IF EXISTS `list_ingredient`;
 DROP TABLE IF EXISTS `user`;
 
 CREATE TABLE `user` (
@@ -13,8 +13,8 @@ CREATE TABLE `user` (
   PRIMARY KEY (`googleId`)
 );
 
-CREATE TABLE `userlike` (
-  `googleId` varchar(11) NOT NULL,
+CREATE TABLE `user_like` (
+  `googleId` varchar(64) NOT NULL,
   `recipeId` int(11) NOT NULL,
 
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -25,10 +25,10 @@ CREATE TABLE `userlike` (
 );
 
 
-CREATE TABLE `cartItem` (
-  `googleId` varchar(11) NOT NULL,
+CREATE TABLE `list_ingredient` (
+  `googleId` varchar(64) NOT NULL,
   `ingredientId` int(11) NOT NULL,
-  `quantity` int(11) NOT NULL,
+  /* `comment` varchar(30) NOT NULL, */
 
   FOREIGN KEY (`googleId`) REFERENCES `user`(`googleId`) ON DELETE CASCADE,
   FOREIGN KEY (`ingredientId`) REFERENCES `ingredient`(`id`) ON DELETE CASCADE,

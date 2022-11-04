@@ -91,7 +91,34 @@ authRouter.get('/logout', (req, res) => {
 });
 
 authRouter.get('/profile', (req, res) => {
-  res.json(req.session.user);
+  if (req.session.user) {
+    res.json(req.session.user);
+  } else {
+    res.json(false);
+  }
 });
 
+// @ts-ignore
+export async function refreshLogin(req, res) {
+  if (req.session.user.googleId) {
+    let user = await userService.getUser(req.session.user.googleId);
+    req.session.user = user;
+  }
+}
 
+// @ts-ignore
+export const requireLogin = function(req, res, next) {
+  if (req.session.user && req.session.user.googleId) {
+    next();
+  } else {
+    res.status(403).send('Forbidden');
+  }
+}
+// @ts-ignore
+export const requireAdmin = function(req, res, next) {
+  if (req.session.user?.isadmin) {
+    next();
+  } else {
+    res.status(403).send('Forbidden');
+  }
+}

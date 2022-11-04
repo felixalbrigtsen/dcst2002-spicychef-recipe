@@ -14,6 +14,7 @@ console.log("Serving client from '" + clientBuildPath + "'");
 console.log("Loaded Google Client ID: " + process.env.GOOGLE_OAUTH_ID);
 
 const app = express();
+// Enable logging to console
 app.use(morgan('dev'));
 
 enableSession(app);
@@ -25,7 +26,7 @@ app.listen(port, () => {
 
 app.use('/api', router);
 
-// Serve static files from the React frontend
+// Serve static files from the React frontend, with fallback to index.html
 app.use(express.static(clientBuildPath));
 app.get('*', (req, res) => {
   res.sendFile(path.join(clientBuildPath, '/index.html'));
