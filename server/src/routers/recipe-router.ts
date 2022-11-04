@@ -41,6 +41,12 @@ function handleServerError(res: any, err: any) {
  * @function
  * @memberof module:recipe-router
  *
+ * @description 
+ * Get all recipes, optionally filtered by ingredient.
+ *
+ * @param {string} [mode] - 'all' or 'any' (default: 'all')
+ * @param {string} [ingredients] - comma-separated list of ingredient ids
+ *
  * @returns {Recipe[]} Array of Recipes in short form (no instructions or ingredients)
  * @throws {Error} 500 If there is a database error
  * @example
@@ -48,12 +54,42 @@ function handleServerError(res: any, err: any) {
  * 
  */
 router.get('/recipes' , (req, res) => {
-  recipeService.getRecipesShort().then((recipes) => {
-    res.json(recipes);
-  })
-  .catch((err) => {
-    handleServerError(res, err);
-  });
+  const mode = req.query.mode as string || 'all';
+  const ingredients = req.query.ingredients as string || '';
+
+  if (ingredients !== '') {
+    const ingredientList = [ ...new Set(ingredients.split(',')) ].map((id: string) => parseInt(id));
+
+    // Verify that all ingredients are valid numbers
+    if (ingredientList.some((id: number) => isNaN(id))) {
+      res.status(400).send('Invalid ingredient id');
+      return;
+    }
+    
+    if (mode !== 'all' && mode !== 'any') {
+      res.status(400).send('Invalid mode');
+      return;
+    }
+
+    if (mode === 'all') {
+      recipeService.getRecipesWithAllIngredients(ingredientList)
+        .then((recipes) => res.send(recipes))
+        .catch((err: any) => handleServerError(res, err));
+    } else {
+      recipeService.getRecipesWithAnyIngredients(ingredientList)
+        .then((recipes) => res.send(recipes))
+        .catch((err: any) => handleServerError(res, err));
+    }
+
+    return;
+  }
+
+  recipeService.getAllRecipesShort()
+    .then((recipes) => {
+      res.send(recipes);
+    })
+    .catch((err) => handleServerError(res, err));
+  
 });
 
 /**
@@ -92,6 +128,25 @@ router.get('/recipe/:id' , (req, res) => {
     });
 });
 
+/**
+ * @name GET /ingredients
+ * @function
+ * @memberof module:recipe-router
+ *
+ * @throws {error} 500 if there is a database error
+ *
+ * @description
+ * Returns a json formatted list of all ingredients
+ * @returns {Ingredient[]}
+ */
+router.get('/ingredients' , (req, res) => {
+  recipeService.getIngredients().then((ingredients) => {
+    res.json(ingredients);
+  })
+  .catch((err) => {
+    handleServerError(res, err);
+  });
+});
 
 /**
  * @name Get /search?q=
