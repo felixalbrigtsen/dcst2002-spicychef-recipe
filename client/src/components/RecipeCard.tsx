@@ -14,29 +14,38 @@ interface RecipeCardProps {
 
 function RecipeCard(props: RecipeCardProps) {
 
+    // const user = {
+    //     googleId: 1,
+    //     name: "hei",
+    //     email: "hi",
+    //     picture: "abc",
+    //     isadmin: true,
+    //     likes: [1,4],
+    //     shoppingList: [1,2,3,4]
+    // }
+    // For development purposes
+
     const { user } = useLogin();
 
     return(
         <>
-        {/* TODO: Fix standard card height */}
             <Card style={{ width: 300, margin: 'auto' }}>
                 <Card.Image size="4by3" src={props.recipe.imageUrl} />
-                <Card.Content style={{minHeight: 250}}>
+                <Card.Content style={{minHeight: 150}}>
                     <Media>
                         <Media.Item>
                             <Heading size={4}>
                                 {props.recipe.title}
                             </Heading>
-                            <Heading subtitle size={6}>
+                            {/* <Heading subtitle size={6}>
                                 {props.recipe.tags.map((tag) => (
                                     <Button color='dark' renderAs='span' style={{margin: '2px 2px'}} key={tag} onClick={
                                         () => {
-                                            // search for tag
                                             console.log(tag);
                                         }
                                     }>{tag}</Button>
                                 ))}
-                            </Heading>
+                            </Heading> */}
                         </Media.Item>
                     </Media>
                     <Content>
@@ -45,8 +54,8 @@ function RecipeCard(props: RecipeCardProps) {
                 </Card.Content>
                 <Card.Footer>
                     <Card.Footer.Item>
-                    {/* TODO: If person who is logged in has liked this recipe, change the colour of the icon */}
-                    { user.googleId ?
+                    {/* If the recipe.id is in user.likes change the colour of the like button */}   
+                    { user.likes.includes(props.recipe.id) ?
                         <Button className="is-rounded" color="success" outlined>
                             <Icon>
                                  <FaThumbsUp size={18} />
