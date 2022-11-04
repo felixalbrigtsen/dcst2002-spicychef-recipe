@@ -19,6 +19,8 @@ import Footer from '../components/Footer';
 import { Recipe } from '../models/Recipe';
 import { Ingredient } from '../models/Ingredient';
 
+import ImageSlider from '../components/ImageSlider';
+
 
 function Home () {
   const { user } = useLogin();
@@ -70,7 +72,7 @@ function Home () {
                                     </Tile>
                                 <Tile>
                                 <Tile kind="parent">
-                                        <Tile kind="child" renderAs={Notification} color="info">
+                                        <Tile kind="child" renderAs={Notification} color="info" className='is-centered'>
                                             <Heading>Recipes</Heading>
                                                 <Form.Field>
                                                     <Form.Label style={{color:"white"}}>
@@ -96,6 +98,7 @@ function Home () {
                                                             </span>
                                                             </Form.Control>
                                                 </Form.Field>
+                                                { recipeList ? <ImageSlider slides={recipeList} /> : <></> }
                                         </Tile>
                                     </Tile>
                                     <Tile kind="parent" vertical>
