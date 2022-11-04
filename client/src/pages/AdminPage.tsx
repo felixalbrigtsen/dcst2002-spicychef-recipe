@@ -36,12 +36,14 @@ function AdminView() {
             </Tile>
 
             <Container style={{width: '80%'}} className='has-text-centered'>
+            <Link to='/create'>
             <Button color="success" style={{width: '80%'}}>
                 <span>Create New</span>
                 <span className="icon">
                     <MdAddCircle />
                 </span>
             </Button>
+            </Link>
             </Container>
 
             <br />
