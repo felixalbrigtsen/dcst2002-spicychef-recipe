@@ -13,6 +13,7 @@ import { FaPlus, FaMinus } from 'react-icons/fa';
 import recipeService from '../services/recipe-service';
 import { Recipe } from '../models/Recipe';
 import { Ingredient } from '../models/Ingredient';
+import listService from '../services/list-service';
 
 
 function RecipePage() {
@@ -101,10 +102,9 @@ function RecipePage() {
                   }
                   <Button renderAs={Notification} onClick={
                     () => { recipe.ingredients?.forEach((ingredient) => {
-                      // recipeService.addIngredientToShoppingList(ingredient.id)
-                      console.log(ingredient.id)
+                      listService.addIngredient(ingredient.id)
                     });}
-                  }>Add All Ingredients to Cart</Button>
+                  }>Add Ingredients to List</Button>
                 </Tile>
               </Tile>
             </Tile>
