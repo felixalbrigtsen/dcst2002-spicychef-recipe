@@ -29,7 +29,7 @@ function CreateRecipe() {
               <Tile kind="child" renderAs={Form.Field}>
                 <Form.Label>Recipe Summary</Form.Label>
                 <Form.Control>
-                  <Form.Input placeholder="Recipe Summary" />
+                  <Form.Textarea placeholder="Recipe Summary" />
                 </Form.Control>
               </Tile>
               </Tile>
@@ -47,6 +47,7 @@ function CreateRecipe() {
                   <Form.Label>Recipe Image Link</Form.Label>
                   <Form.Control>
                     {/* TODO: Add upload button */}
+                    {/* TODO: Image preview? */}
                     <Form.Input placeholder="Recipe Image" />
                   </Form.Control>
                 </Tile>
