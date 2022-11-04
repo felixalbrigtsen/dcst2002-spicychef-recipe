@@ -4,5 +4,7 @@ export type User = {
   email: string;
   picture: string;
   isadmin: boolean;
+  likes: number[];
+  shoppingList: number[];
 };
 
