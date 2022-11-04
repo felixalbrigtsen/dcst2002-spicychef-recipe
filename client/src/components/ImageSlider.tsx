@@ -13,12 +13,6 @@ interface ImageSliderProps {
 const ImageSlider = (props: ImageSliderProps) => {
     const [current, setCurrent] = useState(0);
 
-    const goToPrev = () => {
-        const isFirstSlide = current === 0
-        const newIndex = isFirstSlide ? props.slides.length - 1 : current - 1;
-        setCurrent(newIndex);
-    }
-
     const goToNext = () => {
         const isLastSlide = current === props.slides.length - 1
         const newIndex = isLastSlide ? 0 : current + 1;
@@ -44,7 +38,9 @@ const ImageSlider = (props: ImageSliderProps) => {
                     <>
                     <div className={index === current ? 'slide active' : 'slide'} key={index}>
                         {index === current && (
+                            <a href={`/recipe/${slide.id}`}>
                             <img src={slide && slide.imageUrl ? slide.imageUrl : "placeholder"} alt='recipe' className='image' />
+                            </a>
                         )}
                     </div>
                     </>
