@@ -72,7 +72,7 @@ function AdminView() {
                         </Link>
                       </td>
                       <td className='is-narrow has-text-centered'>
-                        <Link to={`/recipe/${item.id}/edit`}>
+                        <Link to={`/edit/${item.id}`}>
                         <Button color="success" className="is-rounded is-outlined">
                           <MdEdit />
                         </Button>
