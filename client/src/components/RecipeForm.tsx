@@ -24,6 +24,7 @@ function RecipeForm (props: RecipeFormProps) {
     let [ recipe, setRecipe ] = React.useState<Recipe>(props.recipe);
     let [ title , setTitle ] = React.useState<string>(props.recipe.title);
     let [ summary , setSummary ] = React.useState<string>(props.recipe.summary);
+    let [ servings , setServings ] = React.useState<number>(props.recipe.servings);
     let [ instructions , setInstructions ] = React.useState<string>(props.recipe.instructions);
     let [ imageLink , setImageLink ] = React.useState<string>(props.recipe.imageUrl ? props.recipe.imageUrl : "");
     let [ videoLink , setVideoLink ] = React.useState<string>(props.recipe.videoUrl ? props.recipe.videoUrl : "");
@@ -34,6 +35,7 @@ function RecipeForm (props: RecipeFormProps) {
         setRecipe(props.recipe);
         setTitle(props.recipe.title);
         setSummary(props.recipe.summary);
+        setServings(props.recipe.servings);
         setInstructions(props.recipe.instructions);
         setImageLink(props.recipe.imageUrl ? props.recipe.imageUrl : "");
         setVideoLink(props.recipe.videoUrl ? props.recipe.videoUrl : "");
@@ -51,19 +53,21 @@ function RecipeForm (props: RecipeFormProps) {
         let newRecipe = recipe;
         newRecipe.title = title;
         newRecipe.summary = summary;
+        newRecipe.servings = servings;
         newRecipe.instructions = instructions;
         newRecipe.imageUrl = imageLink;
         newRecipe.videoUrl = videoLink;
         newRecipe.ingredients = ingredients;
         newRecipe.tags = tags;
         setRecipe(newRecipe);
+        console.log(newRecipe);
         // recipeService.saveRecipe(recipe);
     }
 
     return (
         <Tile kind="ancestor">
           <Tile size={4} vertical>
-              <Tile kind="parent">
+              <Tile kind="parent" vertical>
                 <Tile kind="child" renderAs={Form.Field}>
                   <Form.Label>Recipe Title</Form.Label>
                   <Form.Control>
@@ -72,12 +76,18 @@ function RecipeForm (props: RecipeFormProps) {
                     />
                   </Form.Control>
                 </Tile>
-              </Tile>
-              <Tile kind="parent">
-              <Tile kind="child" renderAs={Form.Field}>
+                <Tile kind="child" renderAs={Form.Field}>
                 <Form.Label>Recipe Summary</Form.Label>
                 <Form.Control>
                   <Form.Textarea placeholder="Recipe Summary" defaultValue={summary} />
+                </Form.Control>
+              </Tile>
+              <Tile kind="child" renderAs={Form.Field}>
+                <Form.Label>Recipe Servings</Form.Label>
+                <Form.Control>
+                  <Form.Input type="text" placeholder="2" defaultValue={servings ? servings : 2} onChange={
+                    (e) => {setServings(Number(e.currentTarget.value));}
+                  }/>
                 </Form.Control>
               </Tile>
               </Tile>
