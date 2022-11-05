@@ -48,7 +48,6 @@ function RecipeForm (props: RecipeFormProps) {
         setIngredients([...ingredients, newIngredient]);
     }
 
-    
     function handleRecipeSubmit() {
         let newRecipe = recipe;
         newRecipe.title = title;
@@ -61,7 +60,13 @@ function RecipeForm (props: RecipeFormProps) {
         newRecipe.tags = tags;
         setRecipe(newRecipe);
         console.log(newRecipe);
-        // recipeService.saveRecipe(recipe);
+        if(window.location.pathname === "/create"){
+            // recipeService.createRecipe(newRecipe);
+            console.log("create");
+        } else if(window.location.pathname === "/edit/" + recipe.id){
+            // recipeService.updateRecipe(newRecipe);
+            console.log("edit");
+        }
     }
 
     return (
@@ -95,7 +100,6 @@ function RecipeForm (props: RecipeFormProps) {
               <Tile kind="child" renderAs={Form.Field}>
                 <Form.Label>Recipe Tags</Form.Label>
                 <Form.Control>
-                  {/* TODO: List tags at the end of input, or below where they can be removed */}
                   <Form.Input placeholder="Recipe Tags" onKeyDown={
                     (e) => {
                         if (e.key === "Enter") {
@@ -124,8 +128,6 @@ function RecipeForm (props: RecipeFormProps) {
                 <Tile kind="child" renderAs={Form.Field}>
                   <Form.Label>Recipe Image Link</Form.Label>
                   <Form.Control>
-                    {/* TODO: Add upload button */}
-                    {/* TODO: Image preview? */}
                     <Form.Input placeholder="Recipe Image" defaultValue={imageLink} onChange={
                         (e) => {setImageLink(e.currentTarget.value);}
                     }/>
@@ -152,9 +154,9 @@ function RecipeForm (props: RecipeFormProps) {
                 </Form.Control>
               </Tile>
               <Tile kind="child" renderAs={Form.Field}>
+                 {/* TODO: List all ingredients that exist when you enter the input field, creating a new one if it does not exist */}
                 <Form.Label>Recipe Ingredients</Form.Label>
                 <Form.Control>
-                  {/* TODO: List Ingredients below when you press enter so you can add measurements */}
                   <Form.Input placeholder="Recipe Ingredients" onKeyDown={
                     (e) => {
                         if (e.key === "Enter") {
