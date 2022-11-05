@@ -6,10 +6,10 @@ import {
 } from 'react-router-dom';
 
 import { useParams } from 'react-router-dom'
-
+import { useLogin } from '../hooks/Login';
 import { Container, Image, Media, Tile, Heading, Notification, Button, Form, Box, Hero, Columns } from 'react-bulma-components'
-import { FaPlus, FaMinus } from 'react-icons/fa';
-
+import { FaPlus, FaMinus, FaToriiGate } from 'react-icons/fa';
+import { FaThumbsUp } from 'react-icons/fa';
 import recipeService from '../services/recipe-service';
 import { Recipe } from '../models/Recipe';
 import { Ingredient } from '../models/Ingredient';
@@ -17,6 +17,17 @@ import listService from '../services/list-service';
 
 
 function RecipePage() {
+
+    // const { user } = useLogin();
+    const user = {
+      googleId: 1,
+      name: "hei",
+      email: "hi",
+      picture: "abc",
+      isadmin: true,
+      likes: [4],
+      shoppingList: [2,3,4]
+    }
 
     let [ recipe, setRecipe ] = React.useState<Recipe>({id: 0, title: "", summary: "", instructions: "", servings: 0, imageUrl: "", videoUrl: "", created_at: "", ingredients: [], tags: []});
 
@@ -46,6 +57,31 @@ function RecipePage() {
                   <Media.Item>
                     <Heading size={4}>{recipe.title}</Heading>
                     <Heading subtitle size={6}>{recipe.summary}</Heading>
+                  </Media.Item>
+                  <br />
+                  <Media.Item>
+                    { user.googleId && user.likes.includes(recipe.id) ?
+                        <Button className="is-rounded" color="success" onClick={() => {
+                          console.log("unlike");
+                        }
+                        }> 
+                            <span>Liked</span>
+                            <span className="icon">
+                            <FaThumbsUp />
+                            </span>
+                        </Button>
+                        :
+                        <Button className="is-rounded" color="info" outlined onClick={() => {
+                          console.log("like");
+                        }
+                        }>
+                        <span>Like</span>
+                        <span className="icon">
+                            <FaThumbsUp />
+                        </span>
+                        </Button>
+                        
+                    }
                   </Media.Item>
                 </Tile>
               </Tile>
