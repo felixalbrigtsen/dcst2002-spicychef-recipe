@@ -8,78 +8,18 @@ import {
 
 import { Form, Button, Container, Tile, Hero } from 'react-bulma-components';
 
+import RecipeForm from '../components/RecipeForm';
+import { Recipe } from '../models/Recipe';
+
 import { useState, useEffect } from 'react';
 
 function CreateRecipe() {
+  const blankRecipe = {id: 0, title: "", summary: "", instructions: "", servings: 0, imageUrl: "", videoUrl: "", created_at: "", ingredients: [], tags: []};
   return (
     <Container>
       <Hero>
         <Hero.Body>
-        <Tile kind="ancestor">
-          <Tile size={4} vertical>
-              <Tile kind="parent">
-                <Tile kind="child" renderAs={Form.Field}>
-                  <Form.Label>Recipe Title</Form.Label>
-                  <Form.Control>
-                    <Form.Input placeholder="Recipe Title" />
-                  </Form.Control>
-                </Tile>
-              </Tile>
-              <Tile kind="parent">
-              <Tile kind="child" renderAs={Form.Field}>
-                <Form.Label>Recipe Summary</Form.Label>
-                <Form.Control>
-                  <Form.Textarea placeholder="Recipe Summary" />
-                </Form.Control>
-              </Tile>
-              </Tile>
-              <Tile kind="parent">
-              <Tile kind="child" renderAs={Form.Field}>
-                <Form.Label>Recipe Tags</Form.Label>
-                <Form.Control>
-                  {/* TODO: List tags at the end of input, or below where they can be removed */}
-                  <Form.Input placeholder="Recipe Summary" />
-                </Form.Control>
-              </Tile>
-              </Tile>
-              <Tile kind="parent">
-                <Tile kind="child" renderAs={Form.Field}>
-                  <Form.Label>Recipe Image Link</Form.Label>
-                  <Form.Control>
-                    {/* TODO: Add upload button */}
-                    {/* TODO: Image preview? */}
-                    <Form.Input placeholder="Recipe Image" />
-                  </Form.Control>
-                </Tile>
-              </Tile>
-              <Tile kind="parent" vertical>
-                <Tile kind="child" renderAs={Form.Field}>
-                  <Form.Label>Recipe Video Link</Form.Label>
-                  <Form.Control>
-                    <Form.Input placeholder="Recipe Video" />
-                  </Form.Control>
-                </Tile>
-              </Tile>
-            </Tile>
-            <Tile vertical kind="parent">
-              <Tile kind="child" renderAs={Form.Field}>
-                <Form.Label>Recipe Instructions</Form.Label>
-                <Form.Control>
-                  <Form.Textarea placeholder="Recipe Instructions" />
-                </Form.Control>
-              </Tile>
-              <Tile kind="child" renderAs={Form.Field}>
-                <Form.Label>Recipe Ingredients</Form.Label>
-                <Form.Control>
-                  {/* TODO: List Ingredients below when you press enter so you can add measurements */}
-                  <Form.Input placeholder="Recipe Ingredients" />
-                </Form.Control>
-              </Tile>
-              <Tile kind="child" renderAs={Form.Field} className="has-text-centered">
-                <Button color="primary">Submit</Button>
-              </Tile>
-            </Tile>
-          </Tile>
+          <RecipeForm recipe={blankRecipe}/>
           </Hero.Body>
           </Hero>
     </Container>
