@@ -25,7 +25,7 @@ export default function RecipeList() {
         <>
           <Columns className="is-multiline is-centered" style={{marginTop: '2rem', marginLeft: 'auto', marginRight: 'auto'}}>
           {recipeList.map((recipe) => (
-            <Columns.Column className='is-one-quarter' key={recipe.id}>
+            <Columns.Column className='is-narrow' key={recipe.id}>
               <RecipeCard recipe={recipe} />
             </Columns.Column>
           ))}
