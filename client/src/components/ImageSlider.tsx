@@ -35,7 +35,6 @@ const ImageSlider = (props: ImageSliderProps) => {
         <>  
             {props.slides.map((slide, index) => {
                 return (
-                    <>
                     <div className={index === current ? 'slide active' : 'slide'} key={index}>
                         {index === current && (
                             <a href={`/recipe/${slide.id}`}>
@@ -43,7 +42,6 @@ const ImageSlider = (props: ImageSliderProps) => {
                             </a>
                         )}
                     </div>
-                    </>
                 );
             })}
         </>
