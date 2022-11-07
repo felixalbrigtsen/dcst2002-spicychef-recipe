@@ -12,7 +12,7 @@ import { useLogin } from '../hooks/Login';
 import { Recipe } from '../models/Recipe';
 import ScrollButton from '../components/ScrollUp';
 
-import { Table, Container, Heading, Tile, Box, Notification, Button } from 'react-bulma-components';
+import { Table, Container, Heading, Tile, Box, Notification, Button, Modal } from 'react-bulma-components';
 import { MdDeleteForever, MdEdit, MdRemoveRedEye, MdAddCircle } from 'react-icons/md';
 
 function AdminView() {
@@ -26,9 +26,34 @@ function AdminView() {
 
     const { user } = useLogin();
 
+    let [ confirmationState, setConfirmationState ] = React.useState<boolean>(false);
+    let [ confirmItem, setConfirmItem ] = React.useState<number>(-1);
+
+    function showConfirmation (id: number) {
+        setConfirmItem(id);
+        setConfirmationState(!confirmationState);
+    }
+
+    function handleDelete(id: number) {
+        console.log("Deleting recipe with id: " + id);
+        setConfirmationState(!confirmationState);
+        setConfirmItem(-1);
+    }
+
     return(
     <>
         <Container className='mt-2'>
+        <Modal show={confirmationState} onClose={() => {setConfirmationState(!confirmationState)}}>
+            <Modal.Card>
+                <Modal.Card.Header>
+                    <Modal.Card.Title>Do you really want to delete this recipe?</Modal.Card.Title>
+                </Modal.Card.Header>
+                <Modal.Card.Footer>
+                    <Button color="danger" onClick={() => handleDelete(confirmItem)}>Yes, Delete</Button>
+                    <Button onClick={() => setConfirmationState(!confirmationState)}>Cancel</Button>
+                </Modal.Card.Footer>
+            </Modal.Card>
+        </Modal>
         <Tile kind="ancestor">
           <Tile kind="parent" className="is-vertical">
             <Tile kind="child" renderAs={Notification} className="has-text-centered is-12">
@@ -79,7 +104,7 @@ function AdminView() {
                         </Link>
                       </td>
                       <td className='is-narrow has-text-centered'>
-                        <Button color="danger" className="is-rounded is-outlined" onClick={() => {{/* TODO: Implement Delete & Confirm Delete */}}}>
+                        <Button color="danger" className="is-rounded is-outlined" onClick={() => {showConfirmation(item.id)}}>
                           <MdDeleteForever />
                         </Button>
                       </td>
