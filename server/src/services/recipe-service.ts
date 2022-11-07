@@ -18,6 +18,30 @@ class RecipeService {
     });
   }
 
+  deleteRecipe(id: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      // First delete all ingredients in recipe
+      pool.query('DELETE FROM recipe_ingredient WHERE recipeId = ?', [id], (err) => {
+        if (err) {
+          return reject(err);
+        }
+        // Then delete all tags in recipe
+        pool.query('DELETE FROM recipe_tag WHERE recipeId = ?', [id], (err) => {
+          if (err) {
+            return reject(err);
+          }
+          // Then delete recipe
+          pool.query('DELETE FROM recipe WHERE id = ?', [id], (err) => {
+            if (err) {
+              return reject(err);
+            }
+            resolve();
+          });
+        });
+      });
+    });
+  }
+
   getAllRecipesShort(): Promise<Recipe[]> {
     return new Promise((resolve, reject) => {
       pool.query(`SELECT recipe.id, recipe.title, recipe.summary, recipe.imageUrl, likes.likes
@@ -477,6 +501,78 @@ class RecipeService {
     });
   }
 
+  updateRecipe(id: number, title: string, summary: string, instructions: string, servings: number, imageUrl: string, videoUrl: string) {
+    return new Promise((resolve, reject) => {
+      pool.query('UPDATE recipe SET title = ?, summary = ?, instructions = ?, servings = ?, imageUrl = ?, videoUrl = ? WHERE id = ?', [title, summary, instructions, servings, imageUrl, videoUrl, id], (err, results) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve(results);
+      });
+    });
+  }
+
+  updateRecipeIngredients(recipeId: number, ingredients: {ingredientName: string, quantity: number, unitName: string}[]) {
+    return new Promise((resolve, reject) => {
+      pool.query('DELETE FROM recipe_ingredient WHERE recipeId = ?', [recipeId], async (err, results) => {
+        if (err) {
+          return reject(err);
+        }
+
+        // Make new recipe_ingredient entries
+        // TODO: Use transactions to avoid partial saves
+        // TODO: This removes and re-adds every ingredient, which is inefficient, do it more like updateRecipeTags
+        
+        try {
+          const ingredientIds = await this.getIngredientIds(ingredients.map((ingredient) => ingredient.ingredientName));
+          const unitIds = await this.getUnitIds(ingredients.map((ingredient) => ingredient.unitName));
+          for (let i = 0; i < ingredients.length; i++) {
+            this.addRecipeIngredient(recipeId, ingredientIds[i], unitIds[i], ingredients[i].quantity);
+          }
+        } catch (err) {
+          return reject(err);
+        }
+        
+      });
+    });
+  }
+
+  updateRecipeTags(recipeId: number, tags: string[]) {
+    let existingTags: string[];
+    return new Promise((resolve, reject) => {
+      pool.query('SELECT name FROM recipe_tag WHERE recipeId = ?', [recipeId], (err, results) => {
+        if (err) {
+          return reject(err);
+        }
+        // @ts-ignore
+        existingTags = results.map((result) => result.name);
+        // Delete tags that are no longer in the recipe
+        // TODO: Use transactions to avoid partial saves
+        for (let tag of existingTags) {
+          if (!tags.includes(tag)) {
+            pool.query('DELETE FROM recipe_tag WHERE recipeId = ? AND name = ?', [recipeId, tag], (err, results) => {
+              if (err) {
+                return reject(err);
+              }
+            });
+          }
+        }
+        // Add tags that are new to the recipe
+        // TODO: Use transactions to avoid partial saves
+        for (let tag of tags) {
+          if (!existingTags.includes(tag)) {
+            pool.query('INSERT INTO recipe_tag (recipeId, name) VALUES (?, ?)', [recipeId, tag], (err, results) => {
+              if (err) {
+                return reject(err);
+              }
+            });
+          }
+        }
+      });
+    });
+  }
+
+
   addLike(recipeId: number, userId: number): Promise<number> {
     return new Promise((resolve, reject) => {
       pool.query('INSERT INTO user_like (googleId, recipeId) VALUES (?, ?)', [userId, recipeId], (err, results) => {
@@ -533,7 +629,6 @@ class RecipeService {
     });
   }
 }
-
 
 let recipeService = new RecipeService();
 export default recipeService;
