@@ -19,6 +19,12 @@ interface RecipeFormProps {
     recipe: Recipe;
 }
 
+type IngredientItem = {
+  ingredientName: string;
+  quantity: number;
+  unitName: string;
+}
+
 function RecipeForm (props: RecipeFormProps) {
 
     let [ recipe, setRecipe ] = React.useState<Recipe>(props.recipe);
@@ -28,7 +34,10 @@ function RecipeForm (props: RecipeFormProps) {
     let [ instructions , setInstructions ] = React.useState<string>(props.recipe.instructions);
     let [ imageLink , setImageLink ] = React.useState<string>(props.recipe.imageUrl ? props.recipe.imageUrl : "");
     let [ videoLink , setVideoLink ] = React.useState<string>(props.recipe.videoUrl ? props.recipe.videoUrl : "");
-    let [ ingredients, setIngredients ] = React.useState<Ingredient[]>([]);
+    let [ stdIngredient, setStdIngredient ] = React.useState<Ingredient[]>([]);
+    let [ ingredients, setIngredients ] = React.useState<IngredientItem[]>([]);
+    // let [ quantity, setQuantity ] = React.useState<number[]>([]);
+    // let [ unit, setUnit ] = React.useState<string[]>([]);
     let [ tags, setTags ] = React.useState<string[]>([]);
 
     useEffect(() => {
@@ -39,26 +48,25 @@ function RecipeForm (props: RecipeFormProps) {
         setInstructions(props.recipe.instructions);
         setImageLink(props.recipe.imageUrl ? props.recipe.imageUrl : "");
         setVideoLink(props.recipe.videoUrl ? props.recipe.videoUrl : "");
-        setIngredients(props.recipe.ingredients);
+        setStdIngredient(props.recipe.ingredients);
+        setIngredients(props.recipe.ingredients.map((ingredient) => { return { ingredientName: ingredient.ingredientName, quantity: ingredient.quantity, unitName: ingredient.unitName } }));
+        // setIngredients(props.recipe.ingredients.map((ingredient) => ingredient.ingredientName));
+        // setUnit(props.recipe.ingredients.map((ingredient) => ingredient.unitName));
+        // setQuantity(props.recipe.ingredients.map((ingredient) => ingredient.quantity));
         setTags(props.recipe.tags);
     }, [props.recipe]);
 
-    function handleAddIngredient(name: string){
-        let newIngredient = {id: 0, ingredientName: name, quantity: 0, unitId: 0, unitName: ""};
-        setIngredients([...ingredients, newIngredient]);
-    }
-
     function handleRecipeSubmit() {
-        let newRecipe = recipe;
+        let newRecipe = {id: 0, title: "", summary: "", servings: 0, instructions: "", imageUrl: "", videoUrl: "", ingredients: [{ingredientName: "", quantity: 0, unitName: ""}], tags: [""]};
+        newRecipe.id = props.recipe.id || -1;
         newRecipe.title = title;
         newRecipe.summary = summary;
         newRecipe.servings = servings;
         newRecipe.instructions = instructions;
         newRecipe.imageUrl = imageLink;
         newRecipe.videoUrl = videoLink;
-        newRecipe.ingredients = ingredients;
+        newRecipe.ingredients = ingredients
         newRecipe.tags = tags;
-        setRecipe(newRecipe);
         console.log(newRecipe);
         if(window.location.pathname === "/create"){
             // recipeService.createRecipe(newRecipe);
@@ -67,6 +75,22 @@ function RecipeForm (props: RecipeFormProps) {
             // recipeService.updateRecipe(newRecipe);
             console.log("edit");
         }
+    }
+
+    function handleIngredientPropertyChange(index: number, property: string, value: string) {
+      let newIngredients = [...ingredients];
+      if (property === "ingredientName") {
+        newIngredients[index].ingredientName = value;
+      } else if (property === "quantity") {
+        let newQuantity = parseFloat(value);
+        if (isNaN(newQuantity)) {
+          newQuantity = 0;
+        }
+        newIngredients[index].quantity = Math.abs(newQuantity);
+      } else if (property === "unitName") {
+        newIngredients[index].unitName = value;
+      }
+      setIngredients(newIngredients);
     }
 
     return (
@@ -90,7 +114,7 @@ function RecipeForm (props: RecipeFormProps) {
               <Tile kind="child" renderAs={Form.Field}>
                 <Form.Label>Recipe Servings</Form.Label>
                 <Form.Control>
-                  <Form.Input type="text" placeholder="2" defaultValue={servings ? servings : 2} onChange={
+                  <Form.Input type="number" placeholder="2" defaultValue={servings ? servings : 2} onChange={
                     (e) => {setServings(Number(e.currentTarget.value));}
                   }/>
                 </Form.Control>
@@ -160,8 +184,7 @@ function RecipeForm (props: RecipeFormProps) {
                   <Form.Input placeholder="Recipe Ingredients" onKeyDown={
                     (e) => {
                         if (e.key === "Enter") {
-                            handleAddIngredient(e.currentTarget.value);
-                            e.currentTarget.value = "";
+                            setIngredients([...ingredients, {ingredientName: e.currentTarget.value, quantity: 0, unitName: ""}]);
                         }
                   }}/>
                 </Form.Control>
@@ -175,13 +198,13 @@ function RecipeForm (props: RecipeFormProps) {
                             <th>Delete</th>
                         </tr>
                     </thead>
-                    { ingredients ? ingredients.map((ingredient, index) => {
+                    { stdIngredient ? stdIngredient.map((ingredient, index) => {
                         return (
                             <tbody key={index}>
                                 <tr>
-                                    <td><Form.Input defaultValue={ingredient.ingredientName}></Form.Input></td>
-                                    <td><Form.Input defaultValue={ingredient.quantity}></Form.Input></td>
-                                    <td><Form.Input defaultValue={ingredient.unitName}></Form.Input></td>
+                                    <td><Form.Input value={ingredients[index].ingredientName} onChange={(e) => {handleIngredientPropertyChange(index, "ingredientName", e.currentTarget.value)}}/></td>
+                                    <td><Form.Input type="number" value={Number(ingredients[index].quantity)} onChange={ e => handleIngredientPropertyChange(index, "quantity", e.target.value) }></Form.Input></td>
+                                    <td><Form.Input value={ingredients[index].unitName} onChange={ e => handleIngredientPropertyChange(index, "unitName", e.target.value) }></Form.Input></td>
                                     <td>    
                                         <Button color="danger" outlined onClick={
                                             () => {setIngredients(ingredients.filter((i, j) => j !== index))}
