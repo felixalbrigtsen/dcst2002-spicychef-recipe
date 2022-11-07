@@ -61,7 +61,8 @@ export function enablePassport(app: express.Application) {
 authRouter.get('/login', (req, res) => res.redirect('/api/auth/google/login'));
 
 authRouter.get('/google/login',
-  passport.authenticate('google', { scope: [ 'email', 'profile' ] }), (req, res) => {
+  passport.authenticate('google', { scope: [ 'email', 'profile' ] }), async (req, res) => {
+    await refreshLogin(req, res);
     res.redirect('/');
   }
 );
