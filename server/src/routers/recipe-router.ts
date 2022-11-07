@@ -185,7 +185,7 @@ router.get('/search' , (req, res) => {
 });
 
 /**
- * @name POST /like:recipeId
+ * @name POST /like/:recipeId
  * @function
  * @memberof module:recipe-router
  * @param {number} recipeId - The ID of the recipe to like
@@ -221,7 +221,7 @@ router.post('/likes/:recipeId', requireLogin , async (req, res) => {
 });
 
 /**
- * @name DELETE /like:recipeId
+ * @name DELETE /like/:recipeId
  * @function
  * @memberof module:recipe-router
  * @param {number} recipeId - The ID of the recipe to like
@@ -328,6 +328,14 @@ router.delete('/list/:ingredientId', requireLogin , async (req, res) => {
 });
 
 
+/**
+ * @name POST(/recipes/:recipeId)
+ * @function
+ * @memberof module:recipe-router
+ * @param {number} recipeId - The ID of the recipe to edit
+ * 
+ * Takes the recipe with the given ID and updates it with the data in the request body
+ */
 router.post('recipes/:recipeId', requireAdmin , async (req, res) => {
   let recipeId = parseInt(req.params.recipeId);
   if (isNaN(recipeId)) {
