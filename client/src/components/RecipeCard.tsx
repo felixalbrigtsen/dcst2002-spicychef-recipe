@@ -4,6 +4,7 @@ import { Button, Card, Image, Media, Heading, Content, Icon } from 'react-bulma-
 import {useState} from 'react';
 import { FaArrowRight, FaThumbsUp } from 'react-icons/fa';
 import { useLogin } from '../hooks/Login';
+import { Link } from 'react-router-dom';
 
 import recipeService from '../services/recipe-service';
 import { Recipe } from '../models/Recipe';
@@ -30,13 +31,15 @@ function RecipeCard(props: RecipeCardProps) {
     return(
         <>
             <Card style={{ width: 300, margin: 'auto' }}>
-                <Card.Image size="4by3" src={props.recipe.imageUrl} />
+            <Link to={`/recipe/${props.recipe.id}`}><Card.Image size="4by3" src={props.recipe.imageUrl} /></Link>
                 <Card.Content style={{minHeight: 150}}>
                     <Media>
                         <Media.Item>
+                        <Link to={`/recipe/${props.recipe.id}`} className='is-flex is-vcentered'>
                             <Heading size={4}>
                                 {props.recipe.title}
                             </Heading>
+                        </Link>
                             {/* <Heading subtitle size={6}>
                                 {props.recipe.tags.map((tag) => (
                                     <Button color='dark' renderAs='span' style={{margin: '2px 2px'}} key={tag} onClick={
@@ -54,29 +57,30 @@ function RecipeCard(props: RecipeCardProps) {
                 </Card.Content>
                 <Card.Footer>
                     <Card.Footer.Item>
-                    {/* If the recipe.id is in user.likes change the colour of the like button */}   
-                    { user.likes.includes(props.recipe.id) ?
-                        <Button className="is-rounded" color="success" outlined>
+                    {/* If the recipe.id is in user.likes change the colour of the like button */}
+
+                    { user.googleId && user.likes.includes(props.recipe.id) ?
+                        <Button className="is-rounded" color="success">
                             <Icon>
                                  <FaThumbsUp size={18} />
                             </Icon>
                         </Button> 
                         : 
-                        <Button className="is-rounded" color="danger" outlined>
+                        <Button className="is-rounded" color="info" outlined>
                             <Icon>
                                  <FaThumbsUp size={18}/>
                             </Icon>
                         </Button>
                     }
                     </Card.Footer.Item>
-                    <a href={`/recipe/${props.recipe.id}`} className='is-flex is-vcentered'>
+                    <Link to={`/recipe/${props.recipe.id}`} className='is-flex is-vcentered'>
                         <Card.Footer.Item>
                         <span>Read More</span>
                         <span className="icon">
                             <FaArrowRight />
                         </span>
                         </Card.Footer.Item>
-                    </a>
+                    </Link>
                 </Card.Footer>
             </Card>
         </>
