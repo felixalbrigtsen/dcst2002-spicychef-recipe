@@ -6,6 +6,7 @@ import express from 'express';
 import recipeService from '../services/recipe-service';
 import authRouter from './auth-router';
 
+import type { Recipe } from '../models/Recipe';
 import { requireLogin, requireAdmin, refreshLogin } from './auth-router';
 
 const router = express.Router();
@@ -319,6 +320,107 @@ router.delete('/list/:ingredientId', requireLogin , async (req, res) => {
 
   recipeService.removeIngredientFromList(ingredientId, userId).then(async (insertedId) => {
     await refreshLogin(req, res);
+    res.send("OK");
+  })
+  .catch((err) => {
+    handleServerError(res, err);
+  });
+});
+
+
+router.post('recipes/:recipeId', requireAdmin , async (req, res) => {
+  let recipeId = parseInt(req.params.recipeId);
+  if (isNaN(recipeId)) {
+    res.status(400).send('Bad request');
+    return;
+  }
+
+  try {
+    let oldRecipe = await recipeService.getRecipe(recipeId);
+    if (!oldRecipe) {
+      return res.status(404).send('Recipe not found');
+    }
+  } catch (err) {
+    handleServerError(res, err);
+    return;
+  }
+
+  let recipe = req.body as Recipe;
+  const ingredientItems = req.body.ingredients as {ingredientName: string, quantity: number, unitName: string}[];
+  recipe.id = recipeId;
+
+  if (!recipe.title || !recipe.summary || !recipe.instructions || !recipe.ingredients) {
+    res.status(400).send('Bad request, missing property');
+    return;
+  }
+
+  if (recipe.title.length < 3 || recipe.title.length > 100) {
+    res.status(400).send('Bad request, title must be between 3 and 100 characters');
+    return;
+  }
+
+  if (recipe.instructions.length < 3 || recipe.instructions.length > 10000) {
+    res.status(400).send('Bad request, instructions must be between 3 and 10000 characters');
+    return;
+  }
+
+  for (let ingredientItem of ingredientItems) {
+    if (!ingredientItem.ingredientName || !ingredientItem.quantity || !ingredientItem.unitName) {
+      res.status(400).send('Bad request, missing ingredient property');
+      return;
+    }
+    if (isNaN(ingredientItem.quantity)) {
+      res.status(400).send('Bad request, quantity must be a number');
+      return;
+    }
+    if (ingredientItem.quantity <= 0) {
+      res.status(400).send('Bad request, quantity must be positive');
+      return;
+    }
+    if (ingredientItem.unitName.length > 20) {
+      res.status(400).send('Bad request, unit name must be less than 20 characters');
+      return;
+    }
+    if (ingredientItem.ingredientName.length > 100) {
+      res.status(400).send('Bad request, ingredient name must be less than 100 characters');
+      return;
+    }
+    if (ingredientItem.unitName.length == 0) {
+      ingredientItem.unitName = "units";
+    }
+  }
+
+  recipeService.updateRecipe(recipe.id, recipe.title, recipe.summary, recipe.instructions, recipe.servings, recipe.imageUrl || "https://recipe.feal.no/logo.png", recipe.videoUrl || "https://www.youtube.com/watch?v=dQw4w9WgXcQ").then(async (insertedId) => {
+
+    recipeService.updateRecipeIngredients(recipe.id, ingredientItems).then(async (insertedId) => {
+      res.send("OK");
+    })
+    .catch((err) => {
+      handleServerError(res, err);
+    });
+  }).catch((err) => {
+    handleServerError(res, err);
+  });
+});
+
+router.delete('recipes/:recipeId', requireAdmin , async (req, res) => {
+  let recipeId = parseInt(req.params.recipeId);
+  if (isNaN(recipeId)) {
+    res.status(400).send('Bad request');
+    return;
+  }
+
+  try {
+    let oldRecipe = await recipeService.getRecipe(recipeId);
+    if (!oldRecipe) {
+      return res.status(404).send('Recipe not found');
+    }
+  } catch (err) {
+    handleServerError(res, err);
+    return;
+  }
+
+  recipeService.deleteRecipe(recipeId).then(async (insertedId) => {
     res.send("OK");
   })
   .catch((err) => {
