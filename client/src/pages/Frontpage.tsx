@@ -67,7 +67,6 @@ function Home () {
                                         <Tile kind="child" renderAs={Notification} color="danger">
                                             <Heading>Welcome, {user.name || 'Guest'}</Heading>
                                             <Heading subtitle>This is the SpicyChef Recipe Book</Heading>
-                                            <div className="content" />
                                         </Tile>
                                     </Tile>
                                 <Tile>
@@ -113,10 +112,6 @@ function Home () {
                                             <Icon path={mdiShakerOutline} size={1} color="white" />
                                             </Button>
                                             </Link>
-                                            <Content>
-                                                Ingredient of the Day
-                                                <Image src="https://cdn.discordapp.com/attachments/894239765430419549/1032295931435036772/unknown.png" />
-                                            </Content>
                                         </Tile>
                                         <Tile kind="child" renderAs={Notification} color="warning">
                                             <Heading>Shopping List</Heading>
@@ -132,8 +127,8 @@ function Home () {
                         </Tile>
                                 <Tile kind="parent">
                                     <Tile kind="child" renderAs={Notification} color="success">
-                                        <div className="content">
-                                            <Heading>Selected Recipe</Heading>
+                                        <div className="content" style={{margin:'auto'}}>
+                                            <Heading className='has-text-centered'>Selected Recipe</Heading>
                                             {randomRecipe ? 
                                             <Link to={`/recipe/${randomRecipe.id}`} style={{textDecoration: "none"}}>
                                             <Image size={256} alt="256x256" src={(randomRecipe && randomRecipe.imageUrl) ? randomRecipe.imageUrl : "https://bulma.io/images/placeholders/256x256.png" } />
@@ -141,7 +136,7 @@ function Home () {
                                             : <Heading subtitle>There are no images to display</Heading>}
                                             <Media>
                                                 <Media.Item>
-                                                    <Heading subtitle>{randomRecipe ? randomRecipe.title : ""}</Heading>
+                                                    <Heading subtitle className='has-text-centered'>{randomRecipe ? randomRecipe.title : ""}</Heading>
                                                     <Content>
                                                     {randomRecipe ? randomRecipe.summary : ""}
                                                     </Content>
