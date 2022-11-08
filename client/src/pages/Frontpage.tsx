@@ -62,7 +62,7 @@ function Home () {
             <Hero>
                 <Hero.Body>
                         <Tile kind="ancestor">
-                            <Tile size={8} vertical>
+                            <Tile size={8} vertical style={{alignItems: "center !important"}}>
                                 <Tile kind="parent">
                                         <Tile kind="child" renderAs={Notification} color="danger">
                                             <Heading>Welcome, {user.name || 'Guest'}</Heading>
@@ -71,9 +71,9 @@ function Home () {
                                     </Tile>
                                 <Tile>
                                 <Tile kind="parent">
-                                        <Tile kind="child" renderAs={Notification} color="info" className='is-centered'>
+                                        <Tile kind="child" renderAs={Notification} color="info">
                                             <Heading>Recipes</Heading>
-                                                <Form.Field>
+                                                <Form.Field style={{width: '100%'}}>
                                                     <Form.Label style={{color:"white"}}>
                                                         <Link to={`/recipes`} style={{textDecoration: "none"}}>
                                                             <Button color="info" className='is-rounded'>
