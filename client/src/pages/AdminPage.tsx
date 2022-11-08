@@ -14,6 +14,7 @@ import ScrollButton from '../components/ScrollUp';
 
 import { Table, Container, Heading, Tile, Box, Notification, Button, Modal } from 'react-bulma-components';
 import { MdDeleteForever, MdEdit, MdRemoveRedEye, MdAddCircle } from 'react-icons/md';
+import { BiImport } from 'react-icons/bi';
 
 function AdminView() {
 
@@ -59,8 +60,8 @@ function AdminView() {
             <Tile kind="child" renderAs={Notification} className="has-text-centered is-12">
               <Heading> Recipe Overview  </Heading> 
             </Tile>
-
-            <Container style={{width: '80%'}} className='has-text-centered'>
+            <Tile kind="parent">
+              <Tile kind="child" size={6} className='has-text-centered'>
             <Link to='/create'>
             <Button color="success" style={{width: '80%'}}>
                 <span>Create New</span>
@@ -69,7 +70,18 @@ function AdminView() {
                 </span>
             </Button>
             </Link>
-            </Container>
+            </Tile>
+            <Tile kind="child" size={6} className='has-text-centered'>
+            <Link to='/import'>
+            <Button color="link" style={{width: '80%'}}>
+                <span>Import Recipe</span>
+                <span className="icon">
+                    <BiImport />
+                </span>
+            </Button>
+            </Link>
+            </Tile>
+            </Tile>
 
             <br />
             {/* Add search */}
