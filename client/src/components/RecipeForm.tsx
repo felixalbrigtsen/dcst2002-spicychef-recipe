@@ -11,7 +11,7 @@ import { Form, Button, Tile, Image, Table, Container } from 'react-bulma-compone
 import { useState, useEffect } from 'react';
 
 import { Recipe } from '../models/Recipe';
-import { Ingredient } from '../models/RecipeIngredient';
+import { RecipeIngredient } from '../models/RecipeIngredient';
 import { FaTimes } from 'react-icons/fa';
 import recipeService from '../services/recipe-service';
 
