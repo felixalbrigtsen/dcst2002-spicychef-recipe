@@ -13,7 +13,7 @@ import { useLogin } from '../hooks/Login';
 import { Hero, Tile, Heading, Image, Notification, Form, Button, Media, Content } from 'react-bulma-components';
 
 import Icon from '@mdi/react'
-import { mdiListBox, mdiShakerOutline, mdiFoodDrumstick, mdiFoodSteak, mdiCarrot, mdiMagnify, mdiArrowRight } from '@mdi/js';
+import { mdiListBox, mdiShakerOutline, mdiFoodDrumstick, mdiFoodSteak, mdiCarrot, mdiMagnify, mdiArrowRight, mdiLoginVariant} from '@mdi/js';
 import Footer from '../components/Footer';
 import { Recipe } from '../models/Recipe';
 
@@ -23,26 +23,9 @@ import ImageSlider from '../components/ImageSlider';
 function Home () {
   const { user } = useLogin();
 
-    // // Demo of how to use the recipe service
-    // useEffect(() => {
-    //     recipeService.getRecipesShort().then((recipes) => {
-    //         console.log(recipes);
-    //     });
-    //     let id : number = 1
-    //     recipeService.getRecipe(id).then((recipe) => {
-    //         console.log("---------Recipe 1?:-------------")
-    //         console.log(recipe)
-    //     })
-    //     let querystring: string = "cho"
-    //     recipeService.search(querystring).then((recipes) => {
-    //         console.log("-----------Search---------------")
-    //         console.log(recipes)
-    //     })
-    // }, []);
-
     // choose a random recipe from the list of recipes
     let [ recipeList, setRecipeList ] = React.useState<Recipe[]>([]);
-    let [ randomRecipe, setRandomRecipe ] = React.useState<Recipe>({id: 0, title: "", summary: "", instructions: "", servings: 0, imageUrl: "", videoUrl: "", created_at: "", ingredients: [], tags: []});
+    let [ randomRecipe, setRandomRecipe ] = React.useState<Recipe>({id: 0, title: "", summary: "", instructions: "", servings: 0, imageUrl: "", videoUrl: "", created_at: "", ingredients: [], tags: [], likes: 0});
     let [ query, setQuery ] = React.useState<string>("")
 
     React.useEffect(() => {
@@ -100,25 +83,60 @@ function Home () {
                                     </Tile>
                                     <Tile kind="parent" vertical>
                                         <Tile kind="child" renderAs={Notification} color="primary">
-                                            <Heading>Ingredients</Heading>
-                                            <Heading subtitle>Explore Ingredients</Heading>
+                                            <Heading>Explore SpicyChef</Heading>
+                                            <Heading subtitle>Useful links</Heading>
                                             <Link to="/ingredients">
-                                            <Button renderAs={Notification} color="primary" className='is-rounded'>
-                                            <Icon path={mdiCarrot} size={1} color="white" />
-                                            <Icon path={mdiFoodSteak} size={1} color="white" />
-                                            <Icon path={mdiFoodDrumstick} size={1} color="white" />
-                                            <Icon path={mdiShakerOutline} size={1} color="white" />
+                                            <Button color="info" className='is-light is-rounded'>
+                                                <span><Heading>Ingredients</Heading></span>
+                                                <Icon path={mdiCarrot} size={1} />
+                                                <Icon path={mdiFoodSteak} size={1} />
+                                                <Icon path={mdiFoodDrumstick} size={1} />
+                                                <Icon path={mdiShakerOutline} size={1} />
                                             </Button>
                                             </Link>
-                                        </Tile>
-                                        <Tile kind="child" renderAs={Notification} color="warning">
-                                            <Heading>Shopping List</Heading>
-                                            <Heading subtitle>Check out Your Shopping List</Heading>
+                                            <br />
                                             <Link to="/list">
-                                            <Button renderAs={Notification} color="warning" className="is-rounded">
+                                            <Button color="info" className="is-light is-rounded mt-2">
+                                                <span><Heading>Shopping List</Heading></span>
                                                 <Icon path={mdiListBox} size={1} />
                                             </Button>
                                             </Link>                                            
+                                            <br />
+                                            <Link to="/search">
+                                            <Button color="info" className="is-light is-rounded mt-2">
+                                                <span><Heading>Search</Heading></span>
+                                                <Icon path={mdiMagnify} size={1} />
+                                            </Button>
+                                            </Link>
+                                            { user.googleId && <> 
+                                            <br />
+                                            <Link to="/login">
+                                            <Button color="info" className="is-light is-rounded mt-2">
+                                                <span><Heading>Login</Heading></span>
+                                                <Icon path={mdiLoginVariant} size={1} />
+                                            </Button>
+                                            </Link>
+                                            </> }
+                                        </Tile>
+                                        <Tile kind="child" renderAs={Notification} color="warning">
+                                            <Heading>Most Liked Recipes</Heading>
+                                            <Heading subtitle>Try out our favorites</Heading>
+
+                                            { recipeList.sort((a, b) => b.likes - a.likes).slice(0, 3).map((recipe, index) => {
+                                                return (
+                                                    <Link to={`/recipes/${recipe.id}`} key={index}>
+                                                        <Media className="columns">
+                                                            <Media.Item renderAs="figure" className="column is-2">
+                                                                <Image size={96} alt="96x96" src={recipe.imageUrl || "/logo.png"} />
+                                                            </Media.Item>
+                                                            <Media.Item renderAs="article" align="left" className="column">
+                                                                <Heading size={4} className="has-text-left">{recipe.title}</Heading>
+                                                                <Heading subtitle size={6}>{recipe.summary}</Heading>
+                                                            </Media.Item>
+                                                        </Media>
+                                                    </Link>
+                                                )
+                                            }) }
                                         </Tile>
                                     </Tile>
                                 </Tile>
