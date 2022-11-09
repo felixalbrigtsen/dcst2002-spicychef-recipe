@@ -41,7 +41,7 @@ function App() {
         <Route path="/search/:query" element={<SearchPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/recipes" element={<RecipeList />} />
-        <Route path="/recipe/:id" element={<RecipePage />} />
+        <Route path="/recipes/:id" element={<RecipePage />} />
         <Route path="/ingredients" element={<IngredientPage />} />
         <Route path="/list" element={<ShoppingListPage />} />
         <Route path="/likes" element={<LikePage />} />

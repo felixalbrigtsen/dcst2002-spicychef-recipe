@@ -99,10 +99,10 @@ function AdminView() {
                 {recipeList.map((item, index) => (
                     <tr key={index}>
                       <td>
-                        <Link to={`/recipe/${item.id}`} style={{textDecoration: 'none', color: 'dark'}}>{item.title}</Link>
+                        <Link to={`/recipes/${item.id}`} style={{textDecoration: 'none', color: 'dark'}}>{item.title}</Link>
                       </td>
                       <td className='is-narrow has-text-centered'>
-                        <Link to={`/recipe/${item.id}`}>
+                        <Link to={`/recipes/${item.id}`}>
                         <Button color="dark" className="is-rounded is-outlined">
                           <MdRemoveRedEye />
                         </Button>

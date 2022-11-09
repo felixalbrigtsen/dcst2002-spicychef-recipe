@@ -68,13 +68,6 @@ function RecipeForm (props: RecipeFormProps) {
         newRecipe.ingredients = ingredients
         newRecipe.tags = tags;
         console.log(newRecipe);
-        if(window.location.pathname === "/create"){
-            // recipeService.createRecipe(newRecipe);
-            console.log("create");
-        } else if(window.location.pathname === "/edit/" + recipe.id){
-            // recipeService.updateRecipe(newRecipe);
-            console.log("edit");
-        }
     }
 
     function handleIngredientPropertyChange(index: number, property: string, value: string) {
