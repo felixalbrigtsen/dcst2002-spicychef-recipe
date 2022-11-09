@@ -1,9 +1,12 @@
 import * as React from 'react';
 import listService from '../services/list-service';
+import recipeService from '../services/recipe-service';
+import ingredientService from '../services/ingredient-service';
 import { Ingredient } from '../models/Ingredient';
 
 import { MdDeleteForever } from 'react-icons/md';
 import { Box, Button, Form, Container, Heading, Hero, Notification, Table, Tile } from 'react-bulma-components';
+import { useEffect, useState } from 'react';
 
 
 export default function ShoppingListPage() {
@@ -12,18 +15,19 @@ export default function ShoppingListPage() {
     listService.removeIngredient(ingredientId);
   };
 
-  let listItems: Array<any> = [
-    {
-      id: 1,
-      name: 'Product 1',
-      quantity: 1
-    }, 
-    {
-      id: 2,
-      name: 'Product 2',
-      quantity: 2
-    }
-  ];
+  let [ listItems, setListItems ] = React.useState<{id: number, name: string}[]>([]);
+  let [ ingredients, setIngredients ] = React.useState<{id: number, name: string}[]>([]);
+
+  function updateListItems() {
+    listService.getShoppingListItems()
+      .then((items) => {
+        setListItems(items);
+      });
+  }
+  useEffect(() => {
+    updateListItems();
+  }, []);
+
 
   return (
     <>
@@ -33,13 +37,27 @@ export default function ShoppingListPage() {
             <Tile kind="child" renderAs={Notification} color="warning" className="has-text-centered is-12">
               <Heading> Shopping List </Heading> 
             </Tile>
+            <Box className='has-text-right'>
+              <Button
+                color="danger"
+                className="is-rounded"
+                onClick={() => {console.log(listItems);
+                  listItems?.map(
+                    (item, index) => {
+                    () => {handleRemove(item.id); setListItems(listItems.filter((item, j) => j !== index))}
+                  })
+                }}
+              >
+                Clear all
+              </Button>
+            </Box>
             <Box>
               <Table className='is-fullwidth is-hoverable is-striped'>
                 <thead>
                   <tr>
                     <th>Item</th>
                     {/* <th>Quantity</th> */}
-                    <th></th>
+                    {/* <th>{console.log(listItems)}</th> */}
                   </tr>
                 </thead>
                 <tbody>
