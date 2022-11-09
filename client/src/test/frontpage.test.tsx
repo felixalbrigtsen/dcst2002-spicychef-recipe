@@ -9,7 +9,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom'
 import App from '../App';
 import Home from '../pages/Frontpage'
-import { randomBytes } from 'crypto';
+import exp from 'constants';
 
 const shortRecipes = [
   {"id":1,"title":"Tunisian Lamb Soup","summary":"Meal from MealDB","imageUrl":"https://www.themealdb.com/images/media/meals/t8mn9g1560460231.jpg","likes":null,"tags":["Lamb","Soup","Tunisian"]},
@@ -47,13 +47,11 @@ test('Navbar is rendered', () => {
 });
 
 describe('Frontpage component tests', () => {
-  test('Correct welcome text', async () => {
+  test('Correct welcome text', () => {
     const {getByText} = render(<Router><Home /></Router>)
 
-    await (waitFor(() => {
-      expect(getByText('Welcome, Guest')).toBeInTheDocument();
-      expect(getByText('This is the SpicyChef Recipe Book')).toBeInTheDocument();
-    }));
+    expect(getByText('Welcome, Guest')).toBeInTheDocument();
+    expect(getByText('This is the SpicyChef Recipe Book')).toBeInTheDocument();
   });
 
   test('random selected recipe', async () => {
@@ -66,13 +64,13 @@ describe('Frontpage component tests', () => {
         try {
           expect(getByText(shortRecipes[i].title)).toBeInTheDocument()
           expect(getByText(shortRecipes[i].summary)).toBeInTheDocument()
-
         } catch {
           continue
         }
         randomRecipe = true
       }
       expect(randomRecipe).toBe(true)
+      expect(getByText("Read more")).toBeInTheDocument()
     }))
   })
 });
