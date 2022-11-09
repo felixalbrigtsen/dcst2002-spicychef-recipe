@@ -34,7 +34,7 @@ function RecipeForm (props: RecipeFormProps) {
     let [ instructions , setInstructions ] = React.useState<string>(props.recipe.instructions);
     let [ imageLink , setImageLink ] = React.useState<string>(props.recipe.imageUrl ? props.recipe.imageUrl : "");
     let [ videoLink , setVideoLink ] = React.useState<string>(props.recipe.videoUrl ? props.recipe.videoUrl : "");
-    let [ stdIngredient, setStdIngredient ] = React.useState<Ingredient[]>([]);
+    let [ stdIngredient, setStdIngredient ] = React.useState<RecipeIngredient[]>([]);
     let [ ingredients, setIngredients ] = React.useState<IngredientItem[]>([]);
     let [ tags, setTags ] = React.useState<string[]>([]);
 

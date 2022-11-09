@@ -113,7 +113,7 @@ class ListService {
 
       console.log(shoppingList);
 
-      resolve(shoppingList.map(ingredient => {return {id: ingredient.id, name: ingredient.ingredientName}}));
+      resolve(shoppingList.map(ingredient => {return {id: ingredient.id, name: ingredient.name}}));
     });
     
 
