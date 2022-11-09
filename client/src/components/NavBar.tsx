@@ -5,7 +5,7 @@ import {useState} from 'react';
 import { useLogin } from '../hooks/Login';
 
 import Icon from '@mdi/react';
-import { mdiAccountCircle, mdiLogout, mdiListBox, mdiHome, mdiMagnify, mdiThumbsUpDown } from '@mdi/js';
+import { mdiAccountCircle, mdiLogout, mdiListBox, mdiHome, mdiMagnify, mdiThumbsUpDown, mdiCarrot } from '@mdi/js';
 import { MdAdminPanelSettings } from 'react-icons/md';
 
 export default function NavBar() {
@@ -63,6 +63,12 @@ export default function NavBar() {
             <span className="icon-text">
               <Icon path={mdiListBox} size={1} />
               <span>Shopping List</span>
+            </span>
+          </Navbar.Item>
+          <Navbar.Item href="/ingredients">
+            <span className="icon-text">
+              <Icon path={mdiCarrot} size={1} />
+              <span>Ingredients</span>
             </span>
           </Navbar.Item>
           { user.isadmin ? 
