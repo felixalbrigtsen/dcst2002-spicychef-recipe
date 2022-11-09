@@ -3,8 +3,11 @@ import { render, screen, waitFor } from '@testing-library/react';
 import App from '../App';
 
 const shortRecipes = [
-  {},
-  {}
+  {"id":1,"title":"Tunisian Lamb Soup","summary":"Meal from MealDB","imageUrl":"https://www.themealdb.com/images/media/meals/t8mn9g1560460231.jpg","likes":null,"tags":["Lamb","Soup","Tunisian"]},
+  {"id":2,"title":"Choc Chip Pecan Pie","summary":"Meal from MealDB","imageUrl":"https://www.themealdb.com/images/media/meals/rqvwxt1511384809.jpg","likes":null,"tags":["American","Desert","Dessert","Nutty","Pie","Sweet"]},
+  {"id":3,"title":"Bigos (Hunters Stew)","summary":"Meal from MealDB","imageUrl":"https://www.themealdb.com/images/media/meals/md8w601593348504.jpg","likes":null,"tags":["Polish","Pork"]},
+  {"id":4,"title":"Turkey Meatloaf","summary":"Meal from MealDB","imageUrl":"https://www.themealdb.com/images/media/meals/ypuxtw1511297463.jpg","likes":null,"tags":["Alcoholic","British","Miscellaneous"]},
+  {"id":5,"title":"Beef and Oyster pie","summary":"Meal from MealDB","imageUrl":"https://www.themealdb.com/images/media/meals/wrssvt1511556563.jpg","likes":null,"tags":["Beef","British","Pie"]}
 ]
 
 const Recipes = [
