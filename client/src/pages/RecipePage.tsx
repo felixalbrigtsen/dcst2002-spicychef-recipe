@@ -29,7 +29,7 @@ function RecipePage() {
     //   shoppingList: [2,3,4]
     // }
 
-    let [ recipe, setRecipe ] = React.useState<Recipe>({id: 0, title: "", summary: "", instructions: "", servings: 0, imageUrl: "", videoUrl: "", created_at: "", ingredients: [], tags: []});
+    let [ recipe, setRecipe ] = React.useState<Recipe>({id: 0, title: "", summary: "", instructions: "", servings: 0, imageUrl: "", videoUrl: "", created_at: "", ingredients: [], tags: [], likes: 0});
 
     let id = Number(useParams().id);
     React.useEffect(() => {
@@ -136,11 +136,15 @@ function RecipePage() {
                       )
                     })
                   }
-                  <Button renderAs={Notification} onClick={
-                    () => { recipe.ingredients?.forEach((ingredient) => {
-                      listService.addIngredient(ingredient.id)
-                    });}
-                  }>Add Ingredients to List</Button>
+                  <Button 
+                    renderAs={Notification} 
+                    onClick={ () => { 
+                      recipe.ingredients?.forEach((ingredient) => {
+                        listService.addIngredient(ingredient.id)
+                      });
+                    }
+                  }
+                  >Add Ingredients to List</Button>
                 </Tile>
               </Tile>
             </Tile>
