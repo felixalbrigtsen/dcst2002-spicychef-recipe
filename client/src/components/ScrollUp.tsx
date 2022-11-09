@@ -34,6 +34,7 @@ function ScrollButton() {
     window.addEventListener('scroll', toggleVisible);
     
     return (
+      <button name='/scroll/up' style={{display: visible ? "inline" : "none"}}>
        <FaArrowCircleUp 
         onClick={scrollToTop}
         style={{
@@ -44,6 +45,7 @@ function ScrollButton() {
           zIndex: 1,
           display: visible ? 'inline' : 'none'
         }} />
+      </button>
     );
   }
 
