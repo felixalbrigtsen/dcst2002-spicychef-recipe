@@ -1,7 +1,7 @@
 import pool from '../mysql-pool';
 import { RowDataPacket } from 'mysql2';
 import type { Meal } from '../models/Meal';
-import type { Ingredient } from '../models/Ingredient';
+import type { RecipeIngredient } from '../models/RecipeIngredient';
 import type { Recipe } from '../models/Recipe';
 import type { Unit } from '../models/Unit';
 

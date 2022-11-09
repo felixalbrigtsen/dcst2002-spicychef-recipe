@@ -1,6 +1,6 @@
 import axios from 'axios';
 import type { Recipe } from '../models/Recipe';
-import type { Ingredient } from '../models/Ingredient';
+import type { RecipeIngredient } from '../models/RecipeIngredient';
 
 /**
  * @module

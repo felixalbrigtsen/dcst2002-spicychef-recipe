@@ -1,5 +1,5 @@
 /**
- * Ingredient
+ * RecipeIngredient
  * @alias RecipeIngredient
  *
  */
@@ -21,3 +21,4 @@ export type RecipeIngredient = {
    */
   unitName: string;
 };
+

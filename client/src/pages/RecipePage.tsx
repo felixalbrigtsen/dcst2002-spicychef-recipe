@@ -12,7 +12,7 @@ import { FaPlus, FaMinus, FaToriiGate } from 'react-icons/fa';
 import { FaThumbsUp } from 'react-icons/fa';
 import recipeService from '../services/recipe-service';
 import { Recipe } from '../models/Recipe';
-import { Ingredient } from '../models/Ingredient';
+import { RecipeIngredient } from '../models/RecipeIngredient';
 import listService from '../services/list-service';
 
 
