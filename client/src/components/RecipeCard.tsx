@@ -35,7 +35,7 @@ function RecipeCard(props: RecipeCardProps) {
                 <Card.Content style={{minHeight: 150}}>
                     <Media>
                         <Media.Item>
-                        <Link to={`/recipe/${props.recipe.id}`} className='is-flex is-vcentered'>
+                        <Link to={`/recipes/${props.recipe.id}`} className='is-flex is-vcentered'>
                             <Heading size={4}>
                                 {props.recipe.title}
                             </Heading>
@@ -73,7 +73,7 @@ function RecipeCard(props: RecipeCardProps) {
                         </Button>
                     }
                     </Card.Footer.Item>
-                    <Link to={`/recipe/${props.recipe.id}`} className='is-flex is-vcentered'>
+                    <Link to={`/recipes/${props.recipe.id}`} className='is-flex is-vcentered'>
                         <Card.Footer.Item>
                         <span>Read More</span>
                         <span className="icon">
