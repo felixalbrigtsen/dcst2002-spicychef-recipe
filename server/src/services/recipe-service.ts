@@ -404,7 +404,6 @@ class RecipeService {
   }
 
   addRecipe(title: string, summary: string, instructions: string, servings: number, imageUrl: string, videoUrl: string): Promise<number> {
-    
     return new Promise((resolve, reject) => {
       pool.query('INSERT INTO recipe (title, summary, instructions, servings, imageUrl, videoUrl) VALUES (?, ?, ?, ?, ?, ?)', [title, summary, instructions, servings, imageUrl, videoUrl], (err, results) => {
         if (err) {
@@ -501,6 +500,7 @@ class RecipeService {
     });
   }
 
+  //TODO: Consider making a type/model for this
   updateRecipe(id: number, title: string, summary: string, instructions: string, servings: number, imageUrl: string, videoUrl: string) {
     return new Promise((resolve, reject) => {
       pool.query('UPDATE recipe SET title = ?, summary = ?, instructions = ?, servings = ?, imageUrl = ?, videoUrl = ? WHERE id = ?', [title, summary, instructions, servings, imageUrl, videoUrl, id], (err, results) => {
@@ -529,6 +529,7 @@ class RecipeService {
           for (let i = 0; i < ingredients.length; i++) {
             this.addRecipeIngredient(recipeId, ingredientIds[i], unitIds[i], ingredients[i].quantity);
           }
+          return resolve(results);
         } catch (err) {
           return reject(err);
         }
@@ -538,36 +539,23 @@ class RecipeService {
   }
 
   updateRecipeTags(recipeId: number, tags: string[]) {
-    let existingTags: string[];
     return new Promise((resolve, reject) => {
-      pool.query('SELECT name FROM recipe_tag WHERE recipeId = ?', [recipeId], (err, results) => {
+      // Delete tags that are no longer in the recipe
+      // Deletes and inserts many rows in a single query
+      //
+      // TODO: Use transactions to avoid partial saves
+     
+      pool.query('DELETE FROM recipe_tag WHERE recipeId = ? AND name NOT IN (?)', [recipeId, tags], (err, results) => {
         if (err) {
           return reject(err);
         }
-        // @ts-ignore
-        existingTags = results.map((result) => result.name);
-        // Delete tags that are no longer in the recipe
-        // TODO: Use transactions to avoid partial saves
-        for (let tag of existingTags) {
-          if (!tags.includes(tag)) {
-            pool.query('DELETE FROM recipe_tag WHERE recipeId = ? AND name = ?', [recipeId, tag], (err, results) => {
-              if (err) {
-                return reject(err);
-              }
-            });
-          }
-        }
         // Add tags that are new to the recipe
-        // TODO: Use transactions to avoid partial saves
-        for (let tag of tags) {
-          if (!existingTags.includes(tag)) {
-            pool.query('INSERT INTO recipe_tag (recipeId, name) VALUES (?, ?)', [recipeId, tag], (err, results) => {
-              if (err) {
-                return reject(err);
-              }
-            });
+        pool.query('INSERT IGNORE INTO recipe_tag(recipeId, name) VALUES ?', [tags.map((tag) => [recipeId, tag])], (err, results) => {
+          if (err) {
+            return reject(err);
           }
-        }
+          return resolve(results);
+        });
       });
     });
   }
