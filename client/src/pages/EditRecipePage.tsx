@@ -16,7 +16,7 @@ import RecipeForm from '../components/RecipeForm';
 
 function EditRecipe () {
 
-  let [ recipe, setRecipe ] = React.useState<Recipe>({id: 0, title: "", summary: "", instructions: "", servings: 0, imageUrl: "", videoUrl: "", created_at: "", ingredients: [], tags: []});
+  let [ recipe, setRecipe ] = React.useState<Recipe>({id: 0, title: "", summary: "", instructions: "", servings: 0, imageUrl: "", videoUrl: "", created_at: "", ingredients: [], tags: [], likes: 0});
 
     let id = Number(useParams().id);
     React.useEffect(() => {
