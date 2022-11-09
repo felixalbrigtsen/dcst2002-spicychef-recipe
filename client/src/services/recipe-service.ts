@@ -41,7 +41,7 @@ class RecipeService {
 
   getRecipe(id: number): Promise<Recipe> {
     return new Promise((resolve, reject) => {
-      axios.get(process.env.REACT_APP_API_URL + '/recipe/' + id)
+      axios.get(process.env.REACT_APP_API_URL + '/recipes/' + id)
         .then((response) => {
           resolve(response.data);
         })
@@ -63,6 +63,27 @@ class RecipeService {
   search(query : string | undefined): Promise<Recipe[]> {
     return new Promise((resolve, reject) => {
       axios.get(process.env.REACT_APP_API_URL + '/search?q=' + query)
+        .then((response) => {
+          resolve(response.data);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
+  searchRecipeByIngredients(ingredientIds: number[], mode='all'): Promise<Recipe[]> {
+    return new Promise((resolve, reject) => {
+      if (mode !== "all" && mode !== "any") {
+        return reject("Invalid mode");
+      }
+
+      axios.get(process.env.REACT_APP_API_URL + '/recipes', {
+        params: {
+          ingredients: ingredientIds.join(","),
+          mode: mode
+        }
+      })
         .then((response) => {
           resolve(response.data);
         })
