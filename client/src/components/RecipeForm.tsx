@@ -36,8 +36,6 @@ function RecipeForm (props: RecipeFormProps) {
     let [ videoLink , setVideoLink ] = React.useState<string>(props.recipe.videoUrl ? props.recipe.videoUrl : "");
     let [ stdIngredient, setStdIngredient ] = React.useState<Ingredient[]>([]);
     let [ ingredients, setIngredients ] = React.useState<IngredientItem[]>([]);
-    // let [ quantity, setQuantity ] = React.useState<number[]>([]);
-    // let [ unit, setUnit ] = React.useState<string[]>([]);
     let [ tags, setTags ] = React.useState<string[]>([]);
 
     useEffect(() => {
@@ -50,9 +48,6 @@ function RecipeForm (props: RecipeFormProps) {
         setVideoLink(props.recipe.videoUrl ? props.recipe.videoUrl : "");
         setStdIngredient(props.recipe.ingredients);
         setIngredients(props.recipe.ingredients.map((ingredient) => { return { ingredientName: ingredient.ingredientName, quantity: ingredient.quantity, unitName: ingredient.unitName } }));
-        // setIngredients(props.recipe.ingredients.map((ingredient) => ingredient.ingredientName));
-        // setUnit(props.recipe.ingredients.map((ingredient) => ingredient.unitName));
-        // setQuantity(props.recipe.ingredients.map((ingredient) => ingredient.quantity));
         setTags(props.recipe.tags);
     }, [props.recipe]);
 
