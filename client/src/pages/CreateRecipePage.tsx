@@ -14,7 +14,7 @@ import { Recipe } from '../models/Recipe';
 import { useState, useEffect } from 'react';
 
 function CreateRecipe() {
-  const blankRecipe = {id: 0, title: "", summary: "", instructions: "", servings: 0, imageUrl: "", videoUrl: "", created_at: "", ingredients: [], tags: []};
+  const blankRecipe = {id: 0, title: "", summary: "", instructions: "", servings: 0, imageUrl: "", videoUrl: "", created_at: "", ingredients: [], tags: [], likes: 0};
   return (
     <Container>
       <Hero>
