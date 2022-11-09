@@ -16,7 +16,6 @@ export default function ShoppingListPage() {
   };
 
   let [ listItems, setListItems ] = React.useState<{id: number, name: string}[]>([]);
-  let [ ingredients, setIngredients ] = React.useState<{id: number, name: string}[]>([]);
 
   function updateListItems() {
     listService.getShoppingListItems()
@@ -41,10 +40,10 @@ export default function ShoppingListPage() {
               <Button
                 color="danger"
                 className="is-rounded"
-                onClick={() => {console.log(listItems);
+                onClick={() => {
                   listItems?.map(
                     (item, index) => {
-                    () => {handleRemove(item.id); setListItems(listItems.filter((item, j) => j !== index))}
+                    handleRemove(item.id); setListItems(listItems.filter((item, j) => j !== index))
                   })
                 }}
               >
@@ -56,20 +55,18 @@ export default function ShoppingListPage() {
                 <thead>
                   <tr>
                     <th>Item</th>
-                    {/* <th>Quantity</th> */}
-                    {/* <th>{console.log(listItems)}</th> */}
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {listItems.map((item, index) => (
                     <tr key={index}>
                       <td>{item.name}</td>
-                      {/* <td className='is-narrow'>{item.quantity}</td> */}
                       <td className='is-narrow'>
                         <Button 
                           color="danger" 
                           className="is-rounded is-outlined"
-                          onClick={() => {handleRemove(item.id)}}
+                          onClick={() => {console.log(`Remove ${item.name} from shopping list`); handleRemove(item.id)}}
                           aria-label={`Remove ${item.name} from shopping list`}
                           aria-required="true"
                         >
