@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 import ingredientService from '../services/ingredient-service';
 import listService from '../services/list-service';
+import recipeService from '../services/recipe-service';
 import { Ingredient } from '../models/Ingredient';
 
 import { Box, Button, Form, Container, Heading, Hero, Notification, Table, Tile } from 'react-bulma-components';
@@ -22,43 +23,63 @@ export default function IngredientsPage() {
       setIngredients(ingredients);
       })
     .catch(err => console.error(err));
-}, []);
+  }, []);
 
-  let ingredientList: Array<any> = [
-    {
-      id: 1,
-      name: 'Ingredient 1',
-      quantity: 1
-    }, 
-    {
-      id: 2,
-      name: 'Ingredient 2',
-      quantity: 2
+  function handleIngredientClick(ingredient: Ingredient) {
+    if (selectedIngredients.includes(ingredient)) {
+      setSelectedIngredients(selectedIngredients.filter(i => i !== ingredient));
+    } else {
+      setSelectedIngredients([...selectedIngredients, ingredient]);
     }
-  ];
+  }
+
+  function addSelectedToList() {
+    selectedIngredients.forEach(ingredient => {
+      listService.addIngredient(ingredient.id);
+    });
+  }
+
+  function searchRecipeByIngredients(mode: string) {
+    const ingredientIds = selectedIngredients.map(ingredient => ingredient.id);
+    recipeService.searchRecipeByIngredients(ingredientIds, mode);
+  }
 
   return (
     <>
-      <Container className='mt-2'>
+      <Container className=''>
         <Tile kind="ancestor">
-          <Tile kind="parent" className="is-vertical">
+          <Tile kind="parent" className="is-vertical m-2">
             <Tile kind="child" renderAs={Notification} color="primary" className="has-text-centered is-12">
               <Heading> Ingredients List </Heading> 
             </Tile>
             <Box className='has-text-right'>
               <Button
                 color="warning"
-                className="is-rounded"
-                onClick={() => {console.log('Search Ingredient'); }}
+                className="is-rounded m-1"
+                onClick={() => {searchRecipeByIngredients("all")}}
               >
-                Search recipes with selected ingredients
+                Search Recipes Including All
+              </Button>
+              <Button
+                color="warning"
+                className="is-rounded m-1"
+                onClick={() => {searchRecipeByIngredients("any")}}
+              >
+                Search Recipes Including Any
               </Button>
               <Button
                 color="success"
-                className="is-rounded ml-2"
-                onClick={() => {console.log('Add Ingredient'); }}
+                className="is-rounded m-1"
+                onClick={addSelectedToList}
               >
-                Add Selected To Cart
+                Add Selected To List
+              </Button>
+              <Button
+                color="danger"
+                className="is-rounded m-1"
+                onClick={() => {setSelectedIngredients([])}}
+              >
+                Clear Selection
               </Button>
             </Box>
             <Box>
@@ -71,13 +92,13 @@ export default function IngredientsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {ingredientList.map((ingredient, index) => (
+                  {ingredients.map((ingredient, index) => (
                     <tr key={index}>
                       <td>{ingredient.name}</td>
                       <td className='is-narrow has-text-centered'>
                         <Form.Checkbox 
                           className='is-centered'
-                          onClick={() => {setSelectedIngredients(ingredient)}}
+                          onClick={() => {handleIngredientClick(ingredient);}}
                           aria-label={`Already own ${ingredient.name}`}
                           aria-required="true"
                         >
@@ -88,7 +109,7 @@ export default function IngredientsPage() {
                         <Button 
                           color="success" 
                           className="is-rounded is-outlined"
-                          onClick={() => {listService.addIngredient(ingredient)}}
+                          onClick={() => {listService.addIngredient(ingredient.id)}}
                         >
                           <MdAddCircle />
                         </Button>
