@@ -20,6 +20,7 @@ import LikePage from './pages/LikePage';
 import AdminPage from './pages/AdminPage';
 import CreateRecipe from './pages/CreateRecipePage';
 import EditRecipe from './pages/EditRecipePage';
+import PageNotFound from './pages/PageNotFound';
 // import Footer from './components/Footer';
 
 
@@ -48,6 +49,7 @@ function App() {
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/create" element={<CreateRecipe />} />
         <Route path="/edit/:id" element={<EditRecipe />} />
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
     </Router>
     {/* <Footer /> */}
