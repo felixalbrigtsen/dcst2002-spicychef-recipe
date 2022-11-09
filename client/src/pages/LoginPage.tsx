@@ -14,7 +14,7 @@ export default function LoginPage() {
         <Container>
           <Card className={'has-text-centered'}>
             <Card.Content>
-                <a href={'/api/auth/login'}>
+                <a href={`${process.env.REACT_APP_API_URL}/auth/login`}>
                   <img alt="Google Login" src="/btn_google_signing_dark.png" />
                 </a>
             </Card.Content>
