@@ -130,7 +130,7 @@ function Home () {
                                         <div className="content" style={{margin:'auto'}}>
                                             <Heading className='has-text-centered'>Selected Recipe</Heading>
                                             {randomRecipe ? 
-                                            <Link to={`/recipe/${randomRecipe.id}`} style={{textDecoration: "none"}}>
+                                            <Link to={`/recipes/${randomRecipe.id}`} style={{textDecoration: "none"}}>
                                             <Image size={256} alt="256x256" src={(randomRecipe && randomRecipe.imageUrl) ? randomRecipe.imageUrl : "https://bulma.io/images/placeholders/256x256.png" } />
                                             </Link>
                                             : <Heading subtitle>There are no images to display</Heading>}
@@ -144,7 +144,7 @@ function Home () {
                                             </Media>
                                             <br />
                                             {randomRecipe ? 
-                                            <Link to={`/recipe/${randomRecipe.id}`} style={{textDecoration: "none"}}>
+                                            <Link to={`/recipes/${randomRecipe.id}`} style={{textDecoration: "none"}}>
                                                 <Button color="success" className="is-rounded">
                                                     <span>Read more</span>
                                                     <span className="icon">
