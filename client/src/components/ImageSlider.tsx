@@ -37,7 +37,7 @@ const ImageSlider = (props: ImageSliderProps) => {
                 return (
                     <div className={index === current ? 'slide active' : 'slide'} key={index}>
                         {index === current && (
-                            <a href={`/recipe/${slide.id}`}>
+                            <a href={`/recipes/${slide.id}`}>
                             <img src={slide && slide.imageUrl ? slide.imageUrl : "placeholder"} alt='recipe' className='image' />
                             </a>
                         )}
