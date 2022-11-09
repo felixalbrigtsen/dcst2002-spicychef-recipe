@@ -36,16 +36,16 @@ class ListService {
    * @function
    * @name addIngredients
    * @argument {number} id
-   * @returns {Promise<undefined>}
+   * @returns {Promise<number>}
    * @description
    * This function will add ingredients to the list
    */
 
-  addIngredient(id: number): Promise<undefined> {
+  addIngredient(id: number): Promise<number> {
     return new Promise((resolve, reject) => {
       axios.post(process.env.REACT_APP_API_URL + `/list/${id}`)
         .then((response) => {
-          resolve(response.data);
+          resolve(response.status);
         })
         .catch((error) => {
           reject(error);
@@ -57,16 +57,16 @@ class ListService {
    * @function
    * @name removeIngredient
    * @argument {number} id
-   * @returns {Promise<undefined>}
+   * @returns {Promise<number>}
    * @description
    * This function will remove an ingredient from a users shopping list
    */
 
-  removeIngredient(id: number): Promise<undefined> {
+  removeIngredient(id: number): Promise<number> {
     return new Promise((resolve, reject) => {
       axios.delete(process.env.REACT_APP_API_URL +  `/list/${id}`)
         .then((response) => {
-          resolve(response.data);
+          resolve(response.status);
         })
         .catch((error) => {
           reject(error);
