@@ -13,11 +13,9 @@ import { useLogin } from '../hooks/Login';
 import { Hero, Tile, Heading, Image, Notification, Form, Button, Media, Content } from 'react-bulma-components';
 
 import Icon from '@mdi/react'
-// @ts-ignore
 import { mdiListBox, mdiShakerOutline, mdiFoodDrumstick, mdiFoodSteak, mdiCarrot, mdiMagnify, mdiArrowRight } from '@mdi/js';
 import Footer from '../components/Footer';
 import { Recipe } from '../models/Recipe';
-import { Ingredient } from '../models/Ingredient';
 
 import ImageSlider from '../components/ImageSlider';
 
