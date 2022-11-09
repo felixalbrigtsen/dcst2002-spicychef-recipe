@@ -18,16 +18,16 @@ import listService from '../services/list-service';
 
 function RecipePage() {
 
-    // const { user } = useLogin();
-    const user = {
-      googleId: 1,
-      name: "hei",
-      email: "hi",
-      picture: "abc",
-      isadmin: true,
-      likes: [4],
-      shoppingList: [2,3,4]
-    }
+    const { user } = useLogin();
+    // const user = {
+    //   googleId: 1,
+    //   name: "hei",
+    //   email: "hi",
+    //   picture: "abc",
+    //   isadmin: true,
+    //   likes: [4],
+    //   shoppingList: [2,3,4]
+    // }
 
     let [ recipe, setRecipe ] = React.useState<Recipe>({id: 0, title: "", summary: "", instructions: "", servings: 0, imageUrl: "", videoUrl: "", created_at: "", ingredients: [], tags: []});
 
