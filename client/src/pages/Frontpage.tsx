@@ -126,11 +126,11 @@ function Home () {
                                                 return (
                                                     <Link to={`/recipes/${recipe.id}`} key={index}>
                                                         <Media className="columns">
-                                                            <Media.Item renderAs="figure" className="column is-2">
+                                                            <Media.Item renderAs="figure" className="column is-one-quarters">
                                                                 <Image size={96} alt="96x96" src={recipe.imageUrl || "/logo.png"} />
                                                             </Media.Item>
-                                                            <Media.Item renderAs="article" align="left" className="column">
-                                                                <Heading size={4} className="has-text-left">{recipe.title}</Heading>
+                                                            <Media.Item renderAs="article" align="left" className="column is-three-quarters">
+                                                                <Heading size={5} className="has-text-left">{recipe.title}</Heading>
                                                                 <Heading subtitle size={6}>{recipe.summary}</Heading>
                                                             </Media.Item>
                                                         </Media>
