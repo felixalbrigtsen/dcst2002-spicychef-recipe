@@ -1,10 +1,14 @@
 import * as React from 'react';
+// @ts-ignore
+import CreatableSelect, { useCreatable } from 'react-select/creatable'
 import { 
   BrowserRouter as Router, 
   Route, 
   Routes, 
   Link
 } from 'react-router-dom';
+
+
 
 import { Form, Button, Tile, Image, Table, Container } from 'react-bulma-components';
 
@@ -14,6 +18,9 @@ import { Recipe } from '../models/Recipe';
 import { RecipeIngredient } from '../models/RecipeIngredient';
 import { FaTimes } from 'react-icons/fa';
 import recipeService from '../services/recipe-service';
+import ingredientService from '../services/ingredient-service';
+import { Ingredient } from '../models/Ingredient';
+import { on } from 'stream';
 
 interface RecipeFormProps {
     recipe: Recipe;
@@ -26,6 +33,8 @@ type IngredientItem = {
 }
 
 function RecipeForm (props: RecipeFormProps) {
+
+    let [ingredientOptions, setIngredientOptions] = useState<{"value": number, "label": string}[]>([])
 
     let [ recipe, setRecipe ] = React.useState<Recipe>(props.recipe);
     let [ title , setTitle ] = React.useState<string>(props.recipe.title);
@@ -50,6 +59,15 @@ function RecipeForm (props: RecipeFormProps) {
         setIngredients(props.recipe.ingredients.map((ingredient) => { return { ingredientName: ingredient.ingredientName, quantity: ingredient.quantity, unitName: ingredient.unitName } }));
         setTags(props.recipe.tags);
     }, [props.recipe]);
+
+    useEffect(() => {
+        ingredientService.getIngredients()
+        .then(res => {
+            setIngredientOptions(res.map((ingredient: Ingredient) => {
+                return {"value": ingredient.id, "label": ingredient.name}
+            }))
+        })
+    }, [])
 
     function handleRecipeSubmit() {
         let newRecipe = {id: 0, title: "", summary: "", servings: 0, instructions: "", imageUrl: "", videoUrl: "", ingredients: [{ingredientName: "", quantity: 0, unitName: ""}], tags: [""]};
@@ -80,6 +98,8 @@ function RecipeForm (props: RecipeFormProps) {
       }
       setIngredients(newIngredients);
     }
+
+    
 
     return (
         <Tile kind="ancestor">
@@ -166,15 +186,27 @@ function RecipeForm (props: RecipeFormProps) {
                 </Form.Control>
               </Tile>
               <Tile kind="child" renderAs={Form.Field}>
-                 {/* TODO: List all ingredients that exist when you enter the input field, creating a new one if it does not exist */}
                 <Form.Label>Recipe Ingredients</Form.Label>
                 <Form.Control>
-                  <Form.Input placeholder="Recipe Ingredients" name={"Ingredients"} onKeyDown={
-                    (e) => {
-                        if (e.key === "Enter") {
-                            setIngredients([...ingredients, {ingredientName: e.currentTarget.value, quantity: 0, unitName: ""}]);
+                  <CreatableSelect placeholder="Recipe Ingredients" name={"Ingredients"} options={ingredientOptions} onCreateOption={
+                    (newIngredient) => {
+                        let newIngredientOptions = [...ingredientOptions];
+                        newIngredientOptions.push({"value": 1, "label": newIngredient});
+                        setIngredientOptions(newIngredientOptions);
+                        // TODO: Add new ingredient to database
+                    }
+                  }
+                  onChange={
+                    (selectedOption) => {
+                        if (selectedOption) {
+                            console.log(selectedOption);
+                            setIngredients([...ingredients, {ingredientName: selectedOption.label, quantity: 0, unitName: ""}]);
+                            // TODO: Ingredient list is updating, but not the table
+                            // TODO: This breaks the delete button, need to fix
+                            // TODO: Clear input?
                         }
-                  }}/>
+                    }}
+                  />
                 </Form.Control>
                 <br />
                 <Table className='is-fullwidth is-hoverable is-striped'>
