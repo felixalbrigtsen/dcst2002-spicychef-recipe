@@ -88,7 +88,7 @@ function RecipeForm (props: RecipeFormProps) {
                 <Tile kind="child" renderAs={Form.Field}>
                   <Form.Label>Recipe Title</Form.Label>
                   <Form.Control>
-                    <Form.Input placeholder="Recipe Title" defaultValue={title} 
+                    <Form.Input placeholder="Recipe Title" name={"Title"} defaultValue={title} 
                     onChange={(e) => {setTitle(e.currentTarget.value);}}
                     />
                   </Form.Control>
@@ -96,13 +96,13 @@ function RecipeForm (props: RecipeFormProps) {
                 <Tile kind="child" renderAs={Form.Field}>
                 <Form.Label>Recipe Summary</Form.Label>
                 <Form.Control>
-                  <Form.Textarea placeholder="Recipe Summary" defaultValue={summary} />
+                  <Form.Textarea placeholder="Recipe Summary" name={"Summary"} defaultValue={summary} />
                 </Form.Control>
               </Tile>
               <Tile kind="child" renderAs={Form.Field}>
                 <Form.Label>Recipe Servings</Form.Label>
                 <Form.Control>
-                  <Form.Input type="number" placeholder="2" defaultValue={servings ? servings : 2} onChange={
+                  <Form.Input type="number" placeholder="2" name={"Servings"} defaultValue={servings ? servings : 2} onChange={
                     (e) => {setServings(Number(e.currentTarget.value));}
                   }/>
                 </Form.Control>
@@ -112,7 +112,7 @@ function RecipeForm (props: RecipeFormProps) {
               <Tile kind="child" renderAs={Form.Field}>
                 <Form.Label>Recipe Tags</Form.Label>
                 <Form.Control>
-                  <Form.Input placeholder="Recipe Tags" onKeyDown={
+                  <Form.Input placeholder="Recipe Tags" name={"Tags"} onKeyDown={
                     (e) => {
                         if (e.key === "Enter") {
                             setTags([...tags, e.currentTarget.value]);
@@ -140,7 +140,7 @@ function RecipeForm (props: RecipeFormProps) {
                 <Tile kind="child" renderAs={Form.Field}>
                   <Form.Label>Recipe Image Link</Form.Label>
                   <Form.Control>
-                    <Form.Input placeholder="Recipe Image" defaultValue={imageLink} onChange={
+                    <Form.Input placeholder="Recipe Image" name={"ImageURL"} defaultValue={imageLink} onChange={
                         (e) => {setImageLink(e.currentTarget.value);}
                     }/>
                   </Form.Control>
@@ -151,7 +151,7 @@ function RecipeForm (props: RecipeFormProps) {
                 <Tile kind="child" renderAs={Form.Field}>
                   <Form.Label>Recipe Video Link</Form.Label>
                   <Form.Control>
-                    <Form.Input placeholder="Recipe Video" defaultValue={videoLink} onChange={
+                    <Form.Input placeholder="Recipe Video" name={"VideoURL"} defaultValue={videoLink} onChange={
                         (e) => {setVideoLink(e.currentTarget.value)}
                     } />
                   </Form.Control>
@@ -162,14 +162,14 @@ function RecipeForm (props: RecipeFormProps) {
               <Tile kind="child" renderAs={Form.Field}>
                 <Form.Label>Recipe Instructions</Form.Label>
                 <Form.Control>
-                  <Form.Textarea placeholder="Recipe Instructions" style={{whiteSpace: "pre-wrap"}} defaultValue={instructions} />
+                  <Form.Textarea placeholder="Recipe Instructions" name={"Instructions"} style={{whiteSpace: "pre-wrap"}} defaultValue={instructions} />
                 </Form.Control>
               </Tile>
               <Tile kind="child" renderAs={Form.Field}>
                  {/* TODO: List all ingredients that exist when you enter the input field, creating a new one if it does not exist */}
                 <Form.Label>Recipe Ingredients</Form.Label>
                 <Form.Control>
-                  <Form.Input placeholder="Recipe Ingredients" onKeyDown={
+                  <Form.Input placeholder="Recipe Ingredients" name={"Ingredients"} onKeyDown={
                     (e) => {
                         if (e.key === "Enter") {
                             setIngredients([...ingredients, {ingredientName: e.currentTarget.value, quantity: 0, unitName: ""}]);
