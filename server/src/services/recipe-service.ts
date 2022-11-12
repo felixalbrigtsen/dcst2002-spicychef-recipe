@@ -18,6 +18,30 @@ class RecipeService {
     });
   }
 
+  deleteRecipe(id: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      // First delete all ingredients in recipe
+      pool.query('DELETE FROM recipe_ingredient WHERE recipeId = ?', [id], (err) => {
+        if (err) {
+          return reject(err);
+        }
+        // Then delete all tags in recipe
+        pool.query('DELETE FROM recipe_tag WHERE recipeId = ?', [id], (err) => {
+          if (err) {
+            return reject(err);
+          }
+          // Then delete recipe
+          pool.query('DELETE FROM recipe WHERE id = ?', [id], (err) => {
+            if (err) {
+              return reject(err);
+            }
+            resolve();
+          });
+        });
+      });
+    });
+  }
+
   getAllRecipesShort(): Promise<Recipe[]> {
     return new Promise((resolve, reject) => {
       pool.query(`SELECT recipe.id, recipe.title, recipe.summary, recipe.imageUrl, likes.likes
@@ -380,7 +404,6 @@ class RecipeService {
   }
 
   addRecipe(title: string, summary: string, instructions: string, servings: number, imageUrl: string, videoUrl: string): Promise<number> {
-    
     return new Promise((resolve, reject) => {
       pool.query('INSERT INTO recipe (title, summary, instructions, servings, imageUrl, videoUrl) VALUES (?, ?, ?, ?, ?, ?)', [title, summary, instructions, servings, imageUrl, videoUrl], (err, results) => {
         if (err) {
@@ -477,6 +500,67 @@ class RecipeService {
     });
   }
 
+  //TODO: Consider making a type/model for this
+  updateRecipe(id: number, title: string, summary: string, instructions: string, servings: number, imageUrl: string, videoUrl: string) {
+    return new Promise((resolve, reject) => {
+      pool.query('UPDATE recipe SET title = ?, summary = ?, instructions = ?, servings = ?, imageUrl = ?, videoUrl = ? WHERE id = ?', [title, summary, instructions, servings, imageUrl, videoUrl, id], (err, results) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve(results);
+      });
+    });
+  }
+
+  updateRecipeIngredients(recipeId: number, ingredients: {ingredientName: string, quantity: number, unitName: string}[]) {
+    return new Promise((resolve, reject) => {
+      pool.query('DELETE FROM recipe_ingredient WHERE recipeId = ?', [recipeId], async (err, results) => {
+        if (err) {
+          return reject(err);
+        }
+
+        // Make new recipe_ingredient entries
+        // TODO: Use transactions to avoid partial saves
+        // TODO: This removes and re-adds every ingredient, which is inefficient, do it more like updateRecipeTags
+        
+        try {
+          const ingredientIds = await this.getIngredientIds(ingredients.map((ingredient) => ingredient.ingredientName));
+          const unitIds = await this.getUnitIds(ingredients.map((ingredient) => ingredient.unitName));
+          for (let i = 0; i < ingredients.length; i++) {
+            this.addRecipeIngredient(recipeId, ingredientIds[i], unitIds[i], ingredients[i].quantity);
+          }
+          return resolve(results);
+        } catch (err) {
+          return reject(err);
+        }
+        
+      });
+    });
+  }
+
+  updateRecipeTags(recipeId: number, tags: string[]) {
+    return new Promise((resolve, reject) => {
+      // Delete tags that are no longer in the recipe
+      // Deletes and inserts many rows in a single query
+      //
+      // TODO: Use transactions to avoid partial saves
+     
+      pool.query('DELETE FROM recipe_tag WHERE recipeId = ? AND name NOT IN (?)', [recipeId, tags], (err, results) => {
+        if (err) {
+          return reject(err);
+        }
+        // Add tags that are new to the recipe
+        pool.query('INSERT IGNORE INTO recipe_tag(recipeId, name) VALUES ?', [tags.map((tag) => [recipeId, tag])], (err, results) => {
+          if (err) {
+            return reject(err);
+          }
+          return resolve(results);
+        });
+      });
+    });
+  }
+
+
   addLike(recipeId: number, userId: number): Promise<number> {
     return new Promise((resolve, reject) => {
       pool.query('INSERT INTO user_like (googleId, recipeId) VALUES (?, ?)', [userId, recipeId], (err, results) => {
@@ -533,7 +617,6 @@ class RecipeService {
     });
   }
 }
-
 
 let recipeService = new RecipeService();
 export default recipeService;
