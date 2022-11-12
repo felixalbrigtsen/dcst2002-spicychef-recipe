@@ -1,6 +1,7 @@
 import * as React from 'react';
 // @ts-ignore
 import CreatableSelect, { useCreatable } from 'react-select/creatable'
+import makeAnimated from 'react-select/animated';
 import { 
   BrowserRouter as Router, 
   Route, 
@@ -32,10 +33,17 @@ type IngredientItem = {
   unitName: string;
 }
 
+const animatedComponents = makeAnimated();
+
 function RecipeForm (props: RecipeFormProps) {
 
+  
+    // Values used in multiselect and createable select components
     let [ingredientOptions, setIngredientOptions] = useState<{"value": number, "label": string}[]>([])
+    let [tagOptions, setTagOptions] = useState<{"value": string, "label": string}[]>([])
+    let [defaultTags, setDefaultTags] = useState<{"value": string, "label": string}[]>([])
 
+    // Values used in normal input field and textarea, as well as the recipe object
     let [ recipe, setRecipe ] = React.useState<Recipe>(props.recipe);
     let [ title , setTitle ] = React.useState<string>(props.recipe.title);
     let [ summary , setSummary ] = React.useState<string>(props.recipe.summary);
@@ -47,6 +55,7 @@ function RecipeForm (props: RecipeFormProps) {
     let [ ingredients, setIngredients ] = React.useState<IngredientItem[]>([]);
     let [ tags, setTags ] = React.useState<string[]>([]);
 
+    // Setting all the values
     useEffect(() => {
         setRecipe(props.recipe);
         setTitle(props.recipe.title);
@@ -60,6 +69,7 @@ function RecipeForm (props: RecipeFormProps) {
         setTags(props.recipe.tags);
     }, [props.recipe]);
 
+    // Getting ingredients and tags from the database
     useEffect(() => {
         ingredientService.getIngredients()
         .then(res => {
@@ -69,6 +79,24 @@ function RecipeForm (props: RecipeFormProps) {
         })
     }, [])
 
+    useEffect(() => {
+      recipeService.getRecipesShort()
+      .then(res => {
+        let tags = res.map(r => r.tags).flat()
+        let uniqueTags = [...new Set(tags)]
+        let tagObjects = uniqueTags.map(t => {return {"value": t, "label": t}})
+        setTagOptions(tagObjects)
+      })
+    }, [])
+
+    // set tags to be options for react-select
+    useEffect(() => {
+      let tagObjects = tags.map(t => {return {"value": t, "label": t}})
+      setDefaultTags(tagObjects)
+    }, [tags])
+
+
+    // Setting the recipe object on submit
     function handleRecipeSubmit() {
         let newRecipe = {id: 0, title: "", summary: "", servings: 0, instructions: "", imageUrl: "", videoUrl: "", ingredients: [{ingredientName: "", quantity: 0, unitName: ""}], tags: [""]};
         newRecipe.id = props.recipe.id || -1;
@@ -81,8 +109,10 @@ function RecipeForm (props: RecipeFormProps) {
         newRecipe.ingredients = ingredients
         newRecipe.tags = tags;
         console.log(newRecipe);
+        props.recipe.id !== -1 ? recipeService.updateRecipe(newRecipe) : recipeService.createRecipe(newRecipe);
     }
 
+    // Updating an ingredient in the ingredients array
     function handleIngredientPropertyChange(index: number, property: string, value: string) {
       let newIngredients = [...ingredients];
       if (property === "ingredientName") {
@@ -98,8 +128,6 @@ function RecipeForm (props: RecipeFormProps) {
       }
       setIngredients(newIngredients);
     }
-
-    
 
     return (
         <Tile kind="ancestor">
@@ -132,28 +160,23 @@ function RecipeForm (props: RecipeFormProps) {
               <Tile kind="child" renderAs={Form.Field}>
                 <Form.Label>Recipe Tags</Form.Label>
                 <Form.Control>
-                  <Form.Input placeholder="Recipe Tags" name={"Tags"} onKeyDown={
-                    (e) => {
-                        if (e.key === "Enter") {
-                            setTags([...tags, e.currentTarget.value]);
-                            e.currentTarget.value = "";
-                        }
-                        }
-                  }/>
+                  <CreatableSelect placeholder="Tags" components={animatedComponents} value={defaultTags.map((tag) => tag)} isMulti options={tagOptions} onCreateOption={
+                    (newTag) => {
+                      let newTags = [...tags];
+                      newTags.push(newTag);
+                      setTags(newTags);
+                      let newTagOptions = [...tagOptions];
+                      newTagOptions.push({"value": newTag, "label": newTag});
+                      setTagOptions(newTagOptions);
+                    }
+                  }
+                  onChange={
+                    (selectedTags) => {
+                      selectedTags ? setTags(selectedTags.map((tag) => tag.value)) : setTags([]);
+                    }
+                  }
+                   />
                 </Form.Control>
-                <br />
-                <div className='buttons'>
-                {tags?.map((tag, i) => (
-                <Button color="danger" outlined key={i} onClick={
-                    () => {setTags(tags.filter((t, j) => j !== i))}
-                    }>
-                    <span>{tag}</span>
-                    <span className='icon is-small'>
-                        <FaTimes />
-                    </span>
-                </Button>              
-                ))}
-                </div>
               </Tile>
               </Tile>
               <Tile kind="parent">
@@ -193,17 +216,14 @@ function RecipeForm (props: RecipeFormProps) {
                         let newIngredientOptions = [...ingredientOptions];
                         newIngredientOptions.push({"value": 1, "label": newIngredient});
                         setIngredientOptions(newIngredientOptions);
-                        // TODO: Add new ingredient to database
                     }
                   }
                   onChange={
                     (selectedOption) => {
                         if (selectedOption) {
-                            console.log(selectedOption);
+                            console.log(selectedOption.label);
                             setIngredients([...ingredients, {ingredientName: selectedOption.label, quantity: 0, unitName: ""}]);
-                            // TODO: Ingredient list is updating, but not the table
-                            // TODO: This breaks the delete button, need to fix
-                            // TODO: Clear input?
+                            // clear value?
                         }
                     }}
                   />
@@ -218,7 +238,7 @@ function RecipeForm (props: RecipeFormProps) {
                             <th>Delete</th>
                         </tr>
                     </thead>
-                    { stdIngredient ? stdIngredient.map((ingredient, index) => {
+                    { ingredients ? ingredients.map((ingredient, index) => {
                         return (
                             <tbody key={index}>
                                 <tr>
