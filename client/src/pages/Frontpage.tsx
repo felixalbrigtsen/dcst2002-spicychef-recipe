@@ -87,7 +87,7 @@ function Home () {
                                             <Heading subtitle>Useful links</Heading>
                                             <Link to="/ingredients">
                                             <Button color="info" className='is-light is-rounded'>
-                                                <span><Heading>Ingredients</Heading></span>
+                                                <span>Ingredients</span>
                                                 <Icon path={mdiCarrot} size={1} />
                                                 <Icon path={mdiFoodSteak} size={1} />
                                                 <Icon path={mdiFoodDrumstick} size={1} />
@@ -97,14 +97,14 @@ function Home () {
                                             <br />
                                             <Link to="/list">
                                             <Button color="info" className="is-light is-rounded mt-2">
-                                                <span><Heading>Shopping List</Heading></span>
+                                                <span>Shopping List</span>
                                                 <Icon path={mdiListBox} size={1} />
                                             </Button>
                                             </Link>                                            
                                             <br />
                                             <Link to="/search">
                                             <Button color="info" className="is-light is-rounded mt-2">
-                                                <span><Heading>Search</Heading></span>
+                                                <span>Search</span>
                                                 <Icon path={mdiMagnify} size={1} />
                                             </Button>
                                             </Link>
