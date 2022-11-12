@@ -60,7 +60,7 @@ function RecipeForm (props: RecipeFormProps) {
         setRecipe(props.recipe);
         setTitle(props.recipe.title);
         setSummary(props.recipe.summary);
-        setServings(props.recipe.servings);
+        setServings(props.recipe.servings != 0 ? props.recipe.servings : 2);
         setInstructions(props.recipe.instructions);
         setImageLink(props.recipe.imageUrl ? props.recipe.imageUrl : "");
         setVideoLink(props.recipe.videoUrl ? props.recipe.videoUrl : "");
@@ -205,7 +205,9 @@ function RecipeForm (props: RecipeFormProps) {
               <Tile kind="child" renderAs={Form.Field}>
                 <Form.Label>Recipe Instructions</Form.Label>
                 <Form.Control>
-                  <Form.Textarea placeholder="Recipe Instructions" name={"Instructions"} style={{whiteSpace: "pre-wrap"}} defaultValue={instructions} />
+                  <Form.Textarea placeholder="Recipe Instructions" name={"Instructions"} style={{whiteSpace: "pre-wrap"}} defaultValue={instructions} onChange={
+                    (e) => {setInstructions(e.currentTarget.value)}
+                  } />
                 </Form.Control>
               </Tile>
               <Tile kind="child" renderAs={Form.Field}>
