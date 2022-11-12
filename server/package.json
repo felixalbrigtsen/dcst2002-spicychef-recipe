@@ -7,13 +7,17 @@
     "start": "nodemon src/index.ts ",
     "docs": "jsdoc -c jsdoc.conf.json",
     "initdb": "ts-node src/utils/initdb.ts",
-    "mealdb": "ts-node src/utils/mealdb.ts"
+    "mealdb": "ts-node src/utils/mealdb.ts",
+    "test": "jest"
   },
   "devDependencies": {
     "@types/express": "^4.17.14",
+    "@types/jest": "^29.2.2",
     "@types/node": "^18.8.4",
     "better-docs": "^2.7.2",
+    "jest": "^29.3.1",
     "jsdoc": "^3.6.11",
+    "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
     "typescript": "^4.8.4"
   },
