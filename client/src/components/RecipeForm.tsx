@@ -162,12 +162,8 @@ function RecipeForm (props: RecipeFormProps) {
                 <Form.Control>
                   <CreatableSelect placeholder="Tags" components={animatedComponents} value={defaultTags.map((tag) => tag)} isMulti options={tagOptions} onCreateOption={
                     (newTag) => {
-                      let newTags = [...tags];
-                      newTags.push(newTag);
-                      setTags(newTags);
-                      let newTagOptions = [...tagOptions];
-                      newTagOptions.push({"value": newTag, "label": newTag});
-                      setTagOptions(newTagOptions);
+                      setTags([...tags, newTag]);
+                      setTagOptions([...tagOptions, {"value": newTag, "label": newTag}]);
                     }
                   }
                   onChange={
@@ -215,15 +211,13 @@ function RecipeForm (props: RecipeFormProps) {
                 <Form.Control>
                   <CreatableSelect placeholder="Recipe Ingredients" name={"Ingredients"} options={ingredientOptions} onCreateOption={
                     (newIngredient) => {
-                        let newIngredientOptions = [...ingredientOptions];
-                        newIngredientOptions.push({"value": 1, "label": newIngredient});
-                        setIngredientOptions(newIngredientOptions);
+                      setIngredientOptions([...ingredientOptions, {"value": 1, "label": newIngredient}]);
+                      setIngredients([...ingredients, {ingredientName: newIngredient, quantity: 0, unitName: ""}]);
                     }
                   }
                   onChange={
                     (selectedOption) => {
                         if (selectedOption) {
-                            console.log(selectedOption.label);
                             setIngredients([...ingredients, {ingredientName: selectedOption.label, quantity: 0, unitName: ""}]);
                             // clear value?
                         }
