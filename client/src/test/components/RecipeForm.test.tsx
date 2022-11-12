@@ -13,7 +13,7 @@ const EditRecipe = {"id":1,"title":"Tunisian Lamb Soup","summary":"Meal from Mea
 const CreateRecipe = {"id": 0, "title": "", "summary": "", "instructions": "", "servings": 2, "imageUrl": "", "videoUrl": "", "created_at": "", "ingredients": [], "tags": [""], "likes": 0};
 
 describe('test RecipeForm with complete recipe renders correctly', () => {
-    test.skip.skip('Correct rendering of input fields', () => {
+    test.skip('Correct rendering of input fields', () => {
         const {getAllByRole, getByText} = render(<Router><RecipeForm recipe={EditRecipe}/></Router>)
 
         expect(getAllByRole('textbox').find(input => input.textContent === EditRecipe.title))
