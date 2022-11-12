@@ -1,5 +1,6 @@
 import axios from 'axios';
 import type { Recipe } from '../models/Recipe';
+import type { NewRecipe } from '../models/NewRecipe';
 import type { RecipeIngredient } from '../models/RecipeIngredient';
 
 /**
@@ -84,6 +85,30 @@ class RecipeService {
           mode: mode
         }
       })
+        .then((response) => {
+          resolve(response.data);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
+  createRecipe(recipe: NewRecipe): Promise<NewRecipe> {
+    return new Promise((resolve, reject) => {
+      axios.post(process.env.REACT_APP_API_URL + '/recipes', recipe)
+        .then((response) => {
+          resolve(response.data);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
+  updateRecipe(recipe: NewRecipe): Promise<NewRecipe> {
+    return new Promise((resolve, reject) => {
+      axios.put(process.env.REACT_APP_API_URL + '/recipes/' + recipe.id, recipe)
         .then((response) => {
           resolve(response.data);
         })
