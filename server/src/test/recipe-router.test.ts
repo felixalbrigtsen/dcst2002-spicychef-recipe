@@ -27,7 +27,7 @@ beforeEach((done) => {
 
     // Create testTasks sequentially in order to set correct id, and call done() when finished
     recipeService
-      .addRecipe()
+      .addRecipe(testData[0].title, testData[0].summary, testData[0].instructions, testData[0].servings, testData[0].imageUrl, testData[0].videoUrl)
       .then(() => recipeService.addRecipe() // Create testTask[1] after testTask[0] has been created
       .then(() => recipeService.addRecipe() // Create testTask[2] after testTask[1] has been created
       .then(() => done()); // Call done() after testTask[2] has been created
