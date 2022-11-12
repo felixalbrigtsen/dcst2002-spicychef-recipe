@@ -1,6 +1,7 @@
 import * as React from 'react';
 // @ts-ignore
 import Select from 'react-select'
+import makeAnimated from 'react-select/animated';
 import { Heading, Hero, Tile, Tabs, Box, Form, Button, Columns } from 'react-bulma-components';
 import { 
   BrowserRouter as Router, 
@@ -15,6 +16,8 @@ import RecipeCard from '../components/RecipeCard';
 import ingredientService from '../services/ingredient-service';
 import { Ingredient } from '../models/Ingredient';
 import { FaTimes } from 'react-icons/fa';
+
+const animatedComponents = makeAnimated();
 
 export default function SearchPage() {
   let {query} = useParams()
@@ -69,13 +72,13 @@ export default function SearchPage() {
           <Form.Field>
           <Form.Label>Tags</Form.Label>
                 <Form.Control>
-                  <Select isMulti placeholder="Recipe Tags" name={"Tags"} options={tags} />
+                  <Select isMulti placeholder="Recipe Tags" components={animatedComponents} name={"Tags"} options={tags} />
                 </Form.Control>
           </Form.Field>
           <Form.Field>
           <Form.Label>Ingredients</Form.Label>
                 <Form.Control>
-                  <Select name={"Ingredients"} isMulti options={ingredients} />
+                  <Select isMulti placeholder="Ingredients" components={animatedComponents} options={ingredients} name={"Ingredients"} />
                 </Form.Control>
           </Form.Field>
           {/* TODO: Make searches work with the values of the selects above; ingredients and tags */}
