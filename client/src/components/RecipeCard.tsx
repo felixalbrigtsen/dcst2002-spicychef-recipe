@@ -60,18 +60,25 @@ function RecipeCard(props: RecipeCardProps) {
                     {/* If the recipe.id is in user.likes change the colour of the like button */}
 
                     { user.googleId && user.likes.includes(props.recipe.id) ?
+                        <>
                         <Button className="is-rounded" color="success">
                             <Icon>
                                  <FaThumbsUp size={18} />
                             </Icon>
-                        </Button> 
+                        </Button>
+                        <span>{props.recipe.likes != null ? props.recipe.likes : 0}</span>
+                        </>
                         : 
+                        <>
                         <Button className="is-rounded" color="info" outlined>
                             <Icon>
                                  <FaThumbsUp size={18}/>
                             </Icon>
                         </Button>
+                        <span>{props.recipe.likes != null ? props.recipe.likes : 0}</span>
+                        </>
                     }
+                    
                     </Card.Footer.Item>
                     <Link to={`/recipes/${props.recipe.id}`} className='is-flex is-vcentered'>
                         <Card.Footer.Item>
