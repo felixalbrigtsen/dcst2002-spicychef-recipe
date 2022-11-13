@@ -5,6 +5,7 @@ import { Recipe } from '../models/Recipe';
 import { Ingredient } from '../models/Ingredient';
 import recipeService from '../services/recipe-service';
 import { NewRecipe } from '../models/NewRecipe';
+import { doesNotMatch } from 'assert';
 
 const port = Number(process.env.PORT)
 
@@ -20,11 +21,16 @@ const testNewRecipes: NewRecipe[] = [
     {"id": -1,"title": "Chicken Soup","summary": "SOUP","servings": 4,"instructions": "Boil","imageUrl": "https://assets.epicurious.com/photos/62f16ed5fe4be95d5a460eed/1:1/w_2240,c_limit/RoastChicken_RECIPE_080420_37993.jpg","videoUrl": "https://www.youtube.com/watch?v=rX184PQ1UMI","ingredients": [{"ingredientName": "Chicken Stock","quantity": 0,"unitName": ""},{"ingredientName": "Chicken","quantity": 0,"unitName": ""}],"tags": ["Chicken"]}
 ];
 
+const testIngredients: Ingredient[] = [
+  testRecipes[0].ingredients[0],
+  testRecipes[0].ingredients[1],
+  testRecipes[1].ingredients[0],
+  testRecipes[1].ingredients[1],
+  testRecipes[2].ingredients[0],
+  testRecipes[2].ingredients[1],
+]
 
-
-
-// Since API is not compatible with v1, API version is increased to v2
-axios.defaults.baseURL = 'http://localhost:3001/api/v2';
+axios.defaults.baseURL = 'http://localhost:3001/api/';
 
 let webServer: any;
 beforeAll((done) => {
@@ -61,12 +67,12 @@ beforeEach((done) => {
     if (error) return done(error);
 
     recipeService
-      .addUnit(testRecipes[0].ingredients[0].ingredientName)
-      .then(() => recipeService.addUnit(testRecipes[0].ingredients[1].ingredientName))
-      .then(() => recipeService.addUnit(testRecipes[1].ingredients[0].ingredientName))
-      .then(() => recipeService.addUnit(testRecipes[1].ingredients[1].ingredientName))
-      .then(() => recipeService.addUnit(testRecipes[2].ingredients[0].ingredientName))
-      .then(() => recipeService.addUnit(testRecipes[2].ingredients[1].ingredientName))
+      .addUnit(testIngredients[0].ingredientName)
+      .then(() => recipeService.addUnit(testIngredients[1].ingredientName))
+      .then(() => recipeService.addUnit(testIngredients[2].ingredientName))
+      .then(() => recipeService.addUnit(testIngredients[3].ingredientName))
+      .then(() => recipeService.addUnit(testIngredients[4].ingredientName))
+      .then(() => recipeService.addUnit(testIngredients[5].ingredientName))
   })
 
   pool.query('TRUNCATE TABLE unit', (error) => {
@@ -99,3 +105,74 @@ afterAll((done) => {
   if (!webServer) return done(new Error());
   webServer.close(() => pool.end(() => done()));
 });
+
+test('Default message works (GET)', () => {
+  axios.get('/').then((response) => {
+    response.data = 'Hello World! You have reached the Recipe API server. Did you mean to go <a href="/">home</a>?'
+  })
+})
+
+describe('Fetch recipes (GET)', () => {
+  test('Fetch all recipes (200 OK)', (done) => {
+    axios.get('/recipes').then((response) => {
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual(testRecipes);
+      done();
+    });
+  });
+
+  test('Fetch recipe (200 OK)', (done) => {
+    axios.get('/recipes/1').then((response) => {
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual(testRecipes[0]);
+      done();
+    });
+  });
+
+  test('Fetch task (404 Not Found)', (done) => {
+    axios
+      .get('/recipes/4')
+      .then((_response) => done(new Error()))
+      .catch((error) => {
+        expect(error.message).toEqual('Recipe not found');
+        done();
+      });
+  });
+});
+
+describe('Fetch ingredients (GET)', () => {
+  test('Fetch all ingredients (200 OK)', (done) => {
+    axios.get('/ingredients').then((response) => {
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual(testIngredients);
+      done();
+    });
+  });
+});
+
+describe('Search recipes (GET)', () => {
+  test('Search for chicken (200 OK)', (done) => {
+    axios.get('/search?q=chicken').then((response) => {
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual([testRecipes[2]])
+      done()
+    })
+  })
+
+  test('Empty query (400 Bad request)', (done) => {
+    axios.get('/search?q=').then((_response) => done(new Error()))
+      .catch((error) => {
+        expect(error.message).toEqual('Bad request');
+        done();
+      });
+  });
+
+  test('Short query (400 Bad Request)', (done) => {
+    axios.get('/search?q=ca').then((_response) => done(new Error()))
+      .catch((error) => {
+        expect(error.message).toEqual('Bad query');
+        done();
+      });
+  });
+})
+
