@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon src/index.ts ",
     "docs": "jsdoc -c jsdoc.conf.json",
-    "initdb": "ts-node src/utils/initdb.ts",
+    "initdb": "ts-node src/utils/initdb.ts main",
     "mealdb": "ts-node src/utils/mealdb.ts",
     "test": "jest"
   },
