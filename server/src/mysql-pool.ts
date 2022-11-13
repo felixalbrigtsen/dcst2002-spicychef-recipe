@@ -1,7 +1,4 @@
 import mysql from 'mysql2';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 /**
  * MySQL connection pool with options specified in the following environment variables:
@@ -22,5 +19,7 @@ const pool = mysql.createPool({
   typeCast: (field, next) =>
     field.type == 'TINY' && field.length == 1 ? field.string() == '1' : next(),
 });
+
+console.log('MySQL connection pool created on database ' + process.env.MYSQL_DATABASE);
 
 export default pool;
