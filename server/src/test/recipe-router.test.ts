@@ -9,36 +9,16 @@ import { NewRecipe } from '../models/NewRecipe';
 const port = Number(process.env.PORT)
 
 const testRecipes: Recipe[] = [
-    {"id":1,"title":"Tunisian Lamb Soup","summary":"Meal from MealDB","instructions":"Add the lamb to a casserole and cook over high heat. When browned, remove from the heat and set aside.", "servings":2,"imageUrl":"https://www.themealdb.com/images/media/meals/t8mn9g1560460231.jpg","videoUrl":"https://www.youtube.com/watch?v=w1qgTQmLRe4","created_at":"2022-11-02T19:23:43.000Z","likes":0,"tags":["Lamb","Soup","Tunisian"],"ingredients": [{"id":1,"unitId":1,"quantity":500,"ingredientName":"Lamb Mince","unitName":"g"},{"id":2,"unitId":2,"quantity":2,"ingredientName":"Garlic","unitName":"cloves minced"}]}
+    {"id": 1,"title":"Tunisian Lamb Soup","summary":"Meal from MealDB","instructions":"Add the lamb to a casserole and cook over high heat. When browned, remove from the heat and set aside.", "servings":2,"imageUrl":"https://www.themealdb.com/images/media/meals/t8mn9g1560460231.jpg","videoUrl":"https://www.youtube.com/watch?v=w1qgTQmLRe4","created_at":"2022-11-02T19:23:43.000Z","likes":0,"tags":["Lamb","Soup","Tunisian"],"ingredients": [{"id":1,"unitId":1,"quantity":500,"ingredientName":"Lamb Mince","unitName":"g"},{"id":2,"unitId":2,"quantity":2,"ingredientName":"Garlic","unitName":"cloves minced"}]},
+    {"id": 2,"title": "Lasagna","summary": "Self-created meal","servings": 2,"instructions": "Garfield","imageUrl": "https://static.wikia.nocookie.net/garfield/images/9/9f/GarfieldCharacter.jpg/","videoUrl": "https://www.youtube.com/watch?v=qvc4DMiioRc","ingredients": [{"ingredientName": "Onion","quantity": 0.5,"unitName": "units"},{"ingredientName": "Tomato Puree","quantity": 2,"unitName": "g"},{"ingredientName": "Garlic","quantity": 1,"unitName": "clove"}],"tags": ["Italian"], "likes": 2, "created_at": "2022-11-09T15:22:30.000Z"},
+    {"id": 3,"title": "Chicken Soup","summary": "SOUP","servings": 4,"instructions": "Boil","imageUrl": "https://assets.epicurious.com/photos/62f16ed5fe4be95d5a460eed/1:1/w_2240,c_limit/RoastChicken_RECIPE_080420_37993.jpg","videoUrl": "https://www.youtube.com/watch?v=rX184PQ1UMI","ingredients": [{"ingredientName": "Chicken Stock","quantity": 0,"unitName": ""},{"ingredientName": "Chicken","quantity": 0,"unitName": ""}],"tags": ["Chicken"], "likes": 7, "created_at": "2021-12-25T00:00:00.000Z"}
 ];
 
 const testNewRecipes: NewRecipe[] = [
-    {"id": -1, "title": "Lasagna","summary": "","servings": 2,"instructions": "Garfield","imageUrl": "https://static.wikia.nocookie.net/garfield/images/9/9f/GarfieldCharacter.jpg/","videoUrl": "https://www.youtube.com/watch?v=qvc4DMiioRc","ingredients": [{"ingredientName": "Onion","quantity": 0.5,"unitName": "units"},{"ingredientName": "Tomato Puree","quantity": 2,"unitName": "g"},{"ingredientName": "Garlic","quantity": 1,"unitName": "clove"}],"tags": ["Italian"]},
-    {
-        "id": -1,
-        "title": "Chicken Soup",
-        "summary": "",
-        "servings": 4,
-        "instructions": "Boil",
-        "imageUrl": "https://assets.epicurious.com/photos/62f16ed5fe4be95d5a460eed/1:1/w_2240,c_limit/RoastChicken_RECIPE_080420_37993.jpg",
-        "videoUrl": "https://www.youtube.com/watch?v=rX184PQ1UMI",
-        "ingredients": [
-          {
-            "ingredientName": "Chicken Stock",
-            "quantity": 0,
-            "unitName": ""
-          },
-          {
-            "ingredientName": "Chicken",
-            "quantity": 0,
-            "unitName": ""
-          }
-        ],
-        "tags": [
-          "Chicken"
-        ]
-      }
-    ]
+    {"id": -1,"title":"Tunisian Lamb Soup","summary":"Meal from MealDB","instructions":"Add the lamb to a casserole and cook over high heat. When browned, remove from the heat and set aside.", "servings":2,"imageUrl":"https://www.themealdb.com/images/media/meals/t8mn9g1560460231.jpg","videoUrl":"https://www.youtube.com/watch?v=w1qgTQmLRe4","tags":["Lamb","Soup","Tunisian"],"ingredients": [{"ingredientName":"Lamb Mince","quantity":500,"unitName":"g"},{"ingredientName":"Garlic","quantity":2,"unitName":"cloves minced"}]},
+    {"id": -1, "title": "Lasagna","summary": "Self-created meal","servings": 2,"instructions": "Garfield","imageUrl": "https://static.wikia.nocookie.net/garfield/images/9/9f/GarfieldCharacter.jpg/","videoUrl": "https://www.youtube.com/watch?v=qvc4DMiioRc","ingredients": [{"ingredientName": "Onion","quantity": 0.5,"unitName": "units"},{"ingredientName": "Tomato Puree","quantity": 2,"unitName": "g"},{"ingredientName": "Garlic","quantity": 1,"unitName": "clove"}],"tags": ["Italian"]},
+    {"id": -1,"title": "Chicken Soup","summary": "SOUP","servings": 4,"instructions": "Boil","imageUrl": "https://assets.epicurious.com/photos/62f16ed5fe4be95d5a460eed/1:1/w_2240,c_limit/RoastChicken_RECIPE_080420_37993.jpg","videoUrl": "https://www.youtube.com/watch?v=rX184PQ1UMI","ingredients": [{"ingredientName": "Chicken Stock","quantity": 0,"unitName": ""},{"ingredientName": "Chicken","quantity": 0,"unitName": ""}],"tags": ["Chicken"]}
+];
 
 
 
