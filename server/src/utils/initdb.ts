@@ -40,19 +40,20 @@ function runQuery(sql: string):  Promise<any> {
   });
 }
 
-async function execFiles() {
+async function execFiles(silent: boolean) {
   for (const [ i, sql ] of sqlFilesContent.entries()) {
-    console.log(`Executing ${sqlFiles[i]}...`);
+    if (!silent) { console.log(`Executing ${sqlFiles[i]}...`); }
     try {
       await runQuery(sql);
-      console.log(`Done ${sqlFiles[i]}`);
+
+      if (!silent) { console.log(`Done ${sqlFiles[i]}`); }
     } catch (err) {
-      console.log(`Error ${sqlFiles[i]}`);
+      if (!silent) { console.log(`Error ${sqlFiles[i]}`); }
       console.log(err);
       break;
     }
   }
-  console.log(" --- Done --- ");
+  if (!silent) { console.log(" --- Done --- "); }
 }
 
 async function main() {
@@ -68,7 +69,7 @@ async function main() {
     let text = inputBuffer.toString().trim();
 
     if (text === 'y') {
-      await execFiles();
+      await execFiles(false);
     } else {
       console.log('Aborted');
     }
@@ -80,7 +81,7 @@ async function main() {
 
 async function initTest() {
   setupPool('./.env.test');
-  await execFiles();
+  await execFiles(true);
 }
 
 // if main flag is set, run main function
