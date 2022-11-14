@@ -13,6 +13,7 @@ const config : Config.InitialOptions = {
   setupFiles: [
     "dotenv/config",
   ],
+  "collectCoverage": true
 }
 
 export default config

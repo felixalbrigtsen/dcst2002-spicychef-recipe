@@ -6,28 +6,167 @@ import {
 } from 'react-router-dom';
 
 import { useParams } from 'react-router-dom'
+import { useLogin } from '../hooks/Login';
+import { Container, Image, Media, Tile, Heading, Notification, Button, Form, Box, Hero, Columns } from 'react-bulma-components'
+import { FaPlus, FaMinus, FaToriiGate } from 'react-icons/fa';
+import { FaThumbsUp } from 'react-icons/fa';
+import recipeService from '../services/recipe-service';
+import { Recipe } from '../models/Recipe';
+import { RecipeIngredient } from '../models/RecipeIngredient';
+import listService from '../services/list-service';
 
-import { Card, Container, Image, Media } from 'react-bulma-components'
 
 function RecipePage() {
 
-    const { id } = useParams();
-  
+    const { user } = useLogin();
+    // const user = {
+    //   googleId: 1,
+    //   name: "hei",
+    //   email: "hi",
+    //   picture: "abc",
+    //   isadmin: true,
+    //   likes: [4],
+    //   shoppingList: [2,3,4]
+    // }
+
+    let [ recipe, setRecipe ] = React.useState<Recipe>({id: 0, title: "", summary: "", instructions: "", servings: 0, imageUrl: "", videoUrl: "", created_at: "", ingredients: [], tags: [], likes: 0});
+
+    let id = Number(useParams().id);
+    React.useEffect(() => {
+        recipeService.getRecipe(id)
+        .then(data => {setRecipe(data)});
+    }, []);
+
+    let [ actualServings, setActualServings ] = React.useState<number>(recipe.servings);
+    React.useEffect(() => {
+        setActualServings(recipe.servings);
+    }, [recipe.servings]);
+
     return (
         <>
-        <Container className='has-text-centered'>
-          <Card>
-            <Card.Header>Recipe: {id}</Card.Header>
-            <Card.Content>
-                  {/* @ts-ignore */}
-                  {/* <iframe src="https://www.youtube.com/embed/70vwJy1dQ0c" allowfullscreen></iframe> */}
-            </Card.Content>
-          </Card>
-        </Container>
+        <Container>
+        <Hero>
+        <Hero.Body>
+        <Tile kind="ancestor">
+          <Tile size={4} vertical>
+              <Tile kind="parent">
+                <Tile kind="child" renderAs={Notification}>
+                  <Media.Item renderAs="figure">
+                    {recipe.imageUrl ? <Image size={4} src={recipe.imageUrl} /> : <Image size={4} src="https://bulma.io/images/placeholders/128x128.png" />}
+                  </Media.Item>
+                  <Media.Item>
+                    <Heading size={4}>{recipe.title}</Heading>
+                    <Heading subtitle size={6}>{recipe.summary}</Heading>
+                  </Media.Item>
+                  <br />
+                  <Media.Item>
+                    { user.googleId && user.likes.includes(recipe.id) ?
+                        <Button className="is-rounded" color="success" onClick={() => {
+                          console.log("unlike");
+                        }
+                        }> 
+                            <span>Liked</span>
+                            <span className="icon">
+                            <FaThumbsUp />
+                            </span>
+                        </Button>
+                        :
+                        <Button className="is-rounded" color="info" outlined onClick={() => {
+                          console.log("like");
+                        }
+                        }>
+                        <span>Like</span>
+                        <span className="icon">
+                            <FaThumbsUp />
+                        </span>
+                        </Button>
+                        
+                    }
+                  </Media.Item>
+                </Tile>
+              </Tile>
+              <Tile kind="parent">
+              <Tile kind="child" renderAs={Notification}>
+                {/* TODO: Link these to tag searches */}
+                {recipe.tags?.map((tag) => (
+                  <Button key={tag} color='dark' style={{margin: '2px 2px'}} renderAs='span' onClick={
+                    () => {
+                      // search for this tag
+                      console.log(tag)
+                    }
+                  }>{tag}</Button>
+                ))}
+                <Form.Field>
+                    <Form.Label>Servings:</Form.Label>
+                <Columns>
+                <Columns.Column className='is-narrow'>
+                <Button color="danger" onClick={
+                  () => {actualServings > 1 ? setActualServings(actualServings - 1) : setActualServings(1)}
+                }>
+                  <span className="icon">
+                    <FaMinus />
+                  </span>
+                </Button>
+                </Columns.Column>
+                <Columns.Column>
+                    <Form.Control>
+                      <Form.Input type="number" value={actualServings} min={1}
+                      onChange={(event) => {setActualServings(parseInt(event.target.value))}} />
+                    </Form.Control>
+                </Columns.Column>
+                <Columns.Column className='is-narrow'>
+                  <Button color="success" onClick={
+                    () => {setActualServings(actualServings + 1)}
+                  }>
+                    <span className="icon">
+                      <FaPlus />
+                    </span>
+                  </Button>
+                </Columns.Column>
+                </Columns>
+                </Form.Field>
+              </Tile>
+              </Tile>
+              <Tile kind="parent" vertical>
+                <Tile kind="child" renderAs={Notification}>
+                <Heading subtitle size={4}>Ingredients</Heading>
+                  { recipe.ingredients?.map((ingredient) => {
+                      return (
+                        <Heading key={ingredient.id} subtitle size={6}> <b>{ingredient.ingredientName}</b> : {ingredient.quantity * (actualServings/recipe.servings)} {ingredient.unitName} </Heading>
+                      )
+                    })
+                  }
+                  <Button 
+                    renderAs={Notification} 
+                    onClick={ () => { 
+                      recipe.ingredients?.forEach((ingredient) => {
+                        listService.addIngredient(ingredient.id)
+                      });
+                    }
+                  }
+                  >Add Ingredients to List</Button>
+                </Tile>
+              </Tile>
+            </Tile>
+            <Tile vertical kind="parent">
+              <Tile kind="child" renderAs={Notification}>
+                <Heading subtitle size={4}>Instructions</Heading>
+                <div style={{whiteSpace: "pre-wrap"}}>{recipe.instructions}</div>
+              </Tile>
+              <Tile kind="child" renderAs={Notification} className="has-text-centered">
+                <Heading subtitle size={4}>Youtube Video</Heading>
+                { recipe.videoUrl ? 
+                  <iframe width="90%" height="70%" src={recipe.videoUrl.replace("watch?v=", "embed/")} allowFullScreen></iframe> :
+                  <Heading subtitle size={6}>No video available</Heading>
+                }
+              </Tile>
+            </Tile>
+          </Tile>
+          </Hero.Body>
+          </Hero>
+          </Container>
         </>
     );
-
-    
 }
 
 export default RecipePage;

@@ -10,111 +10,165 @@ import recipeService from '../services/recipe-service';
 import { useEffect } from 'react';
 import { useLogin } from '../hooks/Login';
 
-import { Hero, Section, Tile, Heading, Box, Image, Notification, Form, Button, Media, Content } from 'react-bulma-components';
+import { Hero, Tile, Heading, Image, Notification, Form, Button, Media, Content } from 'react-bulma-components';
 
 import Icon from '@mdi/react'
-// @ts-ignore
-import { mdiCart, mdiBasket, mdiShakerOutline, mdiFoodDrumstick, mdiFoodSteak, mdiCarrot, mdiMagnify, mdiArrowRight } from '@mdi/js';
-
+import { mdiListBox, mdiShakerOutline, mdiFoodDrumstick, mdiFoodSteak, mdiCarrot, mdiMagnify, mdiArrowRight, mdiLoginVariant} from '@mdi/js';
 import Footer from '../components/Footer';
-import RecipeCard from '../components/RecipeCard';
+import { Recipe } from '../models/Recipe';
+
+import ImageSlider from '../components/ImageSlider';
 
 
 function Home () {
   const { user } = useLogin();
 
-    // // Demo of how to use the recipe service
-    // useEffect(() => {
-    //     recipeService.getRecipesShort().then((recipes) => {
-    //         console.log(recipes);
-    //     });
-    //     let id : number = 1
-    //     recipeService.getRecipe(id).then((recipe) => {
-    //         console.log("---------Recipe 1?:-------------")
-    //         console.log(recipe)
-    //     })
-    //     let querystring: string = "cho"
-    //     recipeService.search(querystring).then((recipes) => {
-    //         console.log("-----------Search---------------")
-    //         console.log(recipes)
-    //     })
-    // }, []);
+    // choose a random recipe from the list of recipes
+    let [ recipeList, setRecipeList ] = React.useState<Recipe[]>([]);
+    let [ randomRecipe, setRandomRecipe ] = React.useState<Recipe>({id: 0, title: "", summary: "", instructions: "", servings: 0, imageUrl: "", videoUrl: "", created_at: "", ingredients: [], tags: [], likes: 0});
+    let [ query, setQuery ] = React.useState<string>("")
 
+    React.useEffect(() => {
+        recipeService.getRecipesShort()
+        .then(data => {setRecipeList(data)});
+    }, []);
+
+    React.useEffect(() => {
+        let randomRecipe = recipeList[Math.floor(Math.random() * recipeList.length)];
+        setRandomRecipe(randomRecipe);
+    }, [recipeList]);
 
     return (
         <>
             <Hero>
                 <Hero.Body>
                         <Tile kind="ancestor">
-                            <Tile size={8} vertical>
+                            <Tile size={8} vertical style={{alignItems: "center !important"}}>
                                 <Tile kind="parent">
                                         <Tile kind="child" renderAs={Notification} color="danger">
                                             <Heading>Welcome, {user.name || 'Guest'}</Heading>
                                             <Heading subtitle>This is the SpicyChef Recipe Book</Heading>
-                                            <div className="content" />
                                         </Tile>
                                     </Tile>
                                 <Tile>
                                 <Tile kind="parent">
                                         <Tile kind="child" renderAs={Notification} color="info">
                                             <Heading>Recipes</Heading>
-                                                <Form.Field>
+                                                <Form.Field style={{width: '100%'}}>
                                                     <Form.Label style={{color:"white"}}>
-                                                        <Heading subtitle>Explore Recipes</Heading>
+                                                        <Link to={`/recipes`} style={{textDecoration: "none"}}>
+                                                            <Button color="info" className='is-rounded'>
+                                                            <span><Heading subtitle>Explore Recipes</Heading></span>
+                                                            <span className="icon">
+                                                                <Icon path={mdiArrowRight} size={1} />
+                                                            </span>
+                                                            </Button>
+                                                        </Link>
                                                     </Form.Label>
-                                                    <Form.Control className="has-icons-right">
-                                                        <Form.Input placeholder="Search for a recipe"/>
+                                                            <Form.Control className="has-icons-right">
+                                                            <Form.Input placeholder="Search for a recipe" onChange={(event) => setQuery(event.currentTarget.value)} onKeyDown={
+                                                            (event) => {
+                                                                if (event.key === "Enter") {
+                                                                    window.location.href = `/search/${query}`
+                                                                }
+                                                            }
+                                                            }/>
                                                             <span className="icon is-small is-right">
                                                                 <Icon path={mdiMagnify} size={1}/> 
                                                             </span>
-                                                    </Form.Control>
+                                                            </Form.Control>
                                                 </Form.Field>
+                                                { recipeList ? <ImageSlider slides={recipeList} /> : <></> }
                                         </Tile>
                                     </Tile>
                                     <Tile kind="parent" vertical>
                                         <Tile kind="child" renderAs={Notification} color="primary">
-                                            <Heading>Ingredients</Heading>
-                                            <Heading subtitle>Explore Ingredients</Heading>
+                                            <Heading>Explore SpicyChef</Heading>
+                                            <Heading subtitle>Useful links</Heading>
                                             <Link to="/ingredients">
-                                            <Button renderAs={Notification} color="primary" className='is-rounded'>
-                                            <Icon path={mdiCarrot} size={1} color="white" />
-                                            <Icon path={mdiFoodSteak} size={1} color="white" />
-                                            <Icon path={mdiFoodDrumstick} size={1} color="white" />
-                                            <Icon path={mdiShakerOutline} size={1} color="white" />
+                                            <Button color="info" className='is-light is-rounded'>
+                                                <span>Ingredients</span>
+                                                <Icon path={mdiCarrot} size={1} />
+                                                <Icon path={mdiFoodSteak} size={1} />
+                                                <Icon path={mdiFoodDrumstick} size={1} />
+                                                <Icon path={mdiShakerOutline} size={1} />
                                             </Button>
                                             </Link>
-                                            <Content>
-                                                Ingredient of the Day
-                                                <Image src="https://cdn.discordapp.com/attachments/894239765430419549/1032295931435036772/unknown.png" />
-                                            </Content>
-                                        </Tile>
-                                        <Tile kind="child" renderAs={Notification} color="warning">
-                                            <Heading>Shopping Cart</Heading>
-                                            <Heading subtitle>Check out Your Shopping Cart</Heading>
-                                            <Link to="/cart">
-                                            <Button renderAs={Notification} color="warning" className="is-rounded">
-                                                <Icon path={mdiCart} size={1} />
+                                            <br />
+                                            <Link to="/list">
+                                            <Button color="info" className="is-light is-rounded mt-2">
+                                                <span>Shopping List</span>
+                                                <Icon path={mdiListBox} size={1} />
                                             </Button>
                                             </Link>                                            
+                                            <br />
+                                            <Link to="/search">
+                                            <Button color="info" className="is-light is-rounded mt-2">
+                                                <span>Search</span>
+                                                <Icon path={mdiMagnify} size={1} />
+                                            </Button>
+                                            </Link>
+                                            { user.googleId && <> 
+                                            <br />
+                                            <Link to="/login">
+                                            <Button color="info" className="is-light is-rounded mt-2">
+                                                <span><Heading>Login</Heading></span>
+                                                <Icon path={mdiLoginVariant} size={1} />
+                                            </Button>
+                                            </Link>
+                                            </> }
+                                        </Tile>
+                                        <Tile kind="child" renderAs={Notification} color="warning">
+                                            <Heading>Most Liked Recipes</Heading>
+                                            <Heading subtitle>Try out our favorites</Heading>
+
+                                            { recipeList.sort((a, b) => b.likes - a.likes).slice(0, 3).map((recipe, index) => {
+                                                return (
+                                                    <Link to={`/recipes/${recipe.id}`} key={index}>
+                                                        <Media className="columns">
+                                                            <Media.Item renderAs="figure" className="column is-one-quarters">
+                                                                <Image size={96} alt="96x96" src={recipe.imageUrl || "/logo.png"} />
+                                                            </Media.Item>
+                                                            <Media.Item renderAs="article" align="left" className="column is-three-quarters">
+                                                                <Heading size={5} className="has-text-left">{recipe.title}</Heading>
+                                                                <Heading subtitle size={6}>{recipe.summary}</Heading>
+                                                            </Media.Item>
+                                                        </Media>
+                                                    </Link>
+                                                )
+                                            }) }
                                         </Tile>
                                     </Tile>
                                 </Tile>
                         </Tile>
                                 <Tile kind="parent">
                                     <Tile kind="child" renderAs={Notification} color="success">
-                                        <div className="content">
-                                            <Heading>Selected Recipe</Heading>
-                                            <Image size={256} alt="256x256" src="https://bulma.io/images/placeholders/256x256.png" />
+                                        <div className="content" style={{margin:'auto'}}>
+                                            <Heading className='has-text-centered'>Selected Recipe</Heading>
+                                            {randomRecipe ? 
+                                            <Link to={`/recipes/${randomRecipe.id}`} style={{textDecoration: "none"}}>
+                                            <Image size={256} alt="256x256" src={(randomRecipe && randomRecipe.imageUrl) ? randomRecipe.imageUrl : "https://bulma.io/images/placeholders/256x256.png" } />
+                                            </Link>
+                                            : <Heading subtitle>There are no images to display</Heading>}
                                             <Media>
                                                 <Media.Item>
-                                                    <Heading subtitle>Recipe Name</Heading>
+                                                    <Heading subtitle className='has-text-centered'>{randomRecipe ? randomRecipe.title : ""}</Heading>
                                                     <Content>
-                                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec iaculis mauris.
+                                                    {randomRecipe ? randomRecipe.summary : ""}
                                                     </Content>
                                                 </Media.Item>
                                             </Media>
                                             <br />
-                                            <Link to="/recipe">Read More <Icon path={mdiArrowRight} size={0.75} /></Link>
+                                            {randomRecipe ? 
+                                            <Link to={`/recipes/${randomRecipe.id}`} style={{textDecoration: "none"}}>
+                                                <Button color="success" className="is-rounded">
+                                                    <span>Read more</span>
+                                                    <span className="icon">
+                                                        <Icon path={mdiArrowRight} size={1} />
+                                                    </span>
+                                                </Button>
+                                            </Link>
+                                            : ""}
                                         </div>
                                     </Tile>
                                 </Tile>
