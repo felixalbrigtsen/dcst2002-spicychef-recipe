@@ -7,6 +7,8 @@ import recipeService from '../services/recipe-service';
 import { NewRecipe } from '../models/NewRecipe';
 import { doesNotMatch } from 'assert';
 
+// TODO: Remove all manual pool.query in tests, use the given initdb and service methods
+
 const port = Number(process.env.PORT)
 
 const testRecipes: Recipe[] = [
@@ -32,14 +34,9 @@ const testIngredients: Ingredient[] = [
 
 axios.defaults.baseURL = 'http://localhost:3001/api/';
 
-let webServer: any;
-beforeAll((done) => {
-  // Use separate port for testing
-  webServer = app.listen(port, () => done());
-});
-
 beforeEach((done) => {
   // Delete all tasks, and reset id auto-increment start value
+  // TODO: use the existing "initdb" functions
   pool.query('TRUNCATE TABLE recipe', (error) => {
     if (error) return done(error);
 
@@ -98,12 +95,6 @@ beforeEach((done) => {
       .then(() => recipeService.addRecipeIngredient(testRecipes[2].id, 5, 5, testRecipes[2].ingredients[0].amount))
       .then(() => recipeService.addRecipeIngredient(testRecipes[2].id, 6, 6, testRecipes[2].ingredients[1].amount))
     })
-});
-
-// Stop web server and close connection to MySQL server
-afterAll((done) => {
-  if (!webServer) return done(new Error());
-  webServer.close(() => pool.end(() => done()));
 });
 
 test('Default message works (GET)', () => {
