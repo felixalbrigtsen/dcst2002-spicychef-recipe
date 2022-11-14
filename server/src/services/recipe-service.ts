@@ -44,12 +44,12 @@ class RecipeService {
 
   getAllRecipesShort(): Promise<Recipe[]> {
     return new Promise((resolve, reject) => {
-      pool.query(`SELECT recipe.id, recipe.title, recipe.summary, recipe.imageUrl, likes.likes
+      pool.query(`SELECT recipe.id, recipe.title, recipe.summary, recipe.imageUrl, recipe.created_at, likes.likes
                   FROM recipe 
                   LEFT JOIN ( 
                             SELECT recipeId, COUNT(*) AS likes FROM user_like GROUP BY recipeId
                       ) likes 
-                  ON recipe.id = likes.recipeId`, (err, results: {id: number; title: string; summary: string; imageUrl: string; likes: number}[]) => {
+                  ON recipe.id = likes.recipeId`, (err, results: {id: number; title: string; summary: string; imageUrl: string; created_at: Date; likes: number}[]) => {
         if (err) {
           return reject(err);
         } 
@@ -64,6 +64,7 @@ class RecipeService {
             title: recipe.title,
             summary: recipe.summary,
             imageUrl: recipe.imageUrl,
+            created_at: recipe.created_at,
             likes: recipe.likes,
             tags: await this.getTagsInRecipe(recipe.id),
           } as Recipe;
@@ -154,7 +155,7 @@ class RecipeService {
   getRecipesWithTag(tag: string): Promise<Recipe[]> {
     return new Promise((resolve, reject) => {
       pool.query(`
-        SELECT recipe.id, recipe.title, recipe.summary 
+        SELECT recipe.id, recipe.title, recipe.summary, recipe.created_at
         FROM recipe_tag 
         LEFT JOIN recipe ON recipe_tag.recipeId = recipe.id 
         WHERE recipe_tag.name = "dinner" 
@@ -342,8 +343,7 @@ class RecipeService {
           return reject(err);
         }
         // Resolve id of inserted ingredient
-        // TODO: mysql returns some combination of RowDataPacket and OkPacket, fix the ts-ignore
-        //@ts-ignore
+        // @ts-ignore
         resolve(results.insertId);
       });
     });
@@ -356,7 +356,6 @@ class RecipeService {
           return reject(err);
         }
         // Resolve id of inserted unit
-        // TODO: mysql returns some combination of RowDataPacket and OkPacket, fix the ts-ignore
         // @ts-ignore
         resolve(results.insertId);
       });
@@ -410,7 +409,6 @@ class RecipeService {
           return reject(err);
         }
         // Resolve id of inserted recipe
-        // TODO: mysql returns some combination of RowDataPacket and OkPacket, fix the ts-ignore
         // @ts-ignore
         resolve(results.insertId);
       });
@@ -424,7 +422,6 @@ class RecipeService {
           return reject(err);
         }
         // Resolve id of inserted recipe_ingredient
-        // TODO: mysql returns some combination of RowDataPacket and OkPacket, fix the ts-ignore
         // @ts-ignore
         resolve(results.insertId);
       });
@@ -438,7 +435,6 @@ class RecipeService {
           return reject(err);
         }
         // Resolve id of inserted recipe_tag
-        // TODO: mysql returns some combination of RowDataPacket and OkPacket, fix the ts-ignore
         // @ts-ignore
         resolve(results.insertId);
       });
@@ -567,10 +563,11 @@ class RecipeService {
         if (err) {
           return reject(err);
         }
+
         // Resolve id of inserted user_like
-        // TODO: mysql returns some combination of RowDataPacket and OkPacket, fix the ts-ignore
         // @ts-ignore
         resolve(results.insertId);
+
       });
     });
   }
@@ -582,7 +579,6 @@ class RecipeService {
           return reject(err);
         }
         // Resolve id of inserted user_like
-        // TODO: mysql returns some combination of RowDataPacket and OkPacket, fix the ts-ignore
         // @ts-ignore
         resolve(results.insertId);
       });
@@ -596,7 +592,6 @@ class RecipeService {
           return reject(err);
         }
         // Resolve id of inserted user_ingredient
-        // TODO: mysql returns some combination of RowDataPacket and OkPacket, fix the ts-ignore
         // @ts-ignore
         resolve(results.insertId);
       });
@@ -610,7 +605,6 @@ class RecipeService {
           return reject(err);
         }
         // Resolve id of inserted user_ingredient
-        // TODO: mysql returns some combination of RowDataPacket and OkPacket, fix the ts-ignore
         // @ts-ignore
         resolve(results.insertId);
       });

@@ -12,7 +12,7 @@ export type Recipe = {
   servings: number;
   imageUrl: string | null;
   videoUrl: string | null;
-  created_at: string | null;
+  created_at: Date;
   ingredients: Ingredient[];
   tags: string[];
   likes: number;
