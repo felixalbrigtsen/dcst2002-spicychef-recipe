@@ -16,6 +16,8 @@ import { Table, Container, Heading, Tile, Box, Notification, Button, Modal } fro
 import { MdDeleteForever, MdEdit, MdRemoveRedEye, MdAddCircle } from 'react-icons/md';
 import { BiImport } from 'react-icons/bi';
 
+import { useAlert } from '../hooks/Alert';
+
 function AdminView() {
 
     let [ recipeList, setRecipeList ] = React.useState<Recipe[]>([]);
@@ -26,6 +28,7 @@ function AdminView() {
     }, []);
 
     const { user } = useLogin();
+    const { appendAlert } = useAlert();
 
     let [ confirmationState, setConfirmationState ] = React.useState<boolean>(false);
     let [ confirmItem, setConfirmItem ] = React.useState<number>(-1);
@@ -38,6 +41,8 @@ function AdminView() {
     function handleDelete(id: number) {
         console.log("Deleting recipe with id: " + id);
         recipeService.deleteRecipe(id)
+        .then(() => appendAlert("Recipe deleted successfully", "success"))
+        .catch(() => appendAlert("Recipe deletion failed", "danger"));
         setConfirmationState(!confirmationState);
         setConfirmItem(-1);
     }
@@ -52,7 +57,7 @@ function AdminView() {
                 </Modal.Card.Header>
                 <Modal.Card.Footer>
                     <Button color="danger" onClick={() => handleDelete(confirmItem)}>Yes, Delete</Button>
-                    <Button onClick={() => setConfirmationState(!confirmationState)}>Cancel</Button>
+                    <Button onClick={() => {setConfirmationState(!confirmationState), appendAlert('Cancelled deletion','info')}}>Cancel</Button>
                 </Modal.Card.Footer>
             </Modal.Card>
         </Modal>

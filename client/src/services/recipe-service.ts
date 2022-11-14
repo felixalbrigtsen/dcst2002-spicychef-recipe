@@ -155,6 +155,46 @@ class RecipeService {
         });
     });
   }
+
+  /**
+   * @function
+   * @name addLike
+   * @argument {number} id
+   * @description
+   * This function will add a like to a recipe on recipe.feal.no/api/likes/{id}
+   */
+
+  addLike(id: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      axios.post(process.env.REACT_APP_API_URL + '/likes/' + id)
+        .then((response) => {
+          resolve();
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
+  /**
+   * @function
+   * @name removeLike
+   * @argument {number} id
+   * @description
+   * This function will remove a like from a recipe on recipe.feal.no/api/likes/{id}
+   */
+
+  removeLike(id: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      axios.delete(process.env.REACT_APP_API_URL + '/likes/' + id)
+        .then((response) => {
+          resolve();
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
 }
 
 const recipeService = new RecipeService();
