@@ -77,7 +77,7 @@ export default function IngredientsPage() {
               <Button
                 color="danger"
                 className="is-rounded m-1"
-                onClick={() => {setSelectedIngredients([])}}
+                onClick={() => { setSelectedIngredients([]);  }}
               >
                 Clear Selection
               </Button>
@@ -98,6 +98,7 @@ export default function IngredientsPage() {
                       <td className='is-narrow has-text-centered'>
                         <Form.Checkbox 
                           className='is-centered'
+                          checked={selectedIngredients.includes(ingredient)}
                           onClick={() => {handleIngredientClick(ingredient);}}
                           aria-label={`Already own ${ingredient.name}`}
                           aria-required="true"
