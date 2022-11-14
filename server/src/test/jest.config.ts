@@ -8,7 +8,7 @@ const config : Config.InitialOptions = {
   coverageReporters: ["html", "text", "text-summary" ],
   transformIgnorePatterns: ["node_modules/(?!@testing-library)"],
   setupFiles: [
-    "./src/test/dotenv-config"
+    "./dotenv-config"
   ],
   "collectCoverage": true
 }

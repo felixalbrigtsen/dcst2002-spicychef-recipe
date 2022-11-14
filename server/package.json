@@ -8,7 +8,7 @@
     "docs": "jsdoc -c jsdoc.conf.json",
     "initdb": "ts-node src/utils/initdb.ts main",
     "mealdb": "ts-node src/utils/mealdb.ts",
-    "test": "jest"
+    "test": "jest --config src/test/jest.config.ts"
   },
   "devDependencies": {
     "@types/express": "^4.17.14",
