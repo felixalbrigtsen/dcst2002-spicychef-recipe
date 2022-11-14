@@ -147,6 +147,8 @@ function RecipePage() {
                     onClick={ () => { 
                       recipe.ingredients?.forEach((ingredient) => {
                         listService.addIngredient(ingredient.id)
+                        .then(() => {appendAlert('Ingredients added to shopping list', 'success')})
+                        .catch(() => {appendAlert('Failed to add ingredients to shopping list', 'danger')})
                       });
                     }
                   }

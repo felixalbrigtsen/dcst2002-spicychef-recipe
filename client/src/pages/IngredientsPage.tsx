@@ -13,9 +13,12 @@ import { Ingredient } from '../models/Ingredient';
 import { Box, Button, Form, Container, Heading, Hero, Notification, Table, Tile } from 'react-bulma-components';
 import { MdAddCircle } from 'react-icons/md';
 
+import { useAlert } from '../hooks/Alert';
+
 export default function IngredientsPage() {
   const [ selectedIngredients, setSelectedIngredients ] = React.useState<Ingredient[]>([]);
   const [ ingredients, setIngredients ] = React.useState<Ingredient[]>([]);
+  const { appendAlert } = useAlert();
 
   React.useEffect(() => {
     ingredientService.getIngredients()
@@ -35,7 +38,8 @@ export default function IngredientsPage() {
 
   function addSelectedToList() {
     selectedIngredients.forEach(ingredient => {
-      listService.addIngredient(ingredient.id);
+      listService.addIngredient(ingredient.id)
+      .then(() => appendAlert("Added " + ingredient.name + " to list", "success"));
     });
   }
 
