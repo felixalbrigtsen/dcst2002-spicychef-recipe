@@ -15,19 +15,13 @@ import { Recipe } from '../models/Recipe';
 import { RecipeIngredient } from '../models/RecipeIngredient';
 import listService from '../services/list-service';
 
+import { useAlert } from '../hooks/Alert';
+
 
 function RecipePage() {
 
+    const { appendAlert } = useAlert();
     const { user } = useLogin();
-    // const user = {
-    //   googleId: 1,
-    //   name: "hei",
-    //   email: "hi",
-    //   picture: "abc",
-    //   isadmin: true,
-    //   likes: [4],
-    //   shoppingList: [2,3,4]
-    // }
 
     let [ recipe, setRecipe ] = React.useState<Recipe>({id: 0, title: "", summary: "", instructions: "", servings: 0, imageUrl: "", videoUrl: "", created_at: "", ingredients: [], tags: [], likes: 0});
 
@@ -59,12 +53,14 @@ function RecipePage() {
                     <Heading subtitle size={6}>{recipe.summary}</Heading>
                   </Media.Item>
                   <br />
-                  <Media.Item>
+                  { user.googleId ? 
+                    <Media.Item>
                     { user.googleId && user.likes.includes(recipe.id) ?
                         <Button className="is-rounded" color="success" onClick={() => {
-                          console.log("unlike");
-                        }
-                        }> 
+                            recipeService.removeLike(recipe.id)
+                            .then(() => {appendAlert('Recipe removed from favorites', 'info')})
+                            .catch(() => {appendAlert('Failed to remove recipe from favorites', 'danger')})
+                        }}> 
                             <span>Liked</span>
                             <span className="icon">
                             <FaThumbsUp />
@@ -72,9 +68,10 @@ function RecipePage() {
                         </Button>
                         :
                         <Button className="is-rounded" color="info" outlined onClick={() => {
-                          console.log("like");
-                        }
-                        }>
+                            recipeService.addLike(recipe.id)
+                            .then(() => {appendAlert('Recipe added to favorites', 'info')})
+                            .catch(() => {appendAlert('Failed to add recipe to favorites', 'danger')})
+                        }}>
                         <span>Like</span>
                         <span className="icon">
                             <FaThumbsUp />
@@ -82,7 +79,16 @@ function RecipePage() {
                         </Button>
                         
                     }
-                  </Media.Item>
+                    </Media.Item>
+                    :
+                    <Media.Item>
+                    <Button color="info" disabled className='is-rounded'> <span>Like</span>
+                        <span className="icon">
+                            <FaThumbsUp />
+                        </span> 
+                    </Button>
+                    </Media.Item>
+                  }
                 </Tile>
               </Tile>
               <Tile kind="parent">
