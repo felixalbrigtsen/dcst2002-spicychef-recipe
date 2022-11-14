@@ -21,7 +21,6 @@ import { FaTimes } from 'react-icons/fa';
 import recipeService from '../services/recipe-service';
 import ingredientService from '../services/ingredient-service';
 import { Ingredient } from '../models/Ingredient';
-import { on } from 'stream';
 
 interface RecipeFormProps {
     recipe: Recipe;
@@ -60,7 +59,7 @@ function RecipeForm (props: RecipeFormProps) {
         setRecipe(props.recipe);
         setTitle(props.recipe.title);
         setSummary(props.recipe.summary);
-        setServings(props.recipe.servings);
+        setServings(props.recipe.servings != 0 ? props.recipe.servings : 2);
         setInstructions(props.recipe.instructions);
         setImageLink(props.recipe.imageUrl ? props.recipe.imageUrl : "");
         setVideoLink(props.recipe.videoUrl ? props.recipe.videoUrl : "");
@@ -162,12 +161,8 @@ function RecipeForm (props: RecipeFormProps) {
                 <Form.Control>
                   <CreatableSelect placeholder="Tags" components={animatedComponents} value={defaultTags.map((tag) => tag)} isMulti options={tagOptions} onCreateOption={
                     (newTag) => {
-                      let newTags = [...tags];
-                      newTags.push(newTag);
-                      setTags(newTags);
-                      let newTagOptions = [...tagOptions];
-                      newTagOptions.push({"value": newTag, "label": newTag});
-                      setTagOptions(newTagOptions);
+                      setTags([...tags, newTag]);
+                      setTagOptions([...tagOptions, {"value": newTag, "label": newTag}]);
                     }
                   }
                   onChange={
@@ -205,7 +200,9 @@ function RecipeForm (props: RecipeFormProps) {
               <Tile kind="child" renderAs={Form.Field}>
                 <Form.Label>Recipe Instructions</Form.Label>
                 <Form.Control>
-                  <Form.Textarea placeholder="Recipe Instructions" name={"Instructions"} style={{whiteSpace: "pre-wrap"}} defaultValue={instructions} />
+                  <Form.Textarea placeholder="Recipe Instructions" name={"Instructions"} style={{whiteSpace: "pre-wrap"}} defaultValue={instructions} onChange={
+                    (e) => {setInstructions(e.currentTarget.value)}
+                  } />
                 </Form.Control>
               </Tile>
               <Tile kind="child" renderAs={Form.Field}>
@@ -213,15 +210,13 @@ function RecipeForm (props: RecipeFormProps) {
                 <Form.Control>
                   <CreatableSelect placeholder="Recipe Ingredients" name={"Ingredients"} options={ingredientOptions} onCreateOption={
                     (newIngredient) => {
-                        let newIngredientOptions = [...ingredientOptions];
-                        newIngredientOptions.push({"value": 1, "label": newIngredient});
-                        setIngredientOptions(newIngredientOptions);
+                      setIngredientOptions([...ingredientOptions, {"value": 1, "label": newIngredient}]);
+                      setIngredients([...ingredients, {ingredientName: newIngredient, quantity: 0, unitName: ""}]);
                     }
                   }
                   onChange={
                     (selectedOption) => {
                         if (selectedOption) {
-                            console.log(selectedOption.label);
                             setIngredients([...ingredients, {ingredientName: selectedOption.label, quantity: 0, unitName: ""}]);
                             // clear value?
                         }

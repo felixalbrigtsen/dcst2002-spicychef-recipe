@@ -31,7 +31,7 @@ function RecipeCard(props: RecipeCardProps) {
     return(
         <>
             <Card style={{ width: 300, margin: 'auto' }}>
-            <Link to={`/recipe/${props.recipe.id}`}><Card.Image size="4by3" src={props.recipe.imageUrl} /></Link>
+            <Link to={`/recipes/${props.recipe.id}`}><Card.Image size="4by3" src={props.recipe.imageUrl} /></Link>
                 <Card.Content style={{minHeight: 150}}>
                     <Media>
                         <Media.Item>

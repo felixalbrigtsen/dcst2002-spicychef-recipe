@@ -94,6 +94,15 @@ class RecipeService {
     });
   }
 
+  /**
+   * 
+   * @function
+   * @name createRecipe 
+   * @argument {NewRecipe} recipe
+   * @description
+   * This function will post a new recipe to recipe.feal.no/api/recipes
+   */
+
   createRecipe(recipe: NewRecipe): Promise<NewRecipe> {
     return new Promise((resolve, reject) => {
       axios.post(process.env.REACT_APP_API_URL + '/recipes', recipe)
@@ -106,11 +115,40 @@ class RecipeService {
     });
   }
 
+  /**
+   * 
+   * @function
+   * @name updateRecipe
+   * @argument {NewRecipe} recipe
+   * @description
+   * This function will patch a recipe to recipe.feal.no/api/recipes/{id}
+   */
+
   updateRecipe(recipe: NewRecipe): Promise<NewRecipe> {
     return new Promise((resolve, reject) => {
       axios.put(process.env.REACT_APP_API_URL + '/recipes/' + recipe.id, recipe)
         .then((response) => {
           resolve(response.data);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
+  /**
+   * @function
+   * @name deleteRecipe
+   * @argument {number} id
+   * @description
+   * This function will delete a recipe from recipe.feal.no/api/recipes/{id}
+   */
+
+  deleteRecipe(id: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      axios.delete(process.env.REACT_APP_API_URL + '/recipes/' + id)
+        .then((response) => {
+          resolve();
         })
         .catch((error) => {
           reject(error);
