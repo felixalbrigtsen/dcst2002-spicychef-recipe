@@ -21,7 +21,7 @@ import { useAlert } from '../hooks/Alert';
 function RecipePage() {
 
     const { appendAlert } = useAlert();
-    const { user } = useLogin();
+    const { user, getSessionUser } = useLogin();
 
     let [ recipe, setRecipe ] = React.useState<Recipe>({id: 0, title: "", summary: "", instructions: "", servings: 0, imageUrl: "", videoUrl: "", created_at: "", ingredients: [], tags: [], likes: 0});
 
@@ -29,7 +29,7 @@ function RecipePage() {
     React.useEffect(() => {
         recipeService.getRecipe(id)
         .then(data => {setRecipe(data)});
-    }, []);
+    }, [user]);
 
     let [ actualServings, setActualServings ] = React.useState<number>(recipe.servings);
     React.useEffect(() => {
@@ -58,7 +58,7 @@ function RecipePage() {
                     { user.googleId && user.likes.includes(recipe.id) ?
                         <Button className="is-rounded" color="success" onClick={() => {
                             recipeService.removeLike(recipe.id)
-                            .then(() => {appendAlert('Recipe removed from favorites', 'info')})
+                            .then(() => {appendAlert('Recipe removed from favorites', 'info'), getSessionUser()})
                             .catch(() => {appendAlert('Failed to remove recipe from favorites', 'danger')})
                         }}> 
                             <span>Liked</span>
@@ -69,7 +69,7 @@ function RecipePage() {
                         :
                         <Button className="is-rounded" color="info" outlined onClick={() => {
                             recipeService.addLike(recipe.id)
-                            .then(() => {appendAlert('Recipe added to favorites', 'info')})
+                            .then(() => {appendAlert('Recipe added to favorites', 'info'), getSessionUser()})
                             .catch(() => {appendAlert('Failed to add recipe to favorites', 'danger')})
                         }}>
                         <span>Like</span>
