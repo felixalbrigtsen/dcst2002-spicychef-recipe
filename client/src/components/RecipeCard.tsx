@@ -18,7 +18,7 @@ interface RecipeCardProps {
 function RecipeCard(props: RecipeCardProps) {
 
     const { appendAlert } = useAlert();
-    const { user } = useLogin();
+    const { user, getSessionUser } = useLogin();
 
     return(
         <>
@@ -47,7 +47,7 @@ function RecipeCard(props: RecipeCardProps) {
                                 <Icon>
                                      <FaThumbsUp size={18} onClick={() => 
                                     recipeService.removeLike(props.recipe.id)
-                                    .then(() => {appendAlert('Recipe removed from favorites', 'info')})
+                                    .then(() => {appendAlert('Recipe removed from favorites', 'info'); getSessionUser()})
                                     .catch(() => {appendAlert('Failed to remove recipe from favorites', 'danger')})
                                     }/>
                                 </Icon>
@@ -60,7 +60,7 @@ function RecipeCard(props: RecipeCardProps) {
                                 <Icon>
                                      <FaThumbsUp size={18} onClick={() => 
                                     recipeService.addLike(props.recipe.id)
-                                    .then(() => {appendAlert('Recipe added to favorites', 'success')})
+                                    .then(() => {appendAlert('Recipe added to favorites', 'success'); getSessionUser()})
                                     .catch(() => {appendAlert('Failed to add recipe to favorites', 'danger')})
                                     }/>
                                 </Icon>
