@@ -12,20 +12,20 @@ import ScrollButton from '../../components/ScrollUp'
 describe('Dynamic ScrollButton test', () => {
     test('Test visibility', () => {
         const {getByRole} = render(<ScrollButton/>)
-        let icon = getByRole("button", {hidden: true})
-        expect(icon).not.toBeVisible
+        let button = getByRole("button", {hidden: true})
+        expect(button).not.toBeVisible
 
         fireEvent.scroll(window, {target: {scrollY: 300}})
-        expect(icon).toBeVisible
+        expect(button).toBeVisible
     })
     test.skip('Test scroll', () => {
         fireEvent.scroll(window, {target: {scrollY: 300}})
 
         const {getByRole} = render(<ScrollButton/>)
-        let icon = getByRole("button", {hidden: true})
+        let button = getByRole("button", {hidden: true})
         
-        expect(icon).toBeVisible
-        fireEvent.click(icon)
+        expect(button).toBeVisible
+        fireEvent.click(button)
         expect(window.scrollY).toBe(0);
     })
 })
