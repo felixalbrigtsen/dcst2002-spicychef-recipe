@@ -22,7 +22,6 @@ import CreateRecipe from './pages/CreateRecipePage';
 import EditRecipe from './pages/EditRecipePage';
 import PageNotFound from './pages/PageNotFound';
 import ImportPage from './pages/ImportPage';
-// import Footer from './components/Footer';
 
 
 function App() {
@@ -54,7 +53,6 @@ function App() {
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </Router>
-    {/* <Footer /> */}
   </>
   );
 }
