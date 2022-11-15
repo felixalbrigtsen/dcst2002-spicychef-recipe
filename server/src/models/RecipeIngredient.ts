@@ -3,7 +3,7 @@
  * @alias RecipeIngredient
  */
 export type RecipeIngredient = {
-  ingredienId: number;
+  ingredientId: number;
   ingredientName: string;
 
   /**
