@@ -23,7 +23,7 @@ function RecipeCard(props: RecipeCardProps) {
     return(
         <>
             <Card style={{ width: 300, margin: 'auto' }}>
-            <Link to={`/recipes/${props.recipe.id}`}><Card.Image size="4by3" src={props.recipe.imageUrl} /></Link>
+            <Link to={`/recipes/${props.recipe.id}`}><Card.Image size="4by3" src={props.recipe.imageUrl} alt={props.recipe.title} /></Link>
                 <Card.Content style={{minHeight: 150}}>
                     <Media>
                         <Media.Item>
@@ -43,27 +43,38 @@ function RecipeCard(props: RecipeCardProps) {
                         <Card.Footer.Item>
                         { user.googleId && user.likes.includes(props.recipe.id) ?
                             <>
-                            <Button className="is-rounded" color="success">
+                            <Button className="is-rounded" color="success"
+                            onClick={() => 
+                                recipeService.removeLike(props.recipe.id)
+                                .then(() => {appendAlert('Recipe removed from favorites', 'info'); getSessionUser()})
+                                .catch(() => {appendAlert('Failed to remove recipe from favorites', 'danger')})
+                                }
+                            >
+                                <span>Liked</span>
+                                <span className='icon is-small'>
                                 <Icon>
-                                     <FaThumbsUp size={18} onClick={() => 
-                                    recipeService.removeLike(props.recipe.id)
-                                    .then(() => {appendAlert('Recipe removed from favorites', 'info'); getSessionUser()})
-                                    .catch(() => {appendAlert('Failed to remove recipe from favorites', 'danger')})
-                                    }/>
+                                    <FaThumbsUp size={18} />
                                 </Icon>
+                                </span>
                             </Button>
+                            {/* TODO: Make this prettier */}
                             <span>{props.recipe.likes != null ? props.recipe.likes : 0}</span>
                             </>
                             : 
                             <>
-                            <Button className="is-rounded" color="info" outlined>
+                            <Button className="is-rounded" color="info" outlined
+                            onClick={() => 
+                                recipeService.addLike(props.recipe.id)
+                                .then(() => {appendAlert('Recipe added to favorites', 'success'); getSessionUser()})
+                                .catch(() => {appendAlert('Failed to add recipe to favorites', 'danger')})
+                                }
+                            >
+                                <span>Like</span>
+                                <span className='icon is-small'>
                                 <Icon>
-                                     <FaThumbsUp size={18} onClick={() => 
-                                    recipeService.addLike(props.recipe.id)
-                                    .then(() => {appendAlert('Recipe added to favorites', 'success'); getSessionUser()})
-                                    .catch(() => {appendAlert('Failed to add recipe to favorites', 'danger')})
-                                    }/>
+                                     <FaThumbsUp size={18} />
                                 </Icon>
+                                </span>
                             </Button>
                             <span>{props.recipe.likes != null ? props.recipe.likes : 0}</span>
                             </>
