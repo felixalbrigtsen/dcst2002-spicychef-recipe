@@ -2,7 +2,7 @@ import axios from 'axios';
 import pool from '../mysql-pool';
 import app from '..';
 import { Recipe } from '../models/Recipe';
-import { Ingredient } from '../models/Ingredient';
+import { Ingredient } from '../models/RecipeIngredient';
 import recipeService from '../services/recipe-service';
 import { NewRecipe } from '../models/NewRecipe';
 import { doesNotMatch } from 'assert';

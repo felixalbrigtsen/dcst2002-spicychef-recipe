@@ -1,4 +1,4 @@
-import type { Ingredient } from './Ingredient';
+import type { Ingredient } from './RecipeIngredient';
 
 /**
  * Recipe

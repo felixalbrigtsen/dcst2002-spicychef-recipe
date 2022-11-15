@@ -1,6 +1,7 @@
 import pool from '../mysql-pool';
 import { RowDataPacket } from 'mysql2';
 import type { Meal } from '../models/Meal';
+import type { RecipeIngredient } from '../models/RecipeIngredient';
 import type { Ingredient } from '../models/Ingredient';
 import type { Recipe } from '../models/Recipe';
 import type { Unit } from '../models/Unit';
@@ -262,10 +263,10 @@ class RecipeService {
     });
   }
 
-  getIngredientsInRecipe(recipeId: number): Promise<Ingredient[]> {
+  getIngredientsInRecipe(recipeId: number): Promise<RecipeIngredient[]> {
     return new Promise((resolve, reject) => {
       pool.query(`
-        SELECT ingredientId as id, unitId, quantity, ingredient.name AS ingredientName, unit.name AS unitName 
+        SELECT ingredientId, unitId, quantity, ingredient.name AS ingredientName, unit.name AS unitName 
         FROM recipe_ingredient 
         LEFT JOIN unit ON recipe_ingredient.unitId = unit.id 
         LEFT JOIN ingredient ON recipe_ingredient.ingredientId = ingredient.id 
@@ -273,7 +274,7 @@ class RecipeService {
         if (err) {
           return reject(err);
         }
-        resolve(results as Ingredient[]);
+        resolve(results as RecipeIngredient[]);
       });
     });
   }
@@ -416,6 +417,7 @@ class RecipeService {
     });
   }
 
+  //TODO: Use a RecipeIngredient here
   addRecipeIngredient(recipeId: number, ingredientId: number, unitId: number, quantity: number): Promise<number> {
     return new Promise((resolve, reject) => {
       pool.query('INSERT INTO recipe_ingredient (recipeId, ingredientId, unitId, quantity) VALUES (?, ?, ?, ?)', [recipeId, ingredientId, unitId, quantity], (err, results) => {
