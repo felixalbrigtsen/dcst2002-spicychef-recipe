@@ -155,9 +155,10 @@ function RecipeForm (props: RecipeFormProps) {
               </Tile>
               <Tile kind="parent">
               <Tile kind="child" renderAs={Form.Field}>
+                <form data-testid='tags-form'>
                 <Form.Label>Recipe Tags</Form.Label>
                 <Form.Control>
-                  <CreatableSelect placeholder="Tags" aria-label={"Tags"} components={animatedComponents} value={defaultTags.map((tag) => tag)} isMulti options={tagOptions} onCreateOption={
+                  <CreatableSelect placeholder="Tags" aria-label={"Tags"} inputId='tags' components={animatedComponents} value={defaultTags.map((tag) => tag)} isMulti options={tagOptions} onCreateOption={
                     (newTag) => {
                       setTags([...tags, newTag]);
                       setTagOptions([...tagOptions, {"value": newTag, "label": newTag}]);
@@ -170,6 +171,7 @@ function RecipeForm (props: RecipeFormProps) {
                   }
                    />
                 </Form.Control>
+                </form>
               </Tile>
               </Tile>
               <Tile kind="parent">
@@ -206,7 +208,7 @@ function RecipeForm (props: RecipeFormProps) {
               <Tile kind="child" renderAs={Form.Field}>
                 <Form.Label>Recipe Ingredients</Form.Label>
                 <Form.Control>
-                  <CreatableSelect placeholder="Ingredient" aria-label={"Ingredients"} options={ingredientOptions} onCreateOption={
+                  <CreatableSelect placeholder="Ingredients" aria-label={"Ingredients"} options={ingredientOptions} onCreateOption={
                     (newIngredient) => {
                       setIngredientOptions([...ingredientOptions, {"value": 1, "label": newIngredient}]);
                       setIngredients([...ingredients, {ingredientName: newIngredient, quantity: 0, unitName: ""}]);
@@ -239,7 +241,7 @@ function RecipeForm (props: RecipeFormProps) {
                                     <td><Form.Input type="number" value={Number(ingredients[index].quantity)} onChange={ e => handleIngredientPropertyChange(index, "quantity", e.target.value) }></Form.Input></td>
                                     <td><Form.Input value={ingredients[index].unitName} onChange={ e => handleIngredientPropertyChange(index, "unitName", e.target.value) }></Form.Input></td>
                                     <td>    
-                                        <Button color="danger" outlined onClick={
+                                        <Button color="danger" aria-label={`Remove ${ingredients[index].ingredientName}`} outlined onClick={
                                             () => {setIngredients(ingredients.filter((i, j) => j !== index))}
                                             }>
                                             <span className='icon is-small'>
@@ -254,7 +256,7 @@ function RecipeForm (props: RecipeFormProps) {
                 </Table>
               </Tile>
               <Tile kind="child" renderAs={Form.Field} className="has-text-centered">
-                <Button color="primary"
+                <Button color="primary" aria-label='Submit'
                 onClick={() => {handleRecipeSubmit()}}>Submit</Button>
               </Tile>
             </Tile>
