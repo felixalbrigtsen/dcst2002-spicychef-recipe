@@ -9,24 +9,16 @@ import { Link } from 'react-router-dom';
 import recipeService from '../services/recipe-service';
 import { Recipe } from '../models/Recipe';
 
+import { useAlert } from '../hooks/Alert';
+
 interface RecipeCardProps {
     recipe: Recipe;
 }
 
 function RecipeCard(props: RecipeCardProps) {
 
-    // const user = {
-    //     googleId: 1,
-    //     name: "hei",
-    //     email: "hi",
-    //     picture: "abc",
-    //     isadmin: true,
-    //     likes: [1,4],
-    //     shoppingList: [1,2,3,4]
-    // }
-    // For development purposes
-
-    const { user } = useLogin();
+    const { appendAlert } = useAlert();
+    const { user, getSessionUser } = useLogin();
 
     return(
         <>
@@ -40,15 +32,6 @@ function RecipeCard(props: RecipeCardProps) {
                                 {props.recipe.title}
                             </Heading>
                         </Link>
-                            {/* <Heading subtitle size={6}>
-                                {props.recipe.tags.map((tag) => (
-                                    <Button color='dark' renderAs='span' style={{margin: '2px 2px'}} key={tag} onClick={
-                                        () => {
-                                            console.log(tag);
-                                        }
-                                    }>{tag}</Button>
-                                ))}
-                            </Heading> */}
                         </Media.Item>
                     </Media>
                     <Content>
@@ -56,30 +39,46 @@ function RecipeCard(props: RecipeCardProps) {
                     </Content>
                 </Card.Content>
                 <Card.Footer>
-                    <Card.Footer.Item>
-                    {/* If the recipe.id is in user.likes change the colour of the like button */}
-
-                    { user.googleId && user.likes.includes(props.recipe.id) ?
-                        <>
-                        <Button className="is-rounded" color="success">
-                            <Icon>
-                                 <FaThumbsUp size={18} />
-                            </Icon>
-                        </Button>
-                        <span>{props.recipe.likes != null ? props.recipe.likes : 0}</span>
-                        </>
+                    { user.googleId ? 
+                        <Card.Footer.Item>
+                        { user.googleId && user.likes.includes(props.recipe.id) ?
+                            <>
+                            <Button className="is-rounded" color="success">
+                                <Icon>
+                                     <FaThumbsUp size={18} onClick={() => 
+                                    recipeService.removeLike(props.recipe.id)
+                                    .then(() => {appendAlert('Recipe removed from favorites', 'info'); getSessionUser()})
+                                    .catch(() => {appendAlert('Failed to remove recipe from favorites', 'danger')})
+                                    }/>
+                                </Icon>
+                            </Button>
+                            <span>{props.recipe.likes != null ? props.recipe.likes : 0}</span>
+                            </>
+                            : 
+                            <>
+                            <Button className="is-rounded" color="info" outlined>
+                                <Icon>
+                                     <FaThumbsUp size={18} onClick={() => 
+                                    recipeService.addLike(props.recipe.id)
+                                    .then(() => {appendAlert('Recipe added to favorites', 'success'); getSessionUser()})
+                                    .catch(() => {appendAlert('Failed to add recipe to favorites', 'danger')})
+                                    }/>
+                                </Icon>
+                            </Button>
+                            <span>{props.recipe.likes != null ? props.recipe.likes : 0}</span>
+                            </>
+                        }
+                        </Card.Footer.Item>
                         : 
-                        <>
-                        <Button className="is-rounded" color="info" outlined>
-                            <Icon>
-                                 <FaThumbsUp size={18}/>
-                            </Icon>
-                        </Button>
-                        <span>{props.recipe.likes != null ? props.recipe.likes : 0}</span>
-                        </>
+                        <Card.Footer.Item>
+                            <Button className="is-rounded" color="info" outlined disabled>
+                                <Icon>
+                                    <FaThumbsUp size={18} />
+                                </Icon>
+                            </Button>
+                            <span>{props.recipe.likes != null ? props.recipe.likes : 0}</span>
+                        </Card.Footer.Item>
                     }
-                    
-                    </Card.Footer.Item>
                     <Link to={`/recipes/${props.recipe.id}`} className='is-flex is-vcentered'>
                         <Card.Footer.Item>
                         <span>Read More</span>

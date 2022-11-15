@@ -91,7 +91,8 @@ authRouter.get('/logout', (req, res) => {
   res.redirect('/');
 });
 
-authRouter.get('/profile', (req, res) => {
+authRouter.get('/profile', async (req, res) => {
+  await refreshLogin(req, res);
   if (req.session.user) {
     res.json(req.session.user);
   } else {
@@ -104,6 +105,8 @@ export async function refreshLogin(req, res) {
   if (req.session.user.googleId) {
     let user = await userService.getUser(req.session.user.googleId);
     req.session.user = user;
+  } else {
+    req.session.user = undefined;
   }
 }
 

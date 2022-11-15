@@ -1,10 +1,9 @@
-
 /**
  * Ingredient
- * @alias Ingredient
+ * @alias RecipeIngredient
  */
-export type Ingredient = {
-  id: number;
+export type RecipeIngredient = {
+  ingredientId: number;
   ingredientName: string;
 
   /**

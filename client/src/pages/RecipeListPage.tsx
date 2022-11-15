@@ -11,16 +11,19 @@ import RecipeCard from '../components/RecipeCard';
 import recipeService from '../services/recipe-service';
 import { Recipe } from '../models/Recipe';
 
+import { useLogin } from '../hooks/Login';
+
 import { Columns, Container, Button } from 'react-bulma-components';
 import ScrollButton from '../components/ScrollUp';
 
 export default function RecipeList() {
     let [ recipeList, setRecipeList ] = React.useState<Recipe[]>([]);
+    const { user } = useLogin();
 
     React.useEffect(() => {
         recipeService.getRecipesShort()
         .then(data => {setRecipeList(data)});
-    }, []);
+    }, [user]);
     return (
         <>
           <Container className='mt-2 is-centered' style={{margin:'auto'}}>
