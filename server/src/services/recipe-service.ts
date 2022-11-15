@@ -335,6 +335,19 @@ class RecipeService {
     });
   }
 
+  getTags(): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+      pool.query('SELECT * FROM recipe_tag', (err, results: RowDataPacket[]) => {
+        if (err) {
+          return reject(err);
+        }
+        if (results.length === 0) {
+          return resolve([]);
+        }
+        resolve(results.map((result) => result.name));
+      });
+    })
+  }
 
   addIngredient(name: string): Promise<number> {
     return new Promise((resolve, reject) => {
