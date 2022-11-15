@@ -5,9 +5,11 @@ import { Recipe } from '../models/Recipe';
 import { RecipeIngredient } from '../models/RecipeIngredient';
 import recipeService from '../services/recipe-service';
 import { NewRecipe } from '../models/NewRecipe';
-import { doesNotMatch } from 'assert';
+import { initTest } from '../utils/initdb'
 
-const port = Number(process.env.PORT)
+// TODO: Remove all manual pool.query in tests, use the given initdb and service methods
+
+const PORT = Number(process.env.PORT)
 
 const testRecipes: Recipe[] = [
     {"id": 1,"title":"Tunisian Lamb Soup","summary":"Meal from MealDB","instructions":"Add the lamb to a casserole and cook over high heat. When browned, remove from the heat and set aside.", "servings":2,"imageUrl":"https://www.themealdb.com/images/media/meals/t8mn9g1560460231.jpg","videoUrl":"https://www.youtube.com/watch?v=w1qgTQmLRe4","created_at":new Date(),"likes":0,"tags":["Lamb","Soup","Tunisian"],"ingredients": [{"ingredientId":1,"unitId":1,"quantity":1,"ingredientName":"Lamb Mince","unitName":"kg"},{"ingredientId":2,"unitId":2,"quantity":2,"ingredientName":"Garlic","unitName":"cloves minced"}]},
@@ -30,65 +32,44 @@ const testIngredients: RecipeIngredient[] = [
   testRecipes[2].ingredients[1],
 ]
 
-axios.defaults.baseURL = 'http://localhost:3001/api/';
+axios.defaults.baseURL = `http://localhost:${PORT}/api/`;
 
 let webServer: any;
 beforeAll((done) => {
   // Use separate port for testing
-  webServer = app.listen(port, () => done());
+  webServer = app.listen(3001, () => done());
 });
 
 beforeEach((done) => {
-  // Delete all tasks, and reset id auto-increment start value
-  pool.query('TRUNCATE TABLE recipe', (error) => {
-    if (error) return done(error);
-
-    // Create testTasks sequentially in order to set correct id, and call done() when finished
+  console.log(axios.defaults.baseURL)
+  initTest().then(() => {
     recipeService
       .addRecipe(testNewRecipes[0].title, testNewRecipes[0].summary, testNewRecipes[0].instructions, testNewRecipes[0].servings, testNewRecipes[0].imageUrl, testNewRecipes[0].videoUrl)
-      .then(() => recipeService.addRecipe(testNewRecipes[1].title, testNewRecipes[1].summary, testNewRecipes[1].instructions, testNewRecipes[1].servings, testNewRecipes[1].imageUrl, testNewRecipes[1].videoUrl) // Create testTask[1] after testTask[0] has been created
-      .then(() => recipeService.addRecipe(testNewRecipes[2].title, testNewRecipes[2].summary, testNewRecipes[2].instructions, testNewRecipes[2].servings, testNewRecipes[2].imageUrl, testNewRecipes[2].videoUrl) // Create testTask[2] after testTask[1] has been created
-      .then(() => done())));
-  });
-
-  pool.query('TRUNCATE TABLE recipe_tag', (error) => {
-    if (error) return done(error);
-
-    recipeService
-      .addRecipeTag(1,testRecipes[0].tags[0])
+      .then(() => recipeService.addRecipe(testNewRecipes[1].title, testNewRecipes[1].summary, testNewRecipes[1].instructions, testNewRecipes[1].servings, testNewRecipes[1].imageUrl, testNewRecipes[1].videoUrl))
+      .then(() => recipeService.addRecipe(testNewRecipes[2].title, testNewRecipes[2].summary, testNewRecipes[2].instructions, testNewRecipes[2].servings, testNewRecipes[2].imageUrl, testNewRecipes[2].videoUrl))
+      
+      //Add recipe tags
+      .then(() => recipeService.addRecipeTag(1,testRecipes[0].tags[0]))
       .then(() => recipeService.addRecipeTag(1,testRecipes[0].tags[1]))
+      .then(() => recipeService.addRecipeTag(1,testRecipes[0].tags[2]))
       .then(() => recipeService.addRecipeTag(2,testRecipes[1].tags[0]))
-      .then(() => recipeService.addRecipeTag(2,testRecipes[1].tags[1]))
       .then(() => recipeService.addRecipeTag(3,testRecipes[2].tags[0]))
-      .then(() => recipeService.addRecipeTag(3,testRecipes[2].tags[1]))
-  })
 
-  pool.query('TRUNCATE TABLE ingredient', (error) => {
-    if (error) return done(error);
+      //Add ingredients
+      .then(() => recipeService.addIngredient(testIngredients[0].ingredientName))
+      .then(() => recipeService.addIngredient(testIngredients[1].ingredientName))
+      .then(() => recipeService.addIngredient(testIngredients[2].ingredientName))
+      .then(() => recipeService.addIngredient(testIngredients[3].ingredientName))
+      .then(() => recipeService.addIngredient(testIngredients[4].ingredientName))
+      .then(() => recipeService.addIngredient(testIngredients[5].ingredientName))
 
-    recipeService
-      .addUnit(testIngredients[0].ingredientName)
-      .then(() => recipeService.addUnit(testIngredients[1].ingredientName))
-      .then(() => recipeService.addUnit(testIngredients[2].ingredientName))
-      .then(() => recipeService.addUnit(testIngredients[3].ingredientName))
-      .then(() => recipeService.addUnit(testIngredients[4].ingredientName))
-      .then(() => recipeService.addUnit(testIngredients[5].ingredientName))
-  })
-
-  pool.query('TRUNCATE TABLE unit', (error) => {
-    if (error) return done(error);
-
-    recipeService
-      .addUnit(testRecipes[0].ingredients[0].unitName)
+      //Add units
+      .then(() => recipeService.addUnit(testRecipes[0].ingredients[0].unitName))
       .then(() => recipeService.addUnit(testRecipes[0].ingredients[1].unitName))
       .then(() => recipeService.addUnit(testRecipes[1].ingredients[0].unitName))
       .then(() => recipeService.addUnit(testRecipes[1].ingredients[1].unitName))
       .then(() => recipeService.addUnit(testRecipes[2].ingredients[0].unitName))
       .then(() => recipeService.addUnit(testRecipes[2].ingredients[1].unitName))
-  })
-
-  pool.query('TRUNCATE TABLE recipe_ingredient', (error) => {
-    if (error) return done(error);
 
     recipeService
       .addRecipeIngredient(testRecipes[0].id, 1, 1, testRecipes[0].ingredients[0].quantity)
@@ -103,7 +84,7 @@ beforeEach((done) => {
 // Stop web server and close connection to MySQL server
 afterAll((done) => {
   if (!webServer) return done(new Error());
-  webServer.close(() => pool.end(() => done()));
+  webServer.close(() => done());
 });
 
 test('Default message works (GET)', () => {
