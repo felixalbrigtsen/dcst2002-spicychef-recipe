@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom';
 
 import { useState } from 'react';
+import { Button } from 'react-bulma-components';
 
 import { FaArrowCircleUp } from 'react-icons/fa';
 
@@ -14,7 +15,7 @@ function ScrollButton() {
     
     const toggleVisible = () => {
       const scrolled = document.documentElement.scrollTop;
-      if (scrolled > 50){
+      if (scrolled > 300){
         setVisible(true)
       } 
       else if (scrolled <= 300){
@@ -24,7 +25,7 @@ function ScrollButton() {
     
     const scrollToTop = () =>{
       window.scrollTo({
-        top: 0, 
+        top: 0,
         behavior: 'smooth'
         /* you can also use 'auto' behaviour
            in place of 'smooth' */
@@ -34,18 +35,21 @@ function ScrollButton() {
     window.addEventListener('scroll', toggleVisible);
     
     return (
-      <button name='/scroll/up' style={{display: visible ? "inline" : "none"}}>
-       <FaArrowCircleUp 
-        onClick={scrollToTop}
+      <Button aria-label={'scrollUp'} 
+      onClick={scrollToTop}
         style={{
           position: 'fixed',
           bottom: '1.5rem',
-          left: '.5rem',
+          left: '-1rem',
           fontSize: '2rem',
           zIndex: 1,
           display: visible ? 'inline' : 'none'
-        }} />
-      </button>
+        }} 
+        className="is-ghost is-small">
+          <span className="icon is-small">
+          <FaArrowCircleUp style={{fontSize: '2rem',}} />
+          </span>       
+      </Button>
     );
   }
 
