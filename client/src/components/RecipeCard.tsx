@@ -83,9 +83,12 @@ function RecipeCard(props: RecipeCardProps) {
                         : 
                         <Card.Footer.Item>
                             <Button className="is-rounded" color="info" outlined disabled>
+                            <span>Like</span>
+                                <span className='icon is-small'>
                                 <Icon>
-                                    <FaThumbsUp size={18} />
+                                     <FaThumbsUp size={18} />
                                 </Icon>
+                                </span>
                             </Button>
                             <span>{props.recipe.likes != null ? props.recipe.likes : 0}</span>
                         </Card.Footer.Item>
