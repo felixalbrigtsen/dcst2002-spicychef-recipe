@@ -9,8 +9,6 @@ import {
   Link
 } from 'react-router-dom';
 
-
-
 import { Form, Button, Tile, Image, Table, Container } from 'react-bulma-components';
 
 import { useState, useEffect } from 'react';
@@ -135,7 +133,7 @@ function RecipeForm (props: RecipeFormProps) {
                 <Tile kind="child" renderAs={Form.Field}>
                   <Form.Label>Recipe Title</Form.Label>
                   <Form.Control>
-                    <Form.Input placeholder="Recipe Title" name={"Title"} defaultValue={title} 
+                    <Form.Input placeholder="Recipe Title" aria-label={"Title"} defaultValue={title} 
                     onChange={(e) => {setTitle(e.currentTarget.value);}}
                     />
                   </Form.Control>
@@ -143,13 +141,13 @@ function RecipeForm (props: RecipeFormProps) {
                 <Tile kind="child" renderAs={Form.Field}>
                 <Form.Label>Recipe Summary</Form.Label>
                 <Form.Control>
-                  <Form.Textarea placeholder="Recipe Summary" name={"Summary"} defaultValue={summary} />
+                  <Form.Textarea placeholder="Recipe Summary" aria-label={"Summary"} defaultValue={summary} />
                 </Form.Control>
               </Tile>
               <Tile kind="child" renderAs={Form.Field}>
                 <Form.Label>Recipe Servings</Form.Label>
                 <Form.Control>
-                  <Form.Input type="number" placeholder="2" name={"Servings"} defaultValue={servings ? servings : 2} onChange={
+                  <Form.Input type="number" placeholder="2" aria-label={"Servings"} defaultValue={servings ? servings : 2} onChange={
                     (e) => {setServings(Number(e.currentTarget.value));}
                   }/>
                 </Form.Control>
@@ -159,7 +157,7 @@ function RecipeForm (props: RecipeFormProps) {
               <Tile kind="child" renderAs={Form.Field}>
                 <Form.Label>Recipe Tags</Form.Label>
                 <Form.Control>
-                  <CreatableSelect placeholder="Tags" components={animatedComponents} value={defaultTags.map((tag) => tag)} isMulti options={tagOptions} onCreateOption={
+                  <CreatableSelect placeholder="Tags" aria-label={"Tags"} components={animatedComponents} value={defaultTags.map((tag) => tag)} isMulti options={tagOptions} onCreateOption={
                     (newTag) => {
                       setTags([...tags, newTag]);
                       setTagOptions([...tagOptions, {"value": newTag, "label": newTag}]);
@@ -178,7 +176,7 @@ function RecipeForm (props: RecipeFormProps) {
                 <Tile kind="child" renderAs={Form.Field}>
                   <Form.Label>Recipe Image Link</Form.Label>
                   <Form.Control>
-                    <Form.Input placeholder="Recipe Image" name={"ImageURL"} defaultValue={imageLink} onChange={
+                    <Form.Input placeholder="Recipe Image" aria-label={"ImageURL"} defaultValue={imageLink} onChange={
                         (e) => {setImageLink(e.currentTarget.value);}
                     }/>
                   </Form.Control>
@@ -189,7 +187,7 @@ function RecipeForm (props: RecipeFormProps) {
                 <Tile kind="child" renderAs={Form.Field}>
                   <Form.Label>Recipe Video Link</Form.Label>
                   <Form.Control>
-                    <Form.Input placeholder="Recipe Video" name={"VideoURL"} defaultValue={videoLink} onChange={
+                    <Form.Input placeholder="Recipe Video" aria-label={"VideoURL"} defaultValue={videoLink} onChange={
                         (e) => {setVideoLink(e.currentTarget.value)}
                     } />
                   </Form.Control>
@@ -200,7 +198,7 @@ function RecipeForm (props: RecipeFormProps) {
               <Tile kind="child" renderAs={Form.Field}>
                 <Form.Label>Recipe Instructions</Form.Label>
                 <Form.Control>
-                  <Form.Textarea placeholder="Recipe Instructions" name={"Instructions"} style={{whiteSpace: "pre-wrap"}} defaultValue={instructions} onChange={
+                  <Form.Textarea placeholder="Recipe Instructions" aria-label={"Instructions"} style={{whiteSpace: "pre-wrap"}} defaultValue={instructions} onChange={
                     (e) => {setInstructions(e.currentTarget.value)}
                   } />
                 </Form.Control>
@@ -208,7 +206,7 @@ function RecipeForm (props: RecipeFormProps) {
               <Tile kind="child" renderAs={Form.Field}>
                 <Form.Label>Recipe Ingredients</Form.Label>
                 <Form.Control>
-                  <CreatableSelect placeholder="Recipe Ingredients" name={"Ingredients"} options={ingredientOptions} onCreateOption={
+                  <CreatableSelect placeholder="Recipe Ingredients" aria-label={"Ingredients"} options={ingredientOptions} onCreateOption={
                     (newIngredient) => {
                       setIngredientOptions([...ingredientOptions, {"value": 1, "label": newIngredient}]);
                       setIngredients([...ingredients, {ingredientName: newIngredient, quantity: 0, unitName: ""}]);
