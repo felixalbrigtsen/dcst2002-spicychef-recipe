@@ -2,12 +2,11 @@ import axios from 'axios';
 import pool from '../mysql-pool';
 import app from '..';
 import { Recipe } from '../models/Recipe';
-import { RecipeIngredient } from '../models/RecipeIngredient';
+import { Ingredient } from '../models/Ingredient';
 import recipeService from '../services/recipe-service';
 import { NewRecipe } from '../models/NewRecipe';
 import { initTest } from '../utils/initdb'
-
-// TODO: Remove all manual pool.query in tests, use the given initdb and service methods
+import { RecipeIngredient } from '../models/RecipeIngredient';
 
 const PORT = Number(process.env.PORT)
 
@@ -37,7 +36,7 @@ axios.defaults.baseURL = `http://localhost:${PORT}/api/`;
 let webServer: any;
 beforeAll((done) => {
   // Use separate port for testing
-  webServer = app.listen(3001, () => done());
+  webServer = app.listen(PORT, () => done());
 });
 
 beforeEach((done) => {
@@ -71,14 +70,20 @@ beforeEach((done) => {
       .then(() => recipeService.addUnit(testRecipes[2].ingredients[0].unitName))
       .then(() => recipeService.addUnit(testRecipes[2].ingredients[1].unitName))
 
-    recipeService
-      .addRecipeIngredient(testRecipes[0].id, 1, 1, testRecipes[0].ingredients[0].quantity)
+      //Add recipe ingredients
+      .then(() => recipeService.addRecipeIngredient(testRecipes[0].id, 1, 1, testRecipes[0].ingredients[0].quantity))
       .then(() => recipeService.addRecipeIngredient(testRecipes[0].id, 2, 2, testRecipes[0].ingredients[1].quantity))
       .then(() => recipeService.addRecipeIngredient(testRecipes[1].id, 3, 3, testRecipes[1].ingredients[0].quantity))
       .then(() => recipeService.addRecipeIngredient(testRecipes[1].id, 4, 4, testRecipes[1].ingredients[1].quantity))
       .then(() => recipeService.addRecipeIngredient(testRecipes[2].id, 5, 5, testRecipes[2].ingredients[0].quantity))
       .then(() => recipeService.addRecipeIngredient(testRecipes[2].id, 6, 6, testRecipes[2].ingredients[1].quantity))
-    })
+      .then(() => done())
+  })
+  // Delete all tasks, and reset id auto-increment start value
+  // TODO: use the existing "initdb" functions
+
+    // Create testTasks sequentially in order to set correct id, and call done() when finished
+    
 });
 
 // Stop web server and close connection to MySQL server
