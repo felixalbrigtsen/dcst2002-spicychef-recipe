@@ -46,7 +46,7 @@ function RecipePage() {
               <Tile kind="parent">
                 <Tile kind="child" renderAs={Notification}>
                   <Media.Item renderAs="figure">
-                    {recipe.imageUrl ? <Image size={4} src={recipe.imageUrl} /> : <Image size={4} src="https://bulma.io/images/placeholders/128x128.png" />}
+                    {recipe.imageUrl ? <Image size={4} src={recipe.imageUrl} alt={recipe.title} /> : <Image size={4} src="https://bulma.io/images/placeholders/128x128.png" />}
                   </Media.Item>
                   <Media.Item>
                     <Heading size={4}>{recipe.title}</Heading>
