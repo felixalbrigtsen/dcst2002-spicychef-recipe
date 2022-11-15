@@ -2,7 +2,7 @@ import axios from 'axios';
 import pool from '../mysql-pool';
 import app from '..';
 import { Recipe } from '../models/Recipe';
-import { Ingredient } from '../models/RecipeIngredient';
+import { RecipeIngredient } from '../models/RecipeIngredient';
 import recipeService from '../services/recipe-service';
 import { NewRecipe } from '../models/NewRecipe';
 import { doesNotMatch } from 'assert';
@@ -21,7 +21,7 @@ const testNewRecipes: NewRecipe[] = [
     {"id": -1,"title": "Chicken Soup","summary": "SOUP","servings": 4,"instructions": "Boil","imageUrl": "https://assets.epicurious.com/photos/62f16ed5fe4be95d5a460eed/1:1/w_2240,c_limit/RoastChicken_RECIPE_080420_37993.jpg","videoUrl": "https://www.youtube.com/watch?v=rX184PQ1UMI","ingredients": [{"ingredientName": "Chicken Stock","quantity": 0,"unitName": ""},{"ingredientName": "Chicken","quantity": 0,"unitName": ""}],"tags": ["Chicken"]}
 ];
 
-const testIngredients: Ingredient[] = [
+const testIngredients: RecipeIngredient[] = [
   testRecipes[0].ingredients[0],
   testRecipes[0].ingredients[1],
   testRecipes[1].ingredients[0],
