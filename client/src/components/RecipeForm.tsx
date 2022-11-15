@@ -206,7 +206,7 @@ function RecipeForm (props: RecipeFormProps) {
               <Tile kind="child" renderAs={Form.Field}>
                 <Form.Label>Recipe Ingredients</Form.Label>
                 <Form.Control>
-                  <CreatableSelect placeholder="Recipe Ingredients" aria-label={"Ingredients"} options={ingredientOptions} onCreateOption={
+                  <CreatableSelect placeholder="Ingredient" aria-label={"Ingredients"} options={ingredientOptions} onCreateOption={
                     (newIngredient) => {
                       setIngredientOptions([...ingredientOptions, {"value": 1, "label": newIngredient}]);
                       setIngredients([...ingredients, {ingredientName: newIngredient, quantity: 0, unitName: ""}]);
