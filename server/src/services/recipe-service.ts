@@ -65,7 +65,7 @@ class RecipeService {
             summary: recipe.summary,
             imageUrl: recipe.imageUrl,
             created_at: recipe.created_at,
-            likes: recipe.likes,
+            likes: recipe.likes || 0,
             tags: await this.getTagsInRecipe(recipe.id),
           } as Recipe;
         });
@@ -98,7 +98,7 @@ class RecipeService {
             title: recipe.title,
             summary: recipe.summary,
             imageUrl: recipe.imageUrl,
-            likes: recipe.likes,
+            likes: recipe.likes || 0,
             tags: await this.getTagsInRecipe(recipe.id),
           } as Recipe;
         });
@@ -111,10 +111,11 @@ class RecipeService {
 
   getRecipe(id: number): Promise<Recipe> {
     return new Promise((resolve, reject) => {
-      pool.query('SELECT * FROM recipe LEFT JOIN ( SELECT recipeId, COUNT(*) as likes FROM user_like GROUP BY recipeId) AS likes ON likes.recipeId = recipe.id WHERE recipe.id = ?', [id], (err, results: RowDataPacket[]) => {
+      pool.query('SELECT recipe.*, likes.likes FROM recipe LEFT JOIN ( SELECT recipeId, COUNT(*) as likes FROM user_like GROUP BY recipeId) AS likes ON likes.recipeId = recipe.id WHERE recipe.id = ?', [id], (err, results: RowDataPacket[]) => {
         if (err) {
           return reject(err);
         }
+        if (results[0].likes == null) { results[0].likes = 0; }
         resolve(results[0] as Recipe);
       });
     });

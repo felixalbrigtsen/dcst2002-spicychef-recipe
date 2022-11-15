@@ -10,7 +10,7 @@ export type Ingredient = {
    * Number of units of the ingredient
    * @example 1
    */
-  amount: number;
+  quantity: number;
   /**
    * Unit ID from the table recipe_ingredient 
    */
