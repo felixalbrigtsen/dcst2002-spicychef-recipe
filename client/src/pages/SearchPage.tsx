@@ -72,13 +72,13 @@ export default function SearchPage() {
           <Form.Field>
           <Form.Label>Tags</Form.Label>
                 <Form.Control>
-                  <Select isMulti placeholder="Recipe Tags" components={animatedComponents} name={"Tags"} options={tags} />
+                  <Select isMulti placeholder="Recipe Tags" aria-label={"Tags"}  components={animatedComponents} name={"Tags"} options={tags} />
                 </Form.Control>
           </Form.Field>
           <Form.Field>
           <Form.Label>Ingredients</Form.Label>
                 <Form.Control>
-                  <Select isMulti placeholder="Ingredients" components={animatedComponents} options={ingredients} name={"Ingredients"} />
+                  <Select isMulti placeholder="Ingredient" aria-label={"Ingredients"}  components={animatedComponents} options={ingredients} name={"Ingredients"} />
                 </Form.Control>
           </Form.Field>
           {/* TODO: Make searches work with the values of the selects above; ingredients and tags */}
