@@ -5,12 +5,15 @@ import {
   Routes, 
   Link
 } from 'react-router-dom';
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent, queryByRole } from '@testing-library/react';
 import '@testing-library/jest-dom'
 import type { User } from '../../models/User';
 import userEvent from '@testing-library/user-event';
-
+import axios from 'axios';
 import NavBar from '../../components/NavBar'
+
+jest.mock('axios');
+import userService from '../../services/user-service'
 
 describe('Test NavBar renders correctly', () => {
     test('Test rendered text', () => {
@@ -20,6 +23,12 @@ describe('Test NavBar renders correctly', () => {
         expect(getByText('Search')).toBeInTheDocument();
         expect(getByText('Ingredients')).toBeInTheDocument();
         expect(getByText('Login')).toBeInTheDocument();
+
+        expect(screen.queryByText('Admin')).not.toBeInTheDocument();
+        expect(screen.queryByText('Logout')).not.toBeInTheDocument();
+        expect(screen.queryByText('My Likes')).not.toBeInTheDocument();
+        expect(screen.queryByText('Shopping List')).toBeInTheDocument();
+
     });
     test('Test links', () => {
         const {getByText} = render(<Router><NavBar/></Router>)
@@ -30,15 +39,21 @@ describe('Test NavBar renders correctly', () => {
         expect(getByText('Login').closest('a')).toHaveAttribute('href', '/login')
     });
     test.skip('Navbar renders correctly with logged in admin', () => {
-        const {getByText} = render(<Router><NavBar/></Router>)
+        // given 
+        const user = {
+            googleId: 123,
+            name: 'Admin',
+            email: 'admin@spicychef.com',
+            picture: 'rickroll',
+            isAdmin: true,
+            likes: [1],
+            shoppingList: [1]
+        }
+        // TODO: mock user service somehow
 
-        expect(getByText('Admin')).toBeInTheDocument();
-        expect(getByText('Admin').closest('a')).toHaveAttribute('href', '/admin')
-        expect(getByText('Logout')).toBeInTheDocument();
-        expect(getByText('Shopping List')).toBeInTheDocument();
-        expect(getByText('Shopping List').closest('a')).toHaveAttribute('href', '/list')
-        expect(getByText('My Likes')).toBeInTheDocument();
-        expect(getByText('My Likes').closest('a')).toHaveAttribute('href', '/likes')
-        
+        const result = userService.getSessionUser();
+
+        expect(axios.get).toHaveBeenCalledWith(`recipe.feal.no/api/auth/profile`);
+        expect(result).toEqual(user);
     });
 })
