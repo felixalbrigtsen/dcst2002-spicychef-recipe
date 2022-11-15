@@ -116,7 +116,7 @@ class RecipeService {
         if (err) {
           return reject(err);
         }
-        if (results[0].likes == null) { results[0].likes = 0; }
+        // if (results[0].likes == null) { results[0].likes = 0; }
         resolve(results[0] as Recipe);
       });
     });
@@ -417,7 +417,7 @@ class RecipeService {
     });
   }
 
-  addRecipe(title: string, summary: string, instructions: string, servings: number, imageUrl: string, videoUrl: string): Promise<number> {
+  addRecipe(title: string, summary: string, instructions: string, servings: number, imageUrl: string | null, videoUrl: string): Promise<number> {
     return new Promise((resolve, reject) => {
       pool.query('INSERT INTO recipe (title, summary, instructions, servings, imageUrl, videoUrl) VALUES (?, ?, ?, ?, ?, ?)', [title, summary, instructions, servings, imageUrl, videoUrl], (err, results) => {
         if (err) {
