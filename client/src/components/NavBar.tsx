@@ -59,18 +59,20 @@ export default function NavBar() {
               </span>
             </Navbar.Item> : null
           }
-          <Navbar.Item href="/list">
-            <span className="icon-text">
-              <Icon path={mdiListBox} size={1} />
-              <span>Shopping List</span>
-            </span>
-          </Navbar.Item>
-          <Navbar.Item href="/ingredients">
-            <span className="icon-text">
-              <Icon path={mdiCarrot} size={1} />
-              <span>Ingredients</span>
-            </span>
-          </Navbar.Item>
+          { user.googleId ?
+            <Navbar.Item href="/list">
+              <span className="icon-text">
+                <Icon path={mdiListBox} size={1} />
+                <span>Shopping List</span>
+              </span>
+            </Navbar.Item> : null
+          }
+            <Navbar.Item href="/ingredients">
+              <span className="icon-text">
+                <Icon path={mdiCarrot} size={1} />
+                <span>Ingredients</span>
+              </span>
+            </Navbar.Item>
           { user.isadmin ? 
           <Navbar.Item href="/admin">
             <span className="icon-text">
