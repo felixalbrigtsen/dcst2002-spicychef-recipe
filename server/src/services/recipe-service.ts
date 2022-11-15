@@ -337,14 +337,14 @@ class RecipeService {
 
   getTags(): Promise<string[]> {
     return new Promise((resolve, reject) => {
-      pool.query('SELECT * FROM recipe_tag', (err, results: RowDataPacket[]) => {
+      pool.query('SELECT DISTINCT name FROM recipe_tag', (err: any, results: string[]) => {
         if (err) {
           return reject(err);
         }
         if (results.length === 0) {
           return resolve([]);
         }
-        resolve(results.map((result) => result.name));
+        resolve(results);
       });
     })
   }
