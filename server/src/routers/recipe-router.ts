@@ -152,6 +152,26 @@ router.get('/ingredients' , (req, res) => {
 });
 
 /**
+ * @name GET /tags
+ * @function
+ * @memberof module:recipe-router
+ *
+ * @throws {error} 500 if there is a database error
+ *
+ * @description
+ * Returns a json formatted list of all ingredients
+ * @returns {string[]}
+ */
+ router.get('/tags' , (req, res) => {
+  recipeService.getTags().then((tags) => {
+    res.json(tags);
+  })
+  .catch((err) => {
+    handleServerError(res, err);
+  });
+});
+
+/**
  * @name Get /search?q=
  * @function
  * @memberof module:recipe-router
