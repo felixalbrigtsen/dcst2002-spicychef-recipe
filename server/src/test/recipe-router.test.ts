@@ -23,13 +23,30 @@ const testRecipesShort: { id: number, title: string, summary: string, imageUrl: 
   {"id": testRecipes[2].id, "title": testRecipes[2].title, "summary": testRecipes[2].summary, "imageUrl": testRecipes[2].imageUrl, "likes": testRecipes[2].likes, "tags": testRecipes[2].tags}
 ]
 
-const testIngredients: RecipeIngredient[] = [
+const testRecipeIngredients: RecipeIngredient[] = [
   testRecipes[0].ingredients[0],
   testRecipes[0].ingredients[1],
   testRecipes[1].ingredients[0],
   testRecipes[1].ingredients[1],
   testRecipes[2].ingredients[0],
   testRecipes[2].ingredients[1],
+]
+
+const testIngredients: Ingredient[] = [
+  {"id": 1, "name": testRecipes[0].ingredients[0].ingredientName},
+  {"id": 2, "name": testRecipes[0].ingredients[1].ingredientName},
+  {"id": 3, "name": testRecipes[1].ingredients[0].ingredientName},
+  {"id": 4, "name": testRecipes[1].ingredients[1].ingredientName},
+  {"id": 5, "name": testRecipes[2].ingredients[0].ingredientName},
+  {"id": 6, "name": testRecipes[2].ingredients[1].ingredientName},
+]
+
+const testTags: {name: string}[] = [
+  {"name": testRecipes[0].tags[0]},
+  {"name": testRecipes[0].tags[1]},
+  {"name": testRecipes[0].tags[2]},
+  {"name": testRecipes[1].tags[0]},
+  {"name": testRecipes[2].tags[0]},
 ]
 
 const testLikes: {userId: number, recipeId: number}[] = [
@@ -49,7 +66,6 @@ beforeAll((done) => {
 });
 
 beforeEach((done) => {
-  console.log(axios.defaults.baseURL)
   initTest().then(() => {
     recipeService
       .addRecipe(testRecipes[0].title, testRecipes[0].summary, testRecipes[0].instructions, testRecipes[0].servings, testRecipes[0].imageUrl, testRecipes[0].videoUrl)
@@ -57,19 +73,19 @@ beforeEach((done) => {
       .then(() => recipeService.addRecipe(testRecipes[2].title, testRecipes[2].summary, testRecipes[2].instructions, testRecipes[2].servings, testRecipes[2].imageUrl, testRecipes[2].videoUrl))
       
       //Add recipe tags
-      .then(() => recipeService.addRecipeTag(1,testRecipes[0].tags[0]))
-      .then(() => recipeService.addRecipeTag(1,testRecipes[0].tags[1]))
-      .then(() => recipeService.addRecipeTag(1,testRecipes[0].tags[2]))
-      .then(() => recipeService.addRecipeTag(2,testRecipes[1].tags[0]))
-      .then(() => recipeService.addRecipeTag(3,testRecipes[2].tags[0]))
+      .then(() => recipeService.addRecipeTag(1,testTags[0].name))
+      .then(() => recipeService.addRecipeTag(1,testTags[1].name))
+      .then(() => recipeService.addRecipeTag(1,testTags[2].name))
+      .then(() => recipeService.addRecipeTag(2,testTags[3].name))
+      .then(() => recipeService.addRecipeTag(3,testTags[4].name))
 
       //Add ingredients
-      .then(() => recipeService.addIngredient(testIngredients[0].ingredientName))
-      .then(() => recipeService.addIngredient(testIngredients[1].ingredientName))
-      .then(() => recipeService.addIngredient(testIngredients[2].ingredientName))
-      .then(() => recipeService.addIngredient(testIngredients[3].ingredientName))
-      .then(() => recipeService.addIngredient(testIngredients[4].ingredientName))
-      .then(() => recipeService.addIngredient(testIngredients[5].ingredientName))
+      .then(() => recipeService.addIngredient(testRecipeIngredients[0].ingredientName))
+      .then(() => recipeService.addIngredient(testRecipeIngredients[1].ingredientName))
+      .then(() => recipeService.addIngredient(testRecipeIngredients[2].ingredientName))
+      .then(() => recipeService.addIngredient(testRecipeIngredients[3].ingredientName))
+      .then(() => recipeService.addIngredient(testRecipeIngredients[4].ingredientName))
+      .then(() => recipeService.addIngredient(testRecipeIngredients[5].ingredientName))
 
       //Add units
       .then(() => recipeService.addUnit(testRecipes[0].ingredients[0].unitName))
@@ -94,12 +110,7 @@ beforeEach((done) => {
       // .then(() => recipeService.addLike(testLikes[3].recipeId, testLikes[3].userId))
       // .then(() => recipeService.addLike(testLikes[4].recipeId, testLikes[4].userId))
       .then(() => done())
-  })
-  // Delete all tasks, and reset id auto-increment start value
-  // TODO: use the existing "initdb" functions
-
-    // Create testTasks sequentially in order to set correct id, and call done() when finished
-    
+  })    
 });
 
 // Stop web server and close connection to MySQL server
@@ -141,8 +152,8 @@ describe('Fetch recipes (GET)', () => {
       .get('/recipes/4')
       .then((_response) => done(new Error()))
       .catch((error) => {
-        // expect(error.message).toEqual('Recipe not found');
-        expect(error.message).toEqual('Request failed with status code 404');
+        expect(error.response.status).toEqual(404)
+        expect(error.response.data).toEqual('Recipe not found');
         done();
       });
   });
@@ -170,8 +181,8 @@ describe('Search recipes (GET)', () => {
   test('Empty query (400 Bad request)', (done) => {
     axios.get('/search?q=').then((response) => done(new Error()))
       .catch((error) => {
-        expect(error.message).toEqual('Request failed with status code 400');
-        // expect(error.message).toEqual('Bad request');
+        expect(error.response.status).toEqual(400)
+        expect(error.response.data).toEqual('Bad request');
         done();
       });
   });
@@ -179,10 +190,21 @@ describe('Search recipes (GET)', () => {
   test('Short query (400 Bad Request)', (done) => {
     axios.get('/search?q=ca').then((response) => done(new Error()))
       .catch((error) => {
-        expect(error.message).toEqual('Request failed with status code 400');
-        // expect(error.message).toEqual('Bad query');
+        expect(error.response.status).toEqual(400)
+        expect(error.response.data).toEqual('Bad query');
         done();
       });
   });
 })
+
+describe('Fetch tags (GET)', () => {
+  test('Fetch all tags (200 OK)', (done) => {
+    axios.get('/tags').then((response) => {
+      expect(response.status).toEqual(200)
+      expect(response.data).toEqual(testTags)
+      done()
+    })
+  })
+})
+
 
