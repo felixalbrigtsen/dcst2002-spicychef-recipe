@@ -8,9 +8,7 @@ import { initTest } from '../utils/initdb'
 import { RecipeIngredient } from '../models/RecipeIngredient';
 import { server } from '..';
 import { User } from '../models/User';
-import { requireLogin } from '../routers/auth-router';
-
-// requireLogin = jest.fn().mockReturnThis(next())
+import * as session from 'express-session';
 
 const PORT = Number(process.env.PORT) || 3000;
 
@@ -138,20 +136,10 @@ afterAll((done) => {
   done()
 });
 
-test.skip("Login redirect works", (done) => { //TODO test login redirect
-    axios.get("/login").then((response) => {
-        console.log(response)
+test("Login redirect works (200 OK)", (done) => {
+    axios.get("/auth/login").then((response) => {
         expect(response.status).toEqual(200)
-        // expect(response.headers['Location']).toEqual('/users/login');
+        expect(response.headers["x-auto-login"]).toContain("accounts.google.com")
+        done()
     })
 })
-
-test('Post like (403 Forbidden)', (done) => {
-    axios.post('/likes/1').then((response) => {
-        expect(true).toEqual(true)
-    })
-
-  })
-
-
-
