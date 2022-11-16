@@ -64,15 +64,8 @@ export default function IngredientsPage() {
                 className="is-rounded m-1"
                 onClick={() => {searchRecipeByIngredients("all")}}
               >
-                Search Recipes Including All
+                Find recipes with these ingredients
               </Button>
-              {/* <Button
-                color="warning"
-                className="is-rounded m-1"
-                onClick={() => {searchRecipeByIngredients("any")}}
-              >
-                Search Recipes Including Any
-              </Button> */}
               { user.googleId && 
               <Button
                 color="success"

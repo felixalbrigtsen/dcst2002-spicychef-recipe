@@ -88,11 +88,20 @@ export default function SearchPage() {
     } else {
       filterVisibleRecipes(recipes);
     }
-    window.history.replaceState(null, '', 
-      `/search/?q=${encodeURIComponent(newQuery)}
-      ${selectedIngredients.length > 0  && ("&ingredients=" + encodeURIComponent(selectedIngredients.join(",")))}
-      ${selectedTags.length > 0         && ("&tags=" + encodeURIComponent(selectedTags.join(",")))}
-      `);
+
+    let queries = [];
+    if (newQuery) { queries.push(`q=${encodeURIComponent(newQuery)}`) }
+    if (selectedIngredients.length > 0) { queries.push(`ingredients=${encodeURIComponent(selectedIngredients.join(','))}`); }
+    if (selectedTags.length > 0) { queries.push(`tags=${encodeURIComponent(selectedTags.join(','))}`); }
+
+    let newLocation: string;
+    if (queries.length > 0) {
+      newLocation = "/search/?" + queries.join('&');
+    } else {
+      newLocation = "/search";
+    }
+
+    window.history.replaceState(null, '', newLocation);
   }, [selectedTags, selectedIngredients, newQuery]);
   
   function filterVisibleRecipes(passingRecipes: Recipe[]) {
