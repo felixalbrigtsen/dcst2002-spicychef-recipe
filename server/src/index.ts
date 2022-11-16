@@ -2,7 +2,6 @@ import express, { Express } from 'express';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import * as path from 'path';
-import session from 'express-session';
 
 if (process.env.NODE_ENV !== "test") {
   dotenv.config();

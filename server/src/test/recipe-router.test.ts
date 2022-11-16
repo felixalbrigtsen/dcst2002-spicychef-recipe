@@ -1,6 +1,7 @@
 import mysql from 'mysql2';
 import axios from 'axios';
 import app from '..';
+import pool from '../mysql-pool';
 import { Recipe } from '../models/Recipe';
 import { Ingredient } from '../models/Ingredient';
 import recipeService from '../services/recipe-service';
@@ -101,6 +102,7 @@ beforeEach((done) => {
 // Stop web server and close connection to MySQL server
 afterAll((done) => {
   server.close()
+  pool.end();
   done()
 });
 
