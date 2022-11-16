@@ -8,7 +8,8 @@ import { NewRecipe } from '../models/NewRecipe';
 import { initTest } from '../utils/initdb'
 import { RecipeIngredient } from '../models/RecipeIngredient';
 
-const PORT = Number(process.env.PORT)
+const PORT = Number(process.env.PORT) || 3000;
+const DUMMY_PORT = Number(process.env.DUMMY_PORT) || 3001;
 
 const testRecipes: Recipe[] = [
     {"id": 1,"title":"Tunisian Lamb Soup","summary":"Meal from MealDB","instructions":"Add the lamb to a casserole and cook over high heat. When browned, remove from the heat and set aside.", "servings":2,"imageUrl":"https://www.themealdb.com/images/media/meals/t8mn9g1560460231.jpg","videoUrl":"https://www.youtube.com/watch?v=w1qgTQmLRe4","created_at":new Date(),"likes":0,"tags":["Lamb","Soup","Tunisian"],"ingredients": [{"ingredientId":1,"unitId":1,"quantity":1,"ingredientName":"Lamb Mince","unitName":"kg"},{"ingredientId":2,"unitId":2,"quantity":2,"ingredientName":"Garlic","unitName":"cloves minced"}]},
@@ -44,7 +45,7 @@ axios.defaults.baseURL = `http://localhost:${PORT}/api/`;
 let webServer: any;
 beforeAll((done) => {
   // Use separate port for testing
-  webServer = app.listen(3001, () => done());
+  webServer = app.listen(DUMMY_PORT, () => done());
 });
 
 beforeEach((done) => {
