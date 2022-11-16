@@ -51,33 +51,35 @@ export default function NavBar() {
               <span>Search</span>
             </span>
           </Navbar.Item>
-          { user.googleId ? 
+          { user.googleId && 
             <Navbar.Item href="/likes">
               <span className="icon-text">
                 <Icon path={mdiThumbsUpDown} size={1} />
                 <span>My Likes</span>
               </span>
-            </Navbar.Item> : null
+            </Navbar.Item>
           }
-          <Navbar.Item href="/list">
-            <span className="icon-text">
-              <Icon path={mdiListBox} size={1} />
-              <span>Shopping List</span>
-            </span>
-          </Navbar.Item>
+          { user.googleId &&
+            <Navbar.Item href="/list">
+              <span className="icon-text">
+                <Icon path={mdiListBox} size={1} />
+                <span>Shopping List</span>
+              </span>
+            </Navbar.Item>
+          }
           <Navbar.Item href="/ingredients">
             <span className="icon-text">
               <Icon path={mdiCarrot} size={1} />
               <span>Ingredients</span>
             </span>
           </Navbar.Item>
-          { user.isadmin ? 
+          { user.isadmin && 
           <Navbar.Item href="/admin">
             <span className="icon-text">
               <span className='icon'><MdAdminPanelSettings size={64}/></span>
               <span>Admin</span>
             </span>
-          </Navbar.Item> : null
+          </Navbar.Item>
           }
           </Navbar.Container>
           <Navbar.Container align='right'>
