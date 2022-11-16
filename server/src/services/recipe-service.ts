@@ -116,7 +116,9 @@ class RecipeService {
         if (err) {
           return reject(err);
         }
-        // if (results[0].likes == null) { results[0].likes = 0; }
+        if (results && results[0] && !results[0].likes) {
+          results[0].likes = 0;
+        }
         resolve(results[0] as Recipe);
       });
     });

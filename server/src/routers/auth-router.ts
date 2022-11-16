@@ -73,6 +73,7 @@ authRouter.get('/google/callback',
   }), (req, res) => {
     req.session.user = req.user as User;
     if (req.session.user.email) {
+      refreshLogin(req, res);
       console.log("User logged in: " + req.session.user.email);
     } else {
       console.log("Invalid user logged in");
@@ -92,7 +93,6 @@ authRouter.get('/logout', (req, res) => {
 });
 
 authRouter.get('/profile', async (req, res) => {
-  await refreshLogin(req, res);
   if (req.session.user) {
     res.json(req.session.user);
   } else {
