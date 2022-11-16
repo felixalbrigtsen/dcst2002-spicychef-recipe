@@ -155,7 +155,6 @@ function RecipeForm (props: RecipeFormProps) {
               </Tile>
               <Tile kind="parent">
               <Tile kind="child" renderAs={Form.Field}>
-                <form data-testid='tags-form'>
                 <Form.Label>Recipe Tags</Form.Label>
                 <Form.Control>
                   <CreatableSelect placeholder="Tags" aria-label={"Tags"} inputId='tags' components={animatedComponents} value={defaultTags.map((tag) => tag)} isMulti options={tagOptions} onCreateOption={
@@ -171,7 +170,6 @@ function RecipeForm (props: RecipeFormProps) {
                   }
                    />
                 </Form.Control>
-                </form>
               </Tile>
               </Tile>
               <Tile kind="parent">
