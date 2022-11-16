@@ -11,7 +11,7 @@ export default function PageNotFound() {
             </Tile>
             <Tile className='is-vertical has-text-centered is-align-items-center'>
                 <Heading subtitle>Sorry, the page you are looking for does not exist.</Heading>
-                <Image style={{width: '25%', margin:'1rem'}} src='/404.gif' />
+                <Image style={{width: '25%', margin:'1rem'}} src='/404.gif' alt='Page not found' />
                 <Link to="/"><Button outlined className='is-rounded' color='link'><Heading subtitle>Go home!</Heading></Button></Link>
             </Tile>
     </Container>

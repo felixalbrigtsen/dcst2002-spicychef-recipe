@@ -55,7 +55,7 @@ describe('Frontpage component tests', () => {
 
   test.skip('random selected recipe', async () => {
     const {getByText} = render(<Router><Home /></Router>)
-
+    
     await (waitFor(() => {
       let randomRecipeWorks = false
       expect(getByText('Selected Recipe')).toBeInTheDocument();

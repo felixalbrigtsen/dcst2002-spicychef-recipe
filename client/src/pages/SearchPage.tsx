@@ -142,7 +142,7 @@ export default function SearchPage() {
           <Form.Field>
           <Form.Label>Tags</Form.Label>
                 <Form.Control>
-                  <Select isMulti placeholder="Recipe Tags" name={"Tags"} components={animatedComponents} options={tags} 
+                  <Select isMulti placeholder="Recipe Tags" aria-label={"Tags"} name={"Tags"} components={animatedComponents} options={tags} 
                   value={selectedTags.map(t => {return {"value": t, "label": t}})}
                   onChange={(event: ActionType) =>  {
                     setSelectedTags((event.map((tag: {value: string, label: string} ) => tag.value)));
@@ -153,7 +153,7 @@ export default function SearchPage() {
           <Form.Field>
           <Form.Label>Ingredients</Form.Label>
                 <Form.Control>
-                  <Select isMulti placeholder="Ingredients" name={"Ingredients"} components={animatedComponents} options={ingredients} 
+                  <Select isMulti placeholder="Ingredients" aria-label={"Ingredients"} name={"Ingredients"} components={animatedComponents} options={ingredients} 
                   value={selectedIngredients.map(i => {return {"value": i, "label": ingredients.find(ing => ing.value === i)?.label}})}
                   onChange={(event: ActionType) => {
                     setSelectedIngredients(event.map((ingredient: {value: string, label: string} ) => ingredient.value));

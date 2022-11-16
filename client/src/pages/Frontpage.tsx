@@ -14,7 +14,6 @@ import { Hero, Tile, Heading, Image, Notification, Form, Button, Media, Content 
 
 import Icon from '@mdi/react'
 import { mdiListBox, mdiShakerOutline, mdiFoodDrumstick, mdiFoodSteak, mdiCarrot, mdiMagnify, mdiArrowRight, mdiLoginVariant} from '@mdi/js';
-import Footer from '../components/Footer';
 import { Recipe } from '../models/Recipe';
 
 import ImageSlider from '../components/ImageSlider';

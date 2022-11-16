@@ -56,8 +56,8 @@ function AdminView() {
                     <Modal.Card.Title>Do you really want to delete this recipe?</Modal.Card.Title>
                 </Modal.Card.Header>
                 <Modal.Card.Footer>
-                    <Button color="danger" onClick={() => handleDelete(confirmItem)}>Yes, Delete</Button>
-                    <Button onClick={() => {setConfirmationState(!confirmationState), appendAlert('Cancelled deletion','info')}}>Cancel</Button>
+                    <Button color="danger" aria-label="confirm" onClick={() => handleDelete(confirmItem)}>Yes, Delete</Button>
+                    <Button aria-label="cancel" onClick={() => {setConfirmationState(!confirmationState), appendAlert('Cancelled deletion','info')}}>Cancel</Button>
                 </Modal.Card.Footer>
             </Modal.Card>
         </Modal>
@@ -69,7 +69,7 @@ function AdminView() {
             <Tile kind="parent">
               <Tile kind="child" size={6} className='has-text-centered'>
             <Link to='/create'>
-            <Button color="success" style={{width: '80%'}}>
+            <Button color="success" style={{width: '80%'}} aria-label="NewRecipe">
                 <span>Create New</span>
                 <span className="icon">
                     <MdAddCircle />
@@ -79,7 +79,7 @@ function AdminView() {
             </Tile>
             <Tile kind="child" size={6} className='has-text-centered'>
             <Link to='/import'>
-            <Button color="link" style={{width: '80%'}}>
+            <Button color="link" style={{width: '80%'}} aria-label="ImportRecipe">
                 <span>Import Recipe</span>
                 <span className="icon">
                     <BiImport />
@@ -87,8 +87,8 @@ function AdminView() {
             </Button>
             </Link>
             </Tile>
+            
             </Tile>
-
             <br />
             {/* Add search */}
             <Box>
@@ -109,20 +109,20 @@ function AdminView() {
                       </td>
                       <td className='is-narrow has-text-centered'>
                         <Link to={`/recipes/${item.id}`}>
-                        <Button color="dark" className="is-rounded is-outlined">
+                        <Button color="dark" className="is-rounded is-outlined" aria-label={item.title}>
                           <MdRemoveRedEye />
                         </Button>
                         </Link>
                       </td>
                       <td className='is-narrow has-text-centered'>
                         <Link to={`/edit/${item.id}`}>
-                        <Button color="success" className="is-rounded is-outlined">
+                        <Button color="success" className="is-rounded is-outlined" aria-label={`Edit ${item.title}`}>
                           <MdEdit />
                         </Button>
                         </Link>
                       </td>
                       <td className='is-narrow has-text-centered'>
-                        <Button color="danger" className="is-rounded is-outlined" onClick={() => {showConfirmation(item.id)}}>
+                        <Button color="danger" className="is-rounded is-outlined" aria-label={`Delete ${item.title}`} onClick={() => {showConfirmation(item.id)}}>
                           <MdDeleteForever />
                         </Button>
                       </td>

@@ -61,14 +61,24 @@ export default function IngredientsPage() {
             <Box className='has-text-right'>
               <Button
                 color="warning"
+                aria-label='searchAllIngredients'
                 className="is-rounded m-1"
                 onClick={() => {searchRecipeByIngredients("all")}}
               >
-                Find recipes with these ingredients
+                Search Recipes Including All
+              </Button>
+              <Button
+                color="warning"
+                aria-label='searchAnyIngredients'
+                className="is-rounded m-1"
+                onClick={() => {searchRecipeByIngredients("any")}}
+              >
+                Search Recipes Including Any
               </Button>
               { user.googleId && 
               <Button
                 color="success"
+                aria-label='addSelectedToList'
                 className="is-rounded m-1"
                 onClick={addSelectedToList}
               >
@@ -77,6 +87,7 @@ export default function IngredientsPage() {
               }
               <Button
                 color="danger"
+                aria-label='clearSelected'
                 className="is-rounded m-1"
                 onClick={() => { setSelectedIngredients([]);  }}
               >
@@ -111,6 +122,7 @@ export default function IngredientsPage() {
                         <Button 
                           color="success" 
                           className="is-rounded is-outlined"
+                          aria-label={`Add ${ingredient.name} to list`}
                           onClick={() => {listService.addIngredient(ingredient.id)}}
                         >
                           <MdAddCircle />

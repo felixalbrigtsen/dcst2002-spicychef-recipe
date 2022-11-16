@@ -5,7 +5,7 @@ import {
   Routes, 
   Link
 } from 'react-router-dom';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom'
 import RecipeCard from '../../components/RecipeCard'
 
@@ -18,6 +18,25 @@ describe('Test RecipeCard renders correctly', () => {
         expect(getByText(Recipe.title)).toBeInTheDocument();
         expect(getByText(Recipe.summary)).toBeInTheDocument();
         expect(getByText('Read More').closest('a')).toHaveAttribute('href', `/recipes/${Recipe.id}`)
+        expect(getByText('0')).toBeInTheDocument();
+    });
+
+    test('Test image', () => {
+        const {getByAltText} = render(<Router><RecipeCard recipe={Recipe}/></Router>)
+
+        expect(getByAltText(Recipe.title)).toBeInTheDocument();
+        expect(getByAltText(Recipe.title)).toHaveAttribute('src', Recipe.imageUrl)
+    });
+
+    test('Test like button', () => {
+        const {getByRole} = render(<Router><RecipeCard recipe={Recipe}/></Router>)
+
+        expect(getByRole('button')).toBeInTheDocument();
+        expect(getByRole('button')).toHaveTextContent('Like')
+
+        fireEvent.click(getByRole('button'));
+        // expect(getByRole('button')).toHaveTextContent('Liked')
+        // TODO: Need user to test this probably
     });
 
     //TODO: user likes

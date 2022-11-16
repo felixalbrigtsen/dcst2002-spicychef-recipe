@@ -40,6 +40,7 @@ export default function ShoppingListPage() {
             <Box className='has-text-right'>
               <Button
                 color="danger"
+                aria-label='clearList'
                 className="is-rounded"
                 onClick={() => {
                   listItems?.map(

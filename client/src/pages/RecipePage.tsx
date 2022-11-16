@@ -46,7 +46,7 @@ function RecipePage() {
               <Tile kind="parent">
                 <Tile kind="child" renderAs={Notification}>
                   <Media.Item renderAs="figure">
-                    {recipe.imageUrl ? <Image size={4} src={recipe.imageUrl} /> : <Image size={4} src="https://bulma.io/images/placeholders/128x128.png" />}
+                    {recipe.imageUrl ? <Image size={4} src={recipe.imageUrl} alt={recipe.title} /> : <Image size={4} src="https://bulma.io/images/placeholders/128x128.png" />}
                   </Media.Item>
                   <Media.Item>
                     <Heading size={4}>{recipe.title}</Heading>
@@ -56,7 +56,7 @@ function RecipePage() {
                   { user.googleId ? 
                     <Media.Item>
                     { user.googleId && user.likes.includes(recipe.id) ?
-                        <Button className="is-rounded" color="success" onClick={() => {
+                        <Button className="is-rounded" aria-label="removeLike" color="success" onClick={() => {
                             recipeService.removeLike(recipe.id)
                             .then(() => {appendAlert('Recipe removed from favorites', 'info'), getSessionUser()})
                             .catch(() => {appendAlert('Failed to remove recipe from favorites', 'danger')})
@@ -67,7 +67,7 @@ function RecipePage() {
                             </span>
                         </Button>
                         :
-                        <Button className="is-rounded" color="info" outlined onClick={() => {
+                        <Button className="is-rounded" aria-label="addLike" color="info" outlined onClick={() => {
                             recipeService.addLike(recipe.id)
                             .then(() => {appendAlert('Recipe added to favorites', 'info'), getSessionUser()})
                             .catch(() => {appendAlert('Failed to add recipe to favorites', 'danger')})
@@ -106,7 +106,7 @@ function RecipePage() {
                     <Form.Label>Servings:</Form.Label>
                 <Columns>
                 <Columns.Column className='is-narrow'>
-                <Button color="danger" onClick={
+                <Button color="danger" aria-label='reduceServing' onClick={
                   () => {actualServings > 1 ? setActualServings(actualServings - 1) : setActualServings(1)}
                 }>
                   <span className="icon">
@@ -116,12 +116,12 @@ function RecipePage() {
                 </Columns.Column>
                 <Columns.Column>
                     <Form.Control>
-                      <Form.Input type="number" value={actualServings} min={1}
+                      <Form.Input type="number" aria-label="servings" value={actualServings} min={1}
                       onChange={(event) => {setActualServings(parseInt(event.target.value))}} />
                     </Form.Control>
                 </Columns.Column>
                 <Columns.Column className='is-narrow'>
-                  <Button color="success" onClick={
+                  <Button color="success" aria-label='increaseServings' onClick={
                     () => {setActualServings(actualServings + 1)}
                   }>
                     <span className="icon">
@@ -144,6 +144,7 @@ function RecipePage() {
                   }
                   <Button 
                     renderAs={Notification} 
+                    aria-label="add to list"
                     onClick={ () => { 
                       recipe.ingredients?.forEach((ingredient) => {
                         listService.addIngredient(ingredient.id)

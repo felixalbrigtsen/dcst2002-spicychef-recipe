@@ -7,7 +7,6 @@ import {
 } from 'react-router-dom';
 
 import { Image, Container, Card } from 'react-bulma-components'
-import Footer from '../components/Footer';
 
 export default function LoginPage() {
     return (
