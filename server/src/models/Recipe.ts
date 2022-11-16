@@ -11,8 +11,8 @@ export type Recipe = {
   instructions: string;
   servings: number;
   imageUrl: string | null;
-  videoUrl: string | null;
-  created_at: Date;
+  videoUrl: string;
+  created_at: Date | null;
   ingredients: RecipeIngredient[];
   tags: string[];
   likes: number;

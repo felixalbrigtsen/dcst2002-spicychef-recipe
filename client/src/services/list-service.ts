@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Ingredient } from '../models/Ingredient';
 import ingredientService from './ingredient-service';
-import { useLogin } from '../hooks/Login';
+import type { User } from '../models/User';
 
 /**
  * @module
@@ -86,37 +86,24 @@ class ListService {
   //   });
   // }
 
-  getShoppingListItems(): Promise<{id: number, name: string}[]> {
-    // const { user } = useLogin();
-    const user = {
-      "googleId": "112735525170884590260",
-      "name": "Felix Albrigtsen",
-      "email": "felixalbrigtsen@gmail.com",
-      "picture": "https://lh3.googleusercontent.com/a/ALm5wu3PBPSF3_U2gA9xouT_Hpe1E6HR4GWmmswlYT1o=s96-c",
-      "isadmin": true,
-      "likes": [
-          2
-      ],
-      "shoppingList": [
-          1,
-          3,
-          24
-      ]
-    }
-
+  /**
+   * @function
+   * @name getShoppingList
+   * @returns {Promise<undefined>}
+   * @description
+   * This function will get the shopping list for the current user
+   */
+  
+  getShoppingListItems(user:User): Promise<{id: number, name: string}[]> {
     return new Promise(async (resolve, reject) => {
       const ingredients = await ingredientService.getIngredients();
 
       const shoppingList = ingredients.filter((ingredient) => {
         return user.shoppingList.includes(ingredient.id);
       });
-
-      console.log(shoppingList);
-
       resolve(shoppingList.map(ingredient => {return {id: ingredient.id, name: ingredient.name}}));
     });
     
-
   }
 }
 

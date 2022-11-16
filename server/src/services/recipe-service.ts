@@ -339,6 +339,19 @@ class RecipeService {
     });
   }
 
+  getTags(): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+      pool.query('SELECT DISTINCT name FROM recipe_tag', (err: any, results: string[]) => {
+        if (err) {
+          return reject(err);
+        }
+        if (results.length === 0) {
+          return resolve([]);
+        }
+        resolve(results);
+      });
+    })
+  }
 
   addIngredient(name: string): Promise<number> {
     return new Promise((resolve, reject) => {
@@ -406,7 +419,7 @@ class RecipeService {
     });
   }
 
-  addRecipe(title: string, summary: string, instructions: string, servings: number, imageUrl: string, videoUrl: string): Promise<number> {
+  addRecipe(title: string, summary: string, instructions: string, servings: number, imageUrl: string | null, videoUrl: string): Promise<number> {
     return new Promise((resolve, reject) => {
       pool.query('INSERT INTO recipe (title, summary, instructions, servings, imageUrl, videoUrl) VALUES (?, ?, ?, ?, ?, ?)', [title, summary, instructions, servings, imageUrl, videoUrl], (err, results) => {
         if (err) {

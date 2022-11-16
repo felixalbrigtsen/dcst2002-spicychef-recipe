@@ -4,7 +4,9 @@ import morgan from 'morgan';
 import * as path from 'path';
 import session from 'express-session';
 
-dotenv.config();
+if (process.env.NODE_ENV !== "test") {
+  dotenv.config();
+}
 
 import router from './routers/recipe-router';
 import { enablePassport, enableSession } from './routers/auth-router';
