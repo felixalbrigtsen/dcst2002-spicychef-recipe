@@ -1,14 +1,14 @@
 import axios from 'axios';
 import { Recipe } from '../models/Recipe';
 import { Ingredient } from '../models/Ingredient';
-import app from '..';
+import app, { server } from '..';
+import type { RecipeIngredient } from '../models/RecipeIngredient';
 import userService from '../services/user-service';
 import recipeService from '../services/recipe-service';
 import { initTest } from '../utils/initdb'
-import { RecipeIngredient } from '../models/RecipeIngredient';
-import { server } from '..';
 import { User } from '../models/User';
-import * as session from 'express-session';
+import { UserProfile } from '../models/UserProfile';
+import { strategy } from '../routers/auth-router';
 
 const PORT = Number(process.env.PORT) || 3000;
 
@@ -58,13 +58,14 @@ const testUsers: User[] = [
     {"googleId": 18732984179837, "name": "Jonas Jaeger", "email": "jonas@jaeger.com", "picture": "image5.jpg", "isadmin": false, "likes": [], "shoppingList": [3,4]}
 ]
 
-const newTestUsers: {googleId: number, name: string, email: string, picture: string, isadmin: boolean}[] = [
-    {"googleId": 29130921380099, "name": "testUser", "email": "testuser@example.com", "picture": "image1.jpg", "isadmin": false},
-    {"googleId": 89327493284798, "name": "testAdmin", "email": "testadmin@example.com", "picture": "image2.jpg", "isadmin": true},
-    {"googleId": 98327489327492, "name": "Kari Nordmann", "email": "kari@ntnu.no", "picture": "image3.jpg", "isadmin": false},
-    {"googleId": 38274982392238, "name": "Ola Nordmann", "email": "ola@ntnu.no", "picture": "image4.jpg", "isadmin": false},
-    {"googleId": 18732984179837, "name": "Jonas Jaeger", "email": "jonas@jaeger.com", "picture": "image5.jpg", "isadmin": false}
-]
+const testUserProfiles: UserProfile[] = testUsers.map(user =>
+  ({
+    id: user.googleId,
+    displayName: user.name,
+    emails: [{value: user.email}],
+    photos: [{value: user.picture}]
+  } as UserProfile)
+);
 
 const testLikes: {userId: number, recipeId: number}[] = [
   {"recipeId": 1, "userId": testUsers[0].googleId},
@@ -114,18 +115,18 @@ beforeEach((done) => {
       .then(() => recipeService.addRecipeIngredient(testRecipes[2].id, 6, 6, testRecipes[2].ingredients[1].quantity))
  
       //Create users
-      .then(() => userService.createUser(newTestUsers[0]))
-      .then(() => userService.createUser(newTestUsers[1]))
-      .then(() => userService.createUser(newTestUsers[2]))
-      .then(() => userService.createUser(newTestUsers[3]))
-      .then(() => userService.createUser(newTestUsers[4]))
+      // .then(() => userService.createUser(testUsers[0]))
+      // .then(() => userService.createUser(testUsers[1]))
+      // .then(() => userService.createUser(testUsers[2]))
+      // .then(() => userService.createUser(testUsers[3]))
+      // .then(() => userService.createUser(testUsers[4]))
 
       //Add likes
-      .then(() => recipeService.addLike(testLikes[0].recipeId, testLikes[0].userId))
-      .then(() => recipeService.addLike(testLikes[1].recipeId, testLikes[1].userId))
-      .then(() => recipeService.addLike(testLikes[2].recipeId, testLikes[2].userId))
-      .then(() => recipeService.addLike(testLikes[3].recipeId, testLikes[3].userId))
-      .then(() => recipeService.addLike(testLikes[4].recipeId, testLikes[4].userId))
+      // .then(() => recipeService.addLike(testLikes[0].recipeId, testLikes[0].userId))
+      // .then(() => recipeService.addLike(testLikes[1].recipeId, testLikes[1].userId))
+      // .then(() => recipeService.addLike(testLikes[2].recipeId, testLikes[2].userId))
+      // .then(() => recipeService.addLike(testLikes[3].recipeId, testLikes[3].userId))
+      // .then(() => recipeService.addLike(testLikes[4].recipeId, testLikes[4].userId))
       .then(() => done())
   })    
 })
@@ -136,10 +137,29 @@ afterAll((done) => {
   done()
 });
 
-test("Login redirect works (200 OK)", (done) => {
-    axios.get("/auth/login").then((response) => {
+test("GET /api/auth/profile without login (200 OK)", (done) => {
+    axios.get(`/auth/profile`).then((response) => {
         expect(response.status).toEqual(200)
-        expect(response.headers["x-auto-login"]).toContain("accounts.google.com")
-        done()
-    })
-})
+        expect(response.data).toEqual(false)
+        done();
+    });
+});
+
+test("Sign in with test user ", (done) => {
+  strategy.setProfile(testUserProfiles[0]);
+
+  axios.get(`/auth/google/callback`).then((response) => {
+    console.log(response);
+    expect(response.status).toEqual(200)
+    expect(response.data).toEqual(true)
+
+    axios.get(`/auth/profile`).then((response) => {
+      expect(response.status).toEqual(200)
+      expect(response.data).toEqual(testUsers[0])
+
+      done();
+    });
+  });
+
+  
+});

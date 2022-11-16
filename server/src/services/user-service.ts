@@ -1,6 +1,7 @@
 import pool from '../mysql-pool';
 import { RowDataPacket, QueryError } from 'mysql2';
 import type { User } from '../models/User';
+import type { UserProfile } from '../models/UserProfile';
 
 export class UserService {
   getUser(googleId: number): Promise<User> {
@@ -66,7 +67,7 @@ export class UserService {
     });
   }
 
-  findOrCreate(profile: any): Promise<User> {
+  findOrCreate(profile: UserProfile): Promise<User> {
     return new Promise((resolve, reject) => {
       this.getUser(profile.id)
         .then(user => resolve(user))
