@@ -27,6 +27,7 @@ function setupPool(envpath: string) {
     typeCast: (field, next) =>
       field.type == 'TINY' && field.length == 1 ? field.string() == '1' : next(),
   });
+  return pool
 }
 
 function runQuery(sql: string):  Promise<any> {
@@ -80,8 +81,9 @@ async function main() {
 
 
 export async function initTest() {
-  setupPool('./.env.test');
+  let testPool = setupPool('./.env.test');
   await execFiles(true);
+  testPool.end()
 }
 
 // if main flag is set, run main function

@@ -1,15 +1,18 @@
+import mysql from 'mysql2';
 import axios from 'axios';
-import pool from '../mysql-pool';
 import app from '..';
 import { Recipe } from '../models/Recipe';
 import { Ingredient } from '../models/Ingredient';
 import recipeService from '../services/recipe-service';
-import { NewRecipe } from '../models/NewRecipe';
 import { initTest } from '../utils/initdb'
 import { RecipeIngredient } from '../models/RecipeIngredient';
+import { server } from '..';
+
 
 const PORT = Number(process.env.PORT) || 3000;
 const DUMMY_PORT = Number(process.env.DUMMY_PORT) || 3001;
+
+let pool: any;
 
 const testRecipes: Recipe[] = [
     {"id": 1,"title":"Tunisian Lamb Soup","summary":"Meal from MealDB","instructions":"Add the lamb to a casserole and cook over high heat. When browned, remove from the heat and set aside.", "servings":2,"imageUrl":"https://www.themealdb.com/images/media/meals/t8mn9g1560460231.jpg","videoUrl":"https://www.youtube.com/watch?v=w1qgTQmLRe4","created_at":new Date(),"likes":0,"tags":["Lamb","Soup","Tunisian"],"ingredients": [{"ingredientId":1,"unitId":1,"quantity":1,"ingredientName":"Lamb Mince","unitName":"kg"},{"ingredientId":2,"unitId":2,"quantity":2,"ingredientName":"Garlic","unitName":"cloves minced"}]},
@@ -59,16 +62,16 @@ const testLikes: {userId: number, recipeId: number}[] = [
 
 axios.defaults.baseURL = `http://localhost:${PORT}/api/`;
 
-let webServer: any;
-beforeAll((done) => {
-  // Use separate port for testing
-  webServer = app.listen(DUMMY_PORT, () => done());
-});
+let webServer = server;
+// beforeAll((done) => {
+//   // Use separate port for testing
+//   // webServer = app.listen(DUMMY_PORT, () => done());
+//   // webServer = 
+// });
 
 beforeEach((done) => {
   initTest().then(() => {
-    recipeService
-      .addRecipe(testRecipes[0].title, testRecipes[0].summary, testRecipes[0].instructions, testRecipes[0].servings, testRecipes[0].imageUrl, testRecipes[0].videoUrl)
+    recipeService.addRecipe(testRecipes[0].title, testRecipes[0].summary, testRecipes[0].instructions, testRecipes[0].servings, testRecipes[0].imageUrl, testRecipes[0].videoUrl)
       .then(() => recipeService.addRecipe(testRecipes[1].title, testRecipes[1].summary, testRecipes[1].instructions, testRecipes[1].servings, testRecipes[1].imageUrl, testRecipes[1].videoUrl))
       .then(() => recipeService.addRecipe(testRecipes[2].title, testRecipes[2].summary, testRecipes[2].instructions, testRecipes[2].servings, testRecipes[2].imageUrl, testRecipes[2].videoUrl))
       
@@ -111,12 +114,13 @@ beforeEach((done) => {
       // .then(() => recipeService.addLike(testLikes[4].recipeId, testLikes[4].userId))
       .then(() => done())
   })    
-});
+})
+
 
 // Stop web server and close connection to MySQL server
 afterAll((done) => {
-  if (!webServer) return done(new Error());
-  webServer.close(() => done());
+  server.close()
+  done()
 });
 
 test('Default message works (GET)', () => {
@@ -130,7 +134,6 @@ describe('Fetch recipes (GET)', () => {
     axios.get('/recipes').then((response) => {
       expect(response.status).toEqual(200);
       let expected = testRecipesShort
-      console.log(expected)
       for (let i = 0; i < response.data.length; i++) {expected[`${i}`].created_at = response.data[i].created_at}
       expect(response.data).toEqual(expected);
       for (let i = 0; i < response.data.length; i++) {delete(expected[`${i}`].created_at)}

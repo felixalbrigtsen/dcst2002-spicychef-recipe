@@ -11,6 +11,7 @@ if (process.env.NODE_ENV !== "test") {
 import router from './routers/recipe-router';
 import { enablePassport, enableSession } from './routers/auth-router';
 import type { User } from './models/User';
+import { doesNotMatch } from 'assert';
 
 
 const port = Number(process.env.PORT) || 3000;
@@ -25,7 +26,7 @@ app.use(morgan('dev'));
 enableSession(app);
 enablePassport(app);
 
-app.listen(port, () => {
+export const server = app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
 
