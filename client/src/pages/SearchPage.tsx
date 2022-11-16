@@ -1,7 +1,6 @@
 import * as React from 'react';
 // @ts-ignore
-import Select from 'react-select'
-import type { ActionType } from 'react-select/src/types';
+import Select, {InputActionMeta} from 'react-select';
 import makeAnimated from 'react-select/animated';
 import { Heading, Hero, Tile, Tabs, Box, Form, Button, Columns } from 'react-bulma-components';
 import { 
@@ -144,7 +143,7 @@ export default function SearchPage() {
                 <Form.Control>
                   <Select isMulti placeholder="Recipe Tags" aria-label={"Tags"} name={"Tags"} components={animatedComponents} options={tags} 
                   value={selectedTags.map(t => {return {"value": t, "label": t}})}
-                  onChange={(event: ActionType) =>  {
+                  onChange={(event: any) =>  {
                     setSelectedTags((event.map((tag: {value: string, label: string} ) => tag.value)));
                   }}
                   />
@@ -153,21 +152,22 @@ export default function SearchPage() {
           <Form.Field>
           <Form.Label>Ingredients</Form.Label>
                 <Form.Control>
-                  <Select isMulti placeholder="Ingredients" aria-label={"Ingredients"} name={"Ingredients"} components={animatedComponents} options={ingredients} 
+                  <Select isMulti placeholder="Ingredients..." aria-label={"Ingredients"} name={"Ingredients"} components={animatedComponents} options={ingredients} 
                   value={selectedIngredients.map(i => {return {"value": i, "label": ingredients.find(ing => ing.value === i)?.label}})}
-                  onChange={(event: ActionType) => {
+                  onChange={(event: any) => {
                     setSelectedIngredients(event.map((ingredient: {value: string, label: string} ) => ingredient.value));
                   }}
                   />
                 </Form.Control>
           </Form.Field>
           <Button color="danger" className='is-outlined'
+            aria-label='clearSearch'
             onClick={() => {
               setNewQuery('');
               setSelectedIngredients([]);
               setSelectedTags([]);
             }}
-          >Clear search
+          >Clear Search
           </Button>
           </Tile>
           <Tile kind="parent">

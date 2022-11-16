@@ -27,7 +27,6 @@ describe('Test NavBar renders correctly', () => {
         expect(screen.queryByText('Admin')).not.toBeInTheDocument();
         expect(screen.queryByText('Logout')).not.toBeInTheDocument();
         expect(screen.queryByText('My Likes')).not.toBeInTheDocument();
-        expect(screen.queryByText('Shopping List')).toBeInTheDocument();
 
     });
     test('Test links', () => {

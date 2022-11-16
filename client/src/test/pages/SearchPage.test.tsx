@@ -16,7 +16,7 @@ describe('SearchPage stuff', () => {
     expect(screen.getByRole('heading', {name: "Search"})).toHaveTextContent('Search');
     expect(screen.getByText('Tags')).toBeInTheDocument();
     expect(screen.getByText('Ingredients')).toBeInTheDocument();
-    expect(screen.getByRole('button', {name: "Search"})).toHaveTextContent('Search');
+    expect(screen.getByRole('button', {name: "clearSearch"})).toHaveTextContent('Clear Search');
     expect(screen.getByRole('combobox', {name: "Ingredients"})).toBeInTheDocument();
     expect(screen.getByRole('combobox', {name: "Tags"})).toBeInTheDocument();
   });
