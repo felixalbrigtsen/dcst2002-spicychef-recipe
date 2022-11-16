@@ -34,8 +34,6 @@ describe('IngredientsPage test', () => {
       expect(screen.getByRole('button', {name: 'searchAllIngredients'})).toHaveTextContent('Search Recipes Including All')
       expect(screen.getByRole('button', {name: 'searchAnyIngredients'})).toBeInTheDocument()
       expect(screen.getByRole('button', {name: 'searchAnyIngredients'})).toHaveTextContent('Search Recipes Including Any')
-      expect(screen.getByRole('button', {name: 'addSelectedToList'})).toBeInTheDocument()
-      expect(screen.getByRole('button', {name: 'addSelectedToList'})).toHaveTextContent('Add Selected To List')
       expect(screen.getByRole('button', {name: 'clearSelected'})).toBeInTheDocument()
       expect(screen.getByRole('button', {name: 'clearSelected'})).toHaveTextContent('Clear Selection')
       expect(screen.getByRole('table')).toBeInTheDocument()
