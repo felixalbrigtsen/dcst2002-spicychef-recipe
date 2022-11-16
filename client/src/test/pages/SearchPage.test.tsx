@@ -12,7 +12,7 @@ import SearchPage from '../../pages/SearchPage';
 
 describe('SearchPage stuff', () => {
   test('renders SearchPage', () => {
-    render(<SearchPage />);
+    render(<Router><SearchPage /></Router>);
     expect(screen.getByRole('heading', {name: "Search"})).toHaveTextContent('Search');
     expect(screen.getByText('Tags')).toBeInTheDocument();
     expect(screen.getByText('Ingredients')).toBeInTheDocument();
