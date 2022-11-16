@@ -79,7 +79,7 @@ async function main() {
 }
 
 
-async function initTest() {
+export async function initTest() {
   setupPool('./.env.test');
   await execFiles(true);
 }
@@ -90,6 +90,6 @@ if (process.argv[2] === 'main') {
 }
 // Otherwise, this module can be imported and the test functions can be called
 
-module.exports = {
-  initTest,
-};
+// module.exports = {
+//   initTest,
+// };
