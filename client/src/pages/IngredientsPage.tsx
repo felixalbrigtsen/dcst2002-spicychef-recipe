@@ -14,11 +14,13 @@ import { Box, Button, Form, Container, Heading, Hero, Notification, Table, Tile 
 import { MdAddCircle } from 'react-icons/md';
 
 import { useAlert } from '../hooks/Alert';
+import { useLogin } from '../hooks/Login';
 
 export default function IngredientsPage() {
   const [ selectedIngredients, setSelectedIngredients ] = React.useState<Ingredient[]>([]);
   const [ ingredients, setIngredients ] = React.useState<Ingredient[]>([]);
   const { appendAlert } = useAlert();
+  const { user } = useLogin();
 
   React.useEffect(() => {
     ingredientService.getIngredients()
@@ -45,7 +47,7 @@ export default function IngredientsPage() {
 
   function searchRecipeByIngredients(mode: string) {
     const ingredientIds = selectedIngredients.map(ingredient => ingredient.id);
-    recipeService.searchRecipeByIngredients(ingredientIds, mode);
+    window.location.href=`/search?q=&ingredients=${encodeURIComponent(ingredientIds.join(','))}&tags=`;
   }
 
   return (
@@ -64,13 +66,14 @@ export default function IngredientsPage() {
               >
                 Search Recipes Including All
               </Button>
-              <Button
+              {/* <Button
                 color="warning"
                 className="is-rounded m-1"
                 onClick={() => {searchRecipeByIngredients("any")}}
               >
                 Search Recipes Including Any
-              </Button>
+              </Button> */}
+              { user.googleId && 
               <Button
                 color="success"
                 className="is-rounded m-1"
@@ -78,6 +81,7 @@ export default function IngredientsPage() {
               >
                 Add Selected To List
               </Button>
+              }
               <Button
                 color="danger"
                 className="is-rounded m-1"
@@ -103,7 +107,7 @@ export default function IngredientsPage() {
                         <Form.Checkbox 
                           className='is-centered'
                           checked={selectedIngredients.includes(ingredient)}
-                          onClick={() => {handleIngredientClick(ingredient);}}
+                          onChange={() => {handleIngredientClick(ingredient);}}
                           aria-label={`Already own ${ingredient.name}`}
                           aria-required="true"
                         >
