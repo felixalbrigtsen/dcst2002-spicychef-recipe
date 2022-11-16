@@ -73,6 +73,7 @@ authRouter.get('/google/callback',
   }), (req, res) => {
     req.session.user = req.user as User;
     if (req.session.user.email) {
+      refreshLogin(req, res);
       console.log("User logged in: " + req.session.user.email);
     } else {
       console.log("Invalid user logged in");
@@ -91,7 +92,7 @@ authRouter.get('/logout', (req, res) => {
   res.redirect('/');
 });
 
-authRouter.get('/profile', (req, res) => {
+authRouter.get('/profile', async (req, res) => {
   if (req.session.user) {
     res.json(req.session.user);
   } else {
@@ -104,6 +105,8 @@ export async function refreshLogin(req, res) {
   if (req.session.user.googleId) {
     let user = await userService.getUser(req.session.user.googleId);
     req.session.user = user;
+  } else {
+    req.session.user = undefined;
   }
 }
 

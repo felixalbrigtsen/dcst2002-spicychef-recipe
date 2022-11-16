@@ -53,6 +53,8 @@ function App() {
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </Router>
+    <style>{` html { background-color: #f5f5f5; } `}</style>
+    {/* <Footer /> */}
   </>
   );
 }

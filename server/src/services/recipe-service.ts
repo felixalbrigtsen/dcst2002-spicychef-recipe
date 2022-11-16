@@ -1,6 +1,7 @@
 import pool from '../mysql-pool';
 import { RowDataPacket } from 'mysql2';
 import type { Meal } from '../models/Meal';
+import type { RecipeIngredient } from '../models/RecipeIngredient';
 import type { Ingredient } from '../models/Ingredient';
 import type { Recipe } from '../models/Recipe';
 import type { Unit } from '../models/Unit';
@@ -65,7 +66,7 @@ class RecipeService {
             summary: recipe.summary,
             imageUrl: recipe.imageUrl,
             created_at: recipe.created_at,
-            likes: recipe.likes,
+            likes: recipe.likes || 0,
             tags: await this.getTagsInRecipe(recipe.id),
           } as Recipe;
         });
@@ -98,7 +99,7 @@ class RecipeService {
             title: recipe.title,
             summary: recipe.summary,
             imageUrl: recipe.imageUrl,
-            likes: recipe.likes,
+            likes: recipe.likes || 0,
             tags: await this.getTagsInRecipe(recipe.id),
           } as Recipe;
         });
@@ -111,9 +112,12 @@ class RecipeService {
 
   getRecipe(id: number): Promise<Recipe> {
     return new Promise((resolve, reject) => {
-      pool.query('SELECT * FROM recipe LEFT JOIN ( SELECT recipeId, COUNT(*) as likes FROM user_like GROUP BY recipeId) AS likes ON likes.recipeId = recipe.id WHERE recipe.id = ?', [id], (err, results: RowDataPacket[]) => {
+      pool.query('SELECT recipe.*, likes.likes FROM recipe LEFT JOIN ( SELECT recipeId, COUNT(*) as likes FROM user_like GROUP BY recipeId) AS likes ON likes.recipeId = recipe.id WHERE recipe.id = ?', [id], (err, results: RowDataPacket[]) => {
         if (err) {
           return reject(err);
+        }
+        if (results && results[0] && !results[0].likes) {
+          results[0].likes = 0;
         }
         resolve(results[0] as Recipe);
       });
@@ -261,10 +265,10 @@ class RecipeService {
     });
   }
 
-  getIngredientsInRecipe(recipeId: number): Promise<Ingredient[]> {
+  getIngredientsInRecipe(recipeId: number): Promise<RecipeIngredient[]> {
     return new Promise((resolve, reject) => {
       pool.query(`
-        SELECT ingredientId as id, unitId, quantity, ingredient.name AS ingredientName, unit.name AS unitName 
+        SELECT ingredientId, unitId, quantity, ingredient.name AS ingredientName, unit.name AS unitName 
         FROM recipe_ingredient 
         LEFT JOIN unit ON recipe_ingredient.unitId = unit.id 
         LEFT JOIN ingredient ON recipe_ingredient.ingredientId = ingredient.id 
@@ -272,7 +276,7 @@ class RecipeService {
         if (err) {
           return reject(err);
         }
-        resolve(results as Ingredient[]);
+        resolve(results as RecipeIngredient[]);
       });
     });
   }
@@ -335,6 +339,19 @@ class RecipeService {
     });
   }
 
+  getTags(): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+      pool.query('SELECT DISTINCT name FROM recipe_tag', (err: any, results: string[]) => {
+        if (err) {
+          return reject(err);
+        }
+        if (results.length === 0) {
+          return resolve([]);
+        }
+        resolve(results);
+      });
+    })
+  }
 
   addIngredient(name: string): Promise<number> {
     return new Promise((resolve, reject) => {
@@ -402,7 +419,7 @@ class RecipeService {
     });
   }
 
-  addRecipe(title: string, summary: string, instructions: string, servings: number, imageUrl: string, videoUrl: string): Promise<number> {
+  addRecipe(title: string, summary: string, instructions: string, servings: number, imageUrl: string | null, videoUrl: string): Promise<number> {
     return new Promise((resolve, reject) => {
       pool.query('INSERT INTO recipe (title, summary, instructions, servings, imageUrl, videoUrl) VALUES (?, ?, ?, ?, ?, ?)', [title, summary, instructions, servings, imageUrl, videoUrl], (err, results) => {
         if (err) {
@@ -415,6 +432,7 @@ class RecipeService {
     });
   }
 
+  //TODO: Use a RecipeIngredient here
   addRecipeIngredient(recipeId: number, ingredientId: number, unitId: number, quantity: number): Promise<number> {
     return new Promise((resolve, reject) => {
       pool.query('INSERT INTO recipe_ingredient (recipeId, ingredientId, unitId, quantity) VALUES (?, ?, ?, ?)', [recipeId, ingredientId, unitId, quantity], (err, results) => {

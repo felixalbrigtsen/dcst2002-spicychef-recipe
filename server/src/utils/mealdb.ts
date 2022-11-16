@@ -1,6 +1,9 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
+import type { Meal } from '../models/Meal';
 import recipeService from '../services/recipe-service';
 import mealdbService from '../services/mealdb-service';
-import type { Meal } from '../models/Meal';
 
 // This script is invoked by `npm run mealdb [--] action [args]`
 

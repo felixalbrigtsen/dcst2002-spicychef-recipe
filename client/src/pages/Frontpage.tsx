@@ -94,24 +94,28 @@ function Home () {
                                             </Button>
                                             </Link>
                                             <br />
-                                            <Link to="/list">
-                                            <Button color="info" className="is-light is-rounded mt-2">
-                                                <span>Shopping List</span>
-                                                <Icon path={mdiListBox} size={1} />
-                                            </Button>
-                                            </Link>                                            
-                                            <br />
                                             <Link to="/search">
                                             <Button color="info" className="is-light is-rounded mt-2">
                                                 <span>Search</span>
                                                 <Icon path={mdiMagnify} size={1} />
                                             </Button>
                                             </Link>
-                                            { user.googleId && <> 
+                                            { user.googleId ? 
+                                            <>
+                                            <br />
+                                            <Link to="/list">
+                                            <Button color="info" className="is-light is-rounded mt-2">
+                                                <span>Shopping List</span>
+                                                <Icon path={mdiListBox} size={1} />
+                                            </Button>
+                                            </Link>
+                                            </> 
+                                            :
+                                            <>
                                             <br />
                                             <Link to="/login">
                                             <Button color="info" className="is-light is-rounded mt-2">
-                                                <span><Heading>Login</Heading></span>
+                                                <span>Login</span>
                                                 <Icon path={mdiLoginVariant} size={1} />
                                             </Button>
                                             </Link>

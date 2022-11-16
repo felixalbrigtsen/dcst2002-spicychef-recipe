@@ -7,25 +7,26 @@ import { Ingredient } from '../models/Ingredient';
 import { MdDeleteForever } from 'react-icons/md';
 import { Box, Button, Form, Container, Heading, Hero, Notification, Table, Tile } from 'react-bulma-components';
 import { useEffect, useState } from 'react';
+import { useLogin } from '../hooks/Login';
 
 
 export default function ShoppingListPage() {
+  const { user, getSessionUser } = useLogin();
 
   function handleRemove(ingredientId: number) {
-    listService.removeIngredient(ingredientId);
+    listService.removeIngredient(ingredientId)
+      .then( getSessionUser );
   };
 
   let [ listItems, setListItems ] = React.useState<{id: number, name: string}[]>([]);
 
   function updateListItems() {
-    listService.getShoppingListItems()
+    listService.getShoppingListItems(user)
       .then((items) => {
         setListItems(items);
       });
   }
-  useEffect(() => {
-    updateListItems();
-  }, []);
+  useEffect(updateListItems, [user]);
 
 
   return (
@@ -44,8 +45,9 @@ export default function ShoppingListPage() {
                 onClick={() => {
                   listItems?.map(
                     (item, index) => {
-                    handleRemove(item.id); setListItems(listItems.filter((item, j) => j !== index))
-                  })
+                    handleRemove(item.id);
+                  });
+                  updateListItems();
                 }}
               >
                 Clear all
@@ -67,7 +69,7 @@ export default function ShoppingListPage() {
                         <Button 
                           color="danger" 
                           className="is-rounded is-outlined"
-                          onClick={() => {console.log(`Remove ${item.name} from shopping list`); handleRemove(item.id)}}
+                          onClick={() => { handleRemove(item.id); }}
                           aria-label={`Remove ${item.name} from shopping list`}
                           aria-required="true"
                         >
