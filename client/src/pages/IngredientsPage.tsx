@@ -47,7 +47,7 @@ export default function IngredientsPage() {
 
   function searchRecipeByIngredients(mode: string) {
     const ingredientIds = selectedIngredients.map(ingredient => ingredient.id);
-    window.location.href=`/search?q=&ingredients=${encodeURIComponent(ingredientIds.join(','))}&tags=`;
+    window.location.href=`/search?ingredients=${encodeURIComponent(ingredientIds.join(','))}`;
   }
 
   return (

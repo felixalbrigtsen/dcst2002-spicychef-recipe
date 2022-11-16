@@ -9,17 +9,12 @@ import {
   Route, 
   Routes,
   Link, 
-  useParams,
   useSearchParams,
-  useLocation
 } from 'react-router-dom';
 import { Recipe } from '../models/Recipe';
 import recipeService from '../services/recipe-service'
 import RecipeCard from '../components/RecipeCard';
 import ingredientService from '../services/ingredient-service';
-import { Ingredient } from '../models/Ingredient';
-import { FaTimes } from 'react-icons/fa';
-import { stringify } from 'querystring';
 
 import { useAlert } from '../hooks/Alert';
 
@@ -29,7 +24,6 @@ export default function SearchPage() {
   const { appendAlert } = useAlert();
   
   const [ searchParams, setSearchParams ] = useSearchParams();
-  // console.log(Object.fromEntries([...searchParams]));
 
   const [recipes, setRecipes] = React.useState<Recipe[]>([]);
   const [newQuery, setNewQuery] = React.useState<string>(searchParams.get("query") || '');
@@ -42,7 +36,6 @@ export default function SearchPage() {
 
   React.useEffect(() => {
     const currentParams = Object.fromEntries([...searchParams]);
-    console.log(currentParams);
     setNewQuery(currentParams.q || '');
     setSelectedIngredients(currentParams.ingredients ? currentParams.ingredients.split(',').map(Number) : []);
     setSelectedTags(currentParams.tags ? currentParams.tags.split(',') : []);
@@ -95,7 +88,11 @@ export default function SearchPage() {
     } else {
       filterVisibleRecipes(recipes);
     }
-    window.history.replaceState(null, '', `/search/?q=${encodeURIComponent(newQuery)}&ingredients=${encodeURIComponent(selectedIngredients.join(","))}&tags=${encodeURIComponent(selectedTags.join(","))}`);
+    window.history.replaceState(null, '', 
+      `/search/?q=${encodeURIComponent(newQuery)}
+      ${selectedIngredients.length > 0  && ("&ingredients=" + encodeURIComponent(selectedIngredients.join(",")))}
+      ${selectedTags.length > 0         && ("&tags=" + encodeURIComponent(selectedTags.join(",")))}
+      `);
   }, [selectedTags, selectedIngredients, newQuery]);
   
   function filterVisibleRecipes(passingRecipes: Recipe[]) {
@@ -128,7 +125,10 @@ export default function SearchPage() {
           <Tile kind="parent" vertical size={3} renderAs={Box}>
           <Heading>Search</Heading>
           <Form.Field>
-          <Form.Input type="text" onChange={(event: React.FormEvent) => setNewQuery((event.target as HTMLInputElement).value)} placeholder="Search for recipes" value={newQuery} />
+          <Form.Input type="text" 
+            onChange={(event: React.FormEvent) => setNewQuery((event.target as HTMLInputElement).value)} 
+            placeholder="Search for recipes" value={newQuery} 
+            />
           </Form.Field>
           <Form.Field>
           <Form.Label>Tags</Form.Label>
