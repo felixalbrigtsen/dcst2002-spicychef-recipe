@@ -97,7 +97,7 @@ function Home () {
                                             <Link to="/search">
                                             <Button color="info" className="is-light is-rounded mt-2">
                                                 <span>Search</span>
-                                                <Icon path={mdiMagnify} size={1} />
+                                                <Icon path={mdiMagnify} size={1} style={{marginLeft: ".5rem"}} />
                                             </Button>
                                             </Link>
                                             { user.googleId ? 
@@ -116,7 +116,7 @@ function Home () {
                                             <Link to="/login">
                                             <Button color="info" className="is-light is-rounded mt-2">
                                                 <span>Login</span>
-                                                <Icon path={mdiLoginVariant} size={1} />
+                                                <Icon path={mdiLoginVariant} size={1} style={{marginLeft: ".5rem"}} />
                                             </Button>
                                             </Link>
                                             </> }
