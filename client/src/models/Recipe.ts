@@ -1,4 +1,4 @@
-import type { RecipeIngredient } from './RecipeIngredient';
+import type { RecipeIngredient } from "./RecipeIngredient";
 
 /**
  * Recipe
@@ -18,4 +18,3 @@ export type Recipe = {
   tags: string[];
   likes: number;
 };
-  

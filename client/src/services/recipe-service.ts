@@ -1,7 +1,7 @@
-import axios from 'axios';
-import type { Recipe } from '../models/Recipe';
-import type { NewRecipe } from '../models/NewRecipe';
-import type { RecipeIngredient } from '../models/RecipeIngredient';
+import axios from "axios";
+import type { Recipe } from "../models/Recipe";
+import type { NewRecipe } from "../models/NewRecipe";
+import type { RecipeIngredient } from "../models/RecipeIngredient";
 
 /**
  * @module
@@ -21,7 +21,8 @@ class RecipeService {
 
   getRecipesShort(): Promise<Recipe[]> {
     return new Promise((resolve, reject) => {
-      axios.get(process.env.REACT_APP_API_URL + '/recipes')
+      axios
+        .get(process.env.REACT_APP_API_URL + "/recipes")
         .then((response) => {
           resolve(response.data);
         })
@@ -42,7 +43,8 @@ class RecipeService {
 
   getRecipe(id: number): Promise<Recipe> {
     return new Promise((resolve, reject) => {
-      axios.get(process.env.REACT_APP_API_URL + '/recipes/' + id)
+      axios
+        .get(process.env.REACT_APP_API_URL + "/recipes/" + id)
         .then((response) => {
           resolve(response.data);
         })
@@ -61,9 +63,10 @@ class RecipeService {
    * This function will fetch recipes where the recipe name contains the query and return them as an array
    */
 
-  search(query : string | undefined): Promise<Recipe[]> {
+  search(query: string | undefined): Promise<Recipe[]> {
     return new Promise((resolve, reject) => {
-      axios.get(process.env.REACT_APP_API_URL + '/search?q=' + query)
+      axios
+        .get(process.env.REACT_APP_API_URL + "/search?q=" + query)
         .then((response) => {
           resolve(response.data);
         })
@@ -73,18 +76,19 @@ class RecipeService {
     });
   }
 
-  searchRecipeByIngredients(ingredientIds: number[], mode='all'): Promise<Recipe[]> {
+  searchRecipeByIngredients(ingredientIds: number[], mode = "all"): Promise<Recipe[]> {
     return new Promise((resolve, reject) => {
       if (mode !== "all" && mode !== "any") {
         return reject("Invalid mode");
       }
 
-      axios.get(process.env.REACT_APP_API_URL + '/recipes', {
-        params: {
-          ingredients: ingredientIds.join(","),
-          mode: mode
-        }
-      })
+      axios
+        .get(process.env.REACT_APP_API_URL + "/recipes", {
+          params: {
+            ingredients: ingredientIds.join(","),
+            mode: mode,
+          },
+        })
         .then((response) => {
           resolve(response.data);
         })
@@ -95,9 +99,9 @@ class RecipeService {
   }
 
   /**
-   * 
+   *
    * @function
-   * @name createRecipe 
+   * @name createRecipe
    * @argument {NewRecipe} recipe
    * @description
    * This function will post a new recipe to recipe.feal.no/api/recipes
@@ -105,7 +109,8 @@ class RecipeService {
 
   createRecipe(recipe: NewRecipe): Promise<NewRecipe> {
     return new Promise((resolve, reject) => {
-      axios.post(process.env.REACT_APP_API_URL + '/recipes', recipe)
+      axios
+        .post(process.env.REACT_APP_API_URL + "/recipes", recipe)
         .then((response) => {
           resolve(response.data);
         })
@@ -116,7 +121,7 @@ class RecipeService {
   }
 
   /**
-   * 
+   *
    * @function
    * @name updateRecipe
    * @argument {NewRecipe} recipe
@@ -126,7 +131,8 @@ class RecipeService {
 
   updateRecipe(recipe: NewRecipe): Promise<NewRecipe> {
     return new Promise((resolve, reject) => {
-      axios.put(process.env.REACT_APP_API_URL + '/recipes/' + recipe.id, recipe)
+      axios
+        .put(process.env.REACT_APP_API_URL + "/recipes/" + recipe.id, recipe)
         .then((response) => {
           resolve(response.data);
         })
@@ -146,7 +152,8 @@ class RecipeService {
 
   deleteRecipe(id: number): Promise<void> {
     return new Promise((resolve, reject) => {
-      axios.delete(process.env.REACT_APP_API_URL + '/recipes/' + id)
+      axios
+        .delete(process.env.REACT_APP_API_URL + "/recipes/" + id)
         .then((response) => {
           resolve();
         })
@@ -166,7 +173,8 @@ class RecipeService {
 
   addLike(id: number): Promise<void> {
     return new Promise((resolve, reject) => {
-      axios.post(process.env.REACT_APP_API_URL + '/likes/' + id)
+      axios
+        .post(process.env.REACT_APP_API_URL + "/likes/" + id)
         .then((response) => {
           resolve();
         })
@@ -186,7 +194,8 @@ class RecipeService {
 
   removeLike(id: number): Promise<void> {
     return new Promise((resolve, reject) => {
-      axios.delete(process.env.REACT_APP_API_URL + '/likes/' + id)
+      axios
+        .delete(process.env.REACT_APP_API_URL + "/likes/" + id)
         .then((response) => {
           resolve();
         })
@@ -199,4 +208,3 @@ class RecipeService {
 
 const recipeService = new RecipeService();
 export default recipeService;
-
