@@ -12,27 +12,6 @@ class UserService {
   /**
    * @function
    * @memberof userService
-   * @name getUsers
-   * @returns {Promise<User[]>}
-   * @description
-   * Fetch all users from recipe.feal.no/api/users and return them as an array
-   */
-  getUsers(): Promise<User[]> {
-    return new Promise((resolve, reject) => {
-      axios
-        .get(process.env.REACT_APP_API_URL + "/users")
-        .then((response) => {
-          resolve(response.data);
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
-  }
-
-  /**
-   * @function
-   * @memberof userService
    * @name getSessionUser
    * @returns {Promise<User>}
    * @description
