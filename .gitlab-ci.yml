@@ -27,6 +27,8 @@ client_jest:
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
   dependencies:
     - client_build
+  needs:
+    - client_build
   script:
     - cd client/
     - npm run test:ci
@@ -43,6 +45,8 @@ client_typescript:
   stage: test
   dependencies:
     - client_build
+  needs:
+    - client_build
   script:
     - cd client/
     - ./node_modules/.bin/tsc --noEmit --skipLibCheck
@@ -50,10 +54,37 @@ client_typescript:
     changes:
       - client/*
 
+server_install:
+  stage: build
+  script:
+    - cd server/
+    - npm prune
+    - npm ci
+  cache:
+    key: ${CI_COMMIT_REF_NAME}
+    paths:
+      - server/node_modules/
+  artifacts:
+    paths:
+      - ./server/node_modules/
+
+api_docs:
+  stage: build
+  artifacts:
+    when: always
+    paths:
+      - server/docs/*
+  script:
+    - cd server/
+    - npm install
+    - npm run docs
+
 server_jest:
   stage: test
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
   dependencies:
+    - server_install
+  needs:
     - server_install
   script:
     - cd server/
@@ -75,20 +106,6 @@ server_jest:
     changes:
       - server/*
 
-server_install:
-  stage: build
-  script:
-    - cd server/
-    - npm prune
-    - npm ci
-  cache:
-    key: ${CI_COMMIT_REF_NAME}
-    paths:
-      - server/node_modules/
-  artifacts:
-    paths:
-      - ./server/node_modules/
-
 server_typescript:
   stage: test
   dependencies:
@@ -100,16 +117,6 @@ server_typescript:
     changes:
       - server/*
 
-api_docs:
-  stage: build
-  artifacts:
-    when: always
-    paths:
-      - server/docs/*
-  script:
-    - cd server/
-    - npm install
-    - npm run docs
 
 deploy_production:
   stage: deploy
@@ -122,6 +129,8 @@ deploy_production:
   dependencies:
     - client_build
     - client_jest
+    - server_typescript
+    - server_jest
     - api_docs
   script:
     - export CI=false
