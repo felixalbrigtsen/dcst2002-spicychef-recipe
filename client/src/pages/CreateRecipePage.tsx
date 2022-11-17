@@ -10,7 +10,7 @@ import { useState, useEffect } from "react";
 
 function CreateRecipe() {
   const blankRecipe = {
-    id: 0,
+    id: -1,
     title: "",
     summary: "",
     instructions: "",
