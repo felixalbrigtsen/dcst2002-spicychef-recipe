@@ -89,13 +89,6 @@ server_jest:
   script:
     - cd server/
     - echo "$CI_SRV_TEST_ENV" > .env.test
-    - export $(cat .env.test | xargs)
-    - apt-get update
-    - apt-get -y upgrade
-    - apt-get -y install default-mysql-server
-    - service mariadb start
-    - mysqladmin create $MYSQL_DATABASE
-    - echo "CREATE USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD'; GRANT ALL PRIVILEGES ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%'; FLUSH PRIVILEGES;" | mysql
     - npm run test:ci
   artifacts:
     when: always
