@@ -5,6 +5,7 @@ import {useState} from 'react';
 import { FaArrowRight, FaThumbsUp } from 'react-icons/fa';
 import { useLogin } from '../hooks/Login';
 import { Link } from 'react-router-dom';
+import ReactTooltip from 'react-tooltip';
 
 import recipeService from '../services/recipe-service';
 import { Recipe } from '../models/Recipe';
@@ -50,7 +51,7 @@ function RecipeCard(props: RecipeCardProps) {
                                 .catch(() => {appendAlert('Failed to remove recipe from favorites', 'danger')})
                                 }
                             >
-                                <span>Liked</span>
+                                <span>{props.recipe.likes && props.recipe.likes}</span>
                                 <span className='icon is-small'>
                                 <Icon>
                                     <FaThumbsUp size={18} />
@@ -58,7 +59,6 @@ function RecipeCard(props: RecipeCardProps) {
                                 </span>
                             </Button>
                             {/* TODO: Make this prettier */}
-                            <span>{props.recipe.likes != null ? props.recipe.likes : 0}</span>
                             </>
                             : 
                             <>
@@ -69,28 +69,28 @@ function RecipeCard(props: RecipeCardProps) {
                                 .catch(() => {appendAlert('Failed to add recipe to favorites', 'danger')})
                                 }
                             >
-                                <span>Like</span>
+                                <span>{props.recipe.likes && props.recipe.likes}</span>
                                 <span className='icon is-small'>
                                 <Icon>
                                      <FaThumbsUp size={18} />
                                 </Icon>
                                 </span>
                             </Button>
-                            <span>{props.recipe.likes != null ? props.recipe.likes : 0}</span>
                             </>
                         }
                         </Card.Footer.Item>
                         : 
                         <Card.Footer.Item>
+                            <div data-tip="Login to like this recipe">
                             <Button className="is-rounded" color="info" outlined disabled>
-                            <span>Like</span>
+                                <span>{props.recipe.likes && props.recipe.likes}</span>
                                 <span className='icon is-small'>
                                 <Icon>
                                      <FaThumbsUp size={18} />
                                 </Icon>
                                 </span>
                             </Button>
-                            <span>{props.recipe.likes != null ? props.recipe.likes : 0}</span>
+                            </div>
                         </Card.Footer.Item>
                     }
                     <Link to={`/recipes/${props.recipe.id}`} className='is-flex is-vcentered'>
@@ -103,6 +103,7 @@ function RecipeCard(props: RecipeCardProps) {
                     </Link>
                 </Card.Footer>
             </Card>
+            <ReactTooltip />
         </>
     )
 }
