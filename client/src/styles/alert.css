@@ -2,6 +2,7 @@
     -webkit-animation: alert-animation 5s ease-in alternate;
     -moz-animation: alert-animation 5s ease-in alternate;
     animation: alert-animation 5s ease-in alternate;
+    margin-bottom: -2rem 0;
 }
 
 .alert-container {
