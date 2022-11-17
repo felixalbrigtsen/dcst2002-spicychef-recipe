@@ -577,7 +577,7 @@ class RecipeService {
   }
 
 
-  addLike(recipeId: number, userId: number): Promise<number> {
+  addLike(recipeId: number, userId: string): Promise<number> {
     return new Promise((resolve, reject) => {
       pool.query('INSERT INTO user_like (googleId, recipeId) VALUES (?, ?)', [userId, recipeId], (err: QueryError | null, results: RowDataPacket[]) => {
         if (err) {
@@ -592,7 +592,7 @@ class RecipeService {
     });
   }
 
-  removeLike(recipeId: number, userId: number): Promise<number> {
+  removeLike(recipeId: number, userId: string): Promise<number> {
     return new Promise((resolve, reject) => {
       pool.query('DELETE FROM user_like WHERE googleId = ? AND recipeId = ?', [userId, recipeId], (err: QueryError | null, results: RowDataPacket[]) => {
         if (err) {
@@ -605,7 +605,7 @@ class RecipeService {
     });
   }
 
-  addIngredientToList(ingredientId: number, userId: number): Promise<number> {
+  addIngredientToList(ingredientId: number, userId: string): Promise<number> {
     return new Promise((resolve, reject) => {
       pool.query('INSERT INTO list_ingredient (googleId, ingredientId) VALUES (?, ?)', [userId, ingredientId], (err: QueryError | null, results: RowDataPacket[]) => {
         if (err) {
@@ -618,7 +618,7 @@ class RecipeService {
     });
   }
 
-  removeIngredientFromList(ingredientId: number, userId: number): Promise<number> {
+  removeIngredientFromList(ingredientId: number, userId: string): Promise<number> {
     return new Promise((resolve, reject) => {
       pool.query('DELETE FROM list_ingredient WHERE googleId = ? AND ingredientId = ?', [userId, ingredientId], (err: QueryError | null, results: RowDataPacket[]) => {
         if (err) {

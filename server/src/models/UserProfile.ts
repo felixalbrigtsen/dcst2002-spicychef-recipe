@@ -3,7 +3,7 @@
  * @alias UserProfile
  */
 export type UserProfile = {
-  id: number;
+  id: string;
   displayName: string;
   emails: { value: string }[];
   photos: { value: string }[];

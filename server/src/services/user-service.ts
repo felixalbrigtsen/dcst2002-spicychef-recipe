@@ -4,7 +4,7 @@ import type { User } from '../models/User';
 import type { UserProfile } from '../models/UserProfile';
 
 export class UserService {
-  getUser(googleId: number): Promise<User> {
+  getUser(googleId: string): Promise<User> {
     return new Promise((resolve, reject) => {
       pool.query(`SELECT * FROM user WHERE user.googleId = ?`, [googleId],
         async (err: QueryError | null | null, results: RowDataPacket[]) => {
@@ -25,7 +25,7 @@ export class UserService {
     });
   }
 
-  getLikes(googleId: number): Promise<number[]> {
+  getLikes(googleId: string): Promise<number[]> {
     return new Promise((resolve, reject) => {
       pool.query(
         'SELECT * FROM user_like WHERE googleId = ?',
@@ -40,7 +40,7 @@ export class UserService {
     });
   }
 
-  getShoppingList(googleId: number): Promise<number[]> {
+  getShoppingList(googleId: string): Promise<number[]> {
     return new Promise((resolve, reject) => {
       pool.query(`SELECT * FROM list_ingredient WHERE googleId = ?`, [googleId], (err: QueryError | null | null, results: RowDataPacket[]) => {
         if (err) {
@@ -106,7 +106,7 @@ export class UserService {
     });
   }
 
-  deleteUser(googleId: number): Promise<void> {
+  deleteUser(googleId: string): Promise<void> {
     return new Promise((resolve, reject) => {
       pool.query(
         'DELETE FROM user WHERE googleId = ?',
@@ -121,7 +121,7 @@ export class UserService {
     });
   }
 
-  isAdmin(googleId: number): Promise<boolean> {
+  isAdmin(googleId: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
       pool.query(
         'SELECT * FROM user WHERE googleId = ?',
