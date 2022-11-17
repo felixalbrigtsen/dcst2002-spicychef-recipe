@@ -66,62 +66,63 @@ export function loginUser(profile: UserProfile) {
 
 describe("Authenticate users", () => {
 
-test("GET /api/auth/profile without login (200 OK)", (done) => {
-  jar.removeAllCookies();
-  axs.get(`/auth/profile`).then((response) => {
-      expect(response.status).toEqual(200);
-      expect(response.data).toEqual(false);
-      done();
+  test("GET /api/auth/profile without login (200 OK)", (done) => {
+    jar.removeAllCookies();
+    axs.get(`/auth/profile`).then((response) => {
+        expect(response.status).toEqual(200);
+        expect(response.data).toEqual(false);
+        done();
+    });
   });
-});
 
-test("LOGIN: Register new test user", (done) => {
-  jar.removeAllCookies();
-  // Test a user that is not registered
-  loginUser(testUserProfiles[0])
-    .then((response) => {
-      expect(response.status).toEqual(200);
-      done();
+  test("LOGIN: Register new test user", (done) => {
+    jar.removeAllCookies();
+    // Test a user that is not registered
+    loginUser(testUserProfiles[0])
+      .then((response) => {
+        expect(response.status).toEqual(200);
+        done();
+    });
   });
-});
 
-test("GET /api/auth/profile after login (200 OK)", (done) => {
-  axs.get("/auth/profile").then((response) => {
-    expect(response.status).toEqual(200);
-    expect(response.data).toEqual(testUsers[0]);
-    done();
-  });
-});
-
-test("LOGIN: Sign in with existing admin user", (done) => {
-  jar.removeAllCookies();
-  // Test an existing user and their admin status
-  loginUser(testUserProfiles[1]).then(() => { 
+  test("GET /api/auth/profile after login (200 OK)", (done) => {
     axs.get("/auth/profile").then((response) => {
       expect(response.status).toEqual(200);
-      expect(response.data).toEqual(testUsers[1]);
+      expect(response.data).toEqual(testUsers[0]);
       done();
     });
   });
-});
 
-test("LOGIN: Failed sign in invalid user (403)", (done) => {
-  jar.removeAllCookies();
-  // Test a user that is not registered, and is not allowed to sign in
-  loginUser(testUserProfiles[2])
-    .then(() => {
-      done.fail("Should not be able to sign in with invalid user");
-    })
-  .catch((err) => {
-    expect(err.response.status).toEqual(403);
-
-    axs.get("/auth/profile").then((response) => {
-      expect(response.status).toEqual(200);
-      expect(response.data).toEqual(false);
-
-      done();
+  test("LOGIN: Sign in with existing admin user", (done) => {
+    jar.removeAllCookies();
+    // Test an existing user and their admin status
+    loginUser(testUserProfiles[1]).then(() => { 
+      axs.get("/auth/profile").then((response) => {
+        expect(response.status).toEqual(200);
+        expect(response.data).toEqual(testUsers[1]);
+        done();
+      });
     });
   });
-});
+
+  test("LOGIN: Failed sign in invalid user (403)", (done) => {
+    jar.removeAllCookies();
+    // Test a user that is not registered, and is not allowed to sign in
+    loginUser(testUserProfiles[2])
+      .then(() => {
+        // This state should not be reached
+        done.fail("Should not be able to sign in with invalid user");
+      })
+    .catch((err) => {
+      expect(err.response.status).toEqual(403);
+
+      axs.get("/auth/profile").then((response) => {
+        expect(response.status).toEqual(200);
+        expect(response.data).toEqual(false);
+
+        done();
+      });
+    });
+  });
 
 });
