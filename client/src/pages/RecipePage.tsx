@@ -44,7 +44,7 @@ function RecipePage() {
         <Tile kind="ancestor">
           <Tile size={4} vertical>
               <Tile kind="parent">
-                <Tile kind="child" renderAs={Notification}>
+                <Tile kind="child" renderAs={Box}>
                   <Media.Item renderAs="figure">
                     {recipe.imageUrl ? <Image size={4} src={recipe.imageUrl} alt={recipe.title} /> : <Image size={4} src="https://bulma.io/images/placeholders/128x128.png" />}
                   </Media.Item>
@@ -92,16 +92,15 @@ function RecipePage() {
                 </Tile>
               </Tile>
               <Tile kind="parent">
-              <Tile kind="child" renderAs={Notification}>
-                {/* TODO: Link these to tag searches */}
+              <Tile kind="child" renderAs={Box}>
                 {recipe.tags?.map((tag) => (
-                  <Button key={tag} color='dark' style={{margin: '2px 2px'}} renderAs='span' onClick={
-                    () => {
-                      // search for this tag
-                      console.log(tag)
-                    }
-                  }>{tag}</Button>
+                  <Button key={tag} color='dark' style={{margin: '2px 2px'}} renderAs='span' 
+                    onClick={ () => {
+                      window.location.href=`/search?tags=${encodeURIComponent(tag)}`;
+                    }}>{tag}
+                  </Button>
                 ))}
+                <Tile></Tile>
                 <Form.Field>
                     <Form.Label>Servings:</Form.Label>
                 <Columns>
@@ -134,26 +133,35 @@ function RecipePage() {
               </Tile>
               </Tile>
               <Tile kind="parent" vertical>
-                <Tile kind="child" renderAs={Notification}>
+                <Tile kind="child" renderAs={Box}>
                 <Heading subtitle size={4}>Ingredients</Heading>
                   { recipe.ingredients?.map((ingredient) => {
                       return (
-                        <Heading key={ingredient.id} subtitle size={6}> <b>{ingredient.ingredientName}</b> : {ingredient.quantity * (actualServings/recipe.servings)} {ingredient.unitName} </Heading>
+                        <Heading key={ingredient.ingredientId} subtitle size={6}> <b>{ingredient.ingredientName}</b> : {ingredient.quantity * (actualServings/recipe.servings)} {ingredient.unitName} </Heading>
                       )
                     })
                   }
-                  <Button 
+                  { user.googleId ?
+                  <Button
                     renderAs={Notification} 
                     aria-label="add to list"
                     onClick={ () => { 
                       recipe.ingredients?.forEach((ingredient) => {
-                        listService.addIngredient(ingredient.id)
+                        listService.addIngredient(ingredient.ingredientId)
                         .then(() => {appendAlert('Ingredients added to shopping list', 'success')})
                         .catch(() => {appendAlert('Failed to add ingredients to shopping list', 'danger')})
                       });
                     }
                   }
-                  >Add Ingredients to List</Button>
+                  >Add Ingredients to List
+                  </Button>
+                  :
+                  <Button
+                    renderAs={Notification}
+                    disabled
+                  >Add Ingredients to List
+                  </Button>
+                  }
                 </Tile>
               </Tile>
             </Tile>
@@ -165,7 +173,8 @@ function RecipePage() {
               <Tile kind="child" renderAs={Notification} className="has-text-centered">
                 <Heading subtitle size={4}>Youtube Video</Heading>
                 { recipe.videoUrl ? 
-                  <iframe width="90%" height="70%" src={recipe.videoUrl.replace("watch?v=", "embed/")} allowFullScreen></iframe> :
+                  <iframe width="90%" height="70%" src={recipe.videoUrl.replace("watch?v=", "embed/")} allowFullScreen></iframe> 
+                  :
                   <Heading subtitle size={6}>No video available</Heading>
                 }
               </Tile>
