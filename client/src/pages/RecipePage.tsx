@@ -94,9 +94,9 @@ function RecipePage() {
               <Tile kind="parent">
               <Tile kind="child" renderAs={Box}>
                 {recipe.tags?.map((tag) => (
-                  <Button key={tag} color='dark' style={{margin: '2px 2px'}} renderAs='span' 
+                  <Button key={tag} color='info' className='is-light' style={{margin: '2px 2px'}} renderAs='span' 
                     onClick={ () => {
-                      window.location.href=`/search?tags=${encodeURIComponent(tag)}`;
+                      window.location.href=`/search/?tags=${encodeURIComponent(tag)}`;
                     }}>{tag}
                   </Button>
                 ))}
@@ -166,11 +166,11 @@ function RecipePage() {
               </Tile>
             </Tile>
             <Tile vertical kind="parent">
-              <Tile kind="child" renderAs={Notification}>
+              <Tile kind="child" renderAs={Box}>
                 <Heading subtitle size={4}>Instructions</Heading>
                 <div style={{whiteSpace: "pre-wrap"}}>{recipe.instructions}</div>
               </Tile>
-              <Tile kind="child" renderAs={Notification} className="has-text-centered">
+              <Tile kind="child" renderAs={Box} className="has-text-centered">
                 <Heading subtitle size={4}>Youtube Video</Heading>
                 { recipe.videoUrl ? 
                   <iframe width="90%" height="70%" src={recipe.videoUrl.replace("watch?v=", "embed/")} allowFullScreen></iframe> 

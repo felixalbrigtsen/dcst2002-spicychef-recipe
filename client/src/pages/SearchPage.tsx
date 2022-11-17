@@ -45,7 +45,6 @@ export default function SearchPage() {
     recipeService.getRecipesShort()
       .then(recipes => {
         setRecipes(recipes);
-        setVisibleRecipes(recipes);
 
         let tags = recipes.map(r => r.tags).flat()
         let uniqueTags = [...new Set(tags)]
@@ -71,10 +70,12 @@ export default function SearchPage() {
       });
   }, []);
 
-  // When the query, tags or ingredients change, update the visible recipes
-  React.useEffect(() => {
-    // Start with all recipes, sieve out the ones that don't match the selected ingredients and tags
+  // Search every time our query, or the available recipes change
+  React.useEffect(searchRecipes, [selectedTags, selectedIngredients, newQuery]);
+  React.useEffect(searchRecipes, [recipes])
 
+  function searchRecipes() {
+    // Start with all recipes matching ingredients
     if (selectedIngredients.length > 0) {
       recipeService.searchRecipeByIngredients(selectedIngredients)
         .then(result => {
@@ -85,9 +86,11 @@ export default function SearchPage() {
           appendAlert("Could not load recipes", "danger");
         });
     } else {
+      // No ingredients are selected, so start with all recipes
       filterVisibleRecipes(recipes);
     }
 
+    // Update the URL corresponding to the current search
     let queries = [];
     if (newQuery) { queries.push(`q=${encodeURIComponent(newQuery)}`) }
     if (selectedIngredients.length > 0) { queries.push(`ingredients=${encodeURIComponent(selectedIngredients.join(','))}`); }
@@ -100,8 +103,9 @@ export default function SearchPage() {
       newLocation = "/search";
     }
 
+    // Change the current URL without a reload
     window.history.replaceState(null, '', newLocation);
-  }, [selectedTags, selectedIngredients, newQuery]);
+  }
   
   function filterVisibleRecipes(passingRecipes: Recipe[]) {
     if (newQuery.length > 0) {

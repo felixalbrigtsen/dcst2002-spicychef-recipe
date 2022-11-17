@@ -47,7 +47,7 @@ export default function IngredientsPage() {
 
   function searchRecipeByIngredients(mode: string) {
     const ingredientIds = selectedIngredients.map(ingredient => ingredient.id);
-    window.location.href=`/search?ingredients=${encodeURIComponent(ingredientIds.join(','))}`;
+    window.location.href=`/search/?ingredients=${encodeURIComponent(ingredientIds.join(','))}`;
   }
 
   return (
@@ -65,15 +65,7 @@ export default function IngredientsPage() {
                 className="is-rounded m-1"
                 onClick={() => {searchRecipeByIngredients("all")}}
               >
-                Search Recipes Including All
-              </Button>
-              <Button
-                color="warning"
-                aria-label='searchAnyIngredients'
-                className="is-rounded m-1"
-                onClick={() => {searchRecipeByIngredients("any")}}
-              >
-                Search Recipes Including Any
+                Find Recipes With These Ingredients
               </Button>
               { user.googleId && 
               <Button
