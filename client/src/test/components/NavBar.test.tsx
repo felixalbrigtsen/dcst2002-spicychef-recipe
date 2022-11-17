@@ -5,54 +5,82 @@ import {
   Routes, 
   Link
 } from 'react-router-dom';
-import { render, screen, waitFor, fireEvent, queryByRole } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent, queryByRole, act } from '@testing-library/react';
 import '@testing-library/jest-dom'
-import type { User } from '../../models/User';
-import userEvent from '@testing-library/user-event';
-import axios from 'axios';
 import NavBar from '../../components/NavBar'
+import renderWithLoginContext, { sampleUsers, logout } from '../LoginProviderMock';
 
-jest.mock('axios');
-import userService from '../../services/user-service'
 
 describe('Test NavBar renders correctly', () => {
     test('Test rendered text', () => {
-        const {getByText} = render(<Router><NavBar/></Router>)
+        act(() => {
+            render(<Router><NavBar/></Router>)
+        });
     
-        expect(getByText('Home')).toBeInTheDocument();
-        expect(getByText('Search')).toBeInTheDocument();
-        expect(getByText('Ingredients')).toBeInTheDocument();
-        expect(getByText('Login')).toBeInTheDocument();
+        expect(screen.getByText('Home')).toBeInTheDocument();
+        expect(screen.getByText('Search')).toBeInTheDocument();
+        expect(screen.getByText('Ingredients')).toBeInTheDocument();
+        expect(screen.getByText('Login')).toBeInTheDocument();
 
         expect(screen.queryByText('Admin')).not.toBeInTheDocument();
         expect(screen.queryByText('Logout')).not.toBeInTheDocument();
+        expect(screen.queryByText('Shopping List')).not.toBeInTheDocument();
         expect(screen.queryByText('My Likes')).not.toBeInTheDocument();
 
     });
-    test('Test links', () => {
-        const {getByText} = render(<Router><NavBar/></Router>)
-    
-        expect(getByText('Home').closest('a')).toHaveAttribute('href', '/')
-        expect(getByText('Search').closest('a')).toHaveAttribute('href', '/search')
-        expect(getByText('Ingredients').closest('a')).toHaveAttribute('href', '/ingredients')
-        expect(getByText('Login').closest('a')).toHaveAttribute('href', '/login')
+    test('User personal links', async () => {
+        act(()=>{
+            renderWithLoginContext(<Router><NavBar/></Router>, sampleUsers.normal);
+        });
+
+        await waitFor(()=>{
+            expect(screen.getByText('Logout')).toBeInTheDocument();
+            expect(screen.getByText('My Likes')).toBeInTheDocument();
+            expect(screen.getByText('Shopping List')).toBeInTheDocument();
+
+            expect(screen.queryByText('Admin')).not.toBeInTheDocument();
+            expect(screen.queryByText('Login')).not.toBeInTheDocument();
+        }) 
     });
-    test.skip('Navbar renders correctly with logged in admin', () => {
-        // given 
-        const user = {
-            googleId: 123,
-            name: 'Admin',
-            email: 'admin@spicychef.com',
-            picture: 'rickroll',
-            isAdmin: true,
-            likes: [1],
-            shoppingList: [1]
-        }
-        // TODO: mock user service somehow
 
-        const result = userService.getSessionUser();
+    test('Admin links', async () => {
+        act(()=>{
+            renderWithLoginContext(<Router><NavBar/></Router>, sampleUsers.admin);
+        });
 
-        expect(axios.get).toHaveBeenCalledWith(`recipe.feal.no/api/auth/profile`);
-        expect(result).toEqual(user);
+        await waitFor(()=>{
+            expect(screen.getByText('Logout')).toBeInTheDocument();
+            expect(screen.getByText('My Likes')).toBeInTheDocument();
+            expect(screen.getByText('Shopping List')).toBeInTheDocument();
+            expect(screen.getByText('Admin')).toBeInTheDocument();
+
+            expect(screen.queryByText('Login')).not.toBeInTheDocument();
+        }) 
+    });
+
+    test('Test links', () => {
+        act(() => {
+            render(<Router><NavBar/></Router>)
+        });
+    
+        expect(screen.getByText('Home').closest('a')).toHaveAttribute('href', '/')
+        expect(screen.getByText('Search').closest('a')).toHaveAttribute('href', '/search')
+        expect(screen.getByText('Ingredients').closest('a')).toHaveAttribute('href', '/ingredients')
+        expect(screen.getByText('Login').closest('a')).toHaveAttribute('href', '/login')
+    });
+
+    test('Test user and admin links', () => {
+        act(()=> {
+            renderWithLoginContext(<Router><NavBar/></Router>, sampleUsers.admin);
+        });
+
+        expect(screen.getByText('My Likes').closest('a')).toHaveAttribute('href', '/likes')
+        expect(screen.getByText('Shopping List').closest('a')).toHaveAttribute('href', '/list')
+        expect(screen.getByText('Admin').closest('a')).toHaveAttribute('href', '/admin')
+
+        act(()=>{
+            fireEvent.click(screen.getByText('Logout'));
+            expect(logout).toHaveBeenCalled();
+        });
     });
 })
