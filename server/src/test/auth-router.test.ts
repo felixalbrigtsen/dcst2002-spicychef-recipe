@@ -1,16 +1,23 @@
 import axios from 'axios';
-import { Recipe } from '../models/Recipe';
-import { Ingredient } from '../models/Ingredient';
+import { wrapper } from 'axios-cookiejar-support';
+import { CookieJar } from 'tough-cookie';
+
 import app, { server } from '..';
-import type { RecipeIngredient } from '../models/RecipeIngredient';
 import userService from '../services/user-service';
 import recipeService from '../services/recipe-service';
 import { initTest } from '../utils/initdb'
-import { User } from '../models/User';
-import { UserProfile } from '../models/UserProfile';
 import { strategy } from '../routers/auth-router';
 
+import type { RecipeIngredient } from '../models/RecipeIngredient';
+import type { Recipe } from '../models/Recipe';
+import type { Ingredient } from '../models/Ingredient';
+import type { User } from '../models/User';
+import type { UserProfile } from '../models/UserProfile';
+
 const PORT = Number(process.env.PORT) || 3000;
+
+const jar = new CookieJar();
+const axs = wrapper(axios.create({ jar }));
 
 const testRecipes: Recipe[] = [
     {"id": 1,"title":"Tunisian Lamb Soup","summary":"Meal from MealDB","instructions":"Add the lamb to a casserole and cook over high heat. When browned, remove from the heat and set aside.", "servings":2,"imageUrl":"https://www.themealdb.com/images/media/meals/t8mn9g1560460231.jpg","videoUrl":"https://www.youtube.com/watch?v=w1qgTQmLRe4","created_at":new Date(),"likes":0,"tags":["Lamb","Soup","Tunisian"],"ingredients": [{"ingredientId":1,"unitId":1,"quantity":1,"ingredientName":"Lamb Mince","unitName":"kg"},{"ingredientId":2,"unitId":2,"quantity":2,"ingredientName":"Garlic","unitName":"cloves minced"}]},
@@ -42,20 +49,9 @@ const testIngredients: Ingredient[] = [
   {"id": 6, "name": testRecipes[2].ingredients[1].ingredientName},
 ]
 
-const testTags: {name: string}[] = [
-  {"name": testRecipes[0].tags[0]},
-  {"name": testRecipes[0].tags[1]},
-  {"name": testRecipes[0].tags[2]},
-  {"name": testRecipes[1].tags[0]},
-  {"name": testRecipes[2].tags[0]},
-]
-
 const testUsers: User[] = [
-    {"googleId": 29130921380099, "name": "testUser", "email": "testuser@example.com", "picture": "image1.jpg", "isadmin": false, "likes": [1,3], "shoppingList": [5,6]},
-    {"googleId": 89327493284798, "name": "testAdmin", "email": "testadmin@example.com", "picture": "image2.jpg", "isadmin": true, "likes": [1], "shoppingList": [1,2]},
-    {"googleId": 98327489327492, "name": "Kari Nordmann", "email": "kari@ntnu.no", "picture": "image3.jpg", "isadmin": false, "likes": [3], "shoppingList": [5,6]},
-    {"googleId": 38274982392238, "name": "Ola Nordmann", "email": "ola@ntnu.no", "picture": "image4.jpg", "isadmin": false, "likes": [3], "shoppingList": [5,6]},
-    {"googleId": 18732984179837, "name": "Jonas Jaeger", "email": "jonas@jaeger.com", "picture": "image5.jpg", "isadmin": false, "likes": [], "shoppingList": [3,4]}
+    {"googleId": "29130921380099" , "name": "testUser", "email": "testuser@example.com", "picture": "image1.jpg", "isadmin": false, "likes": [], "shoppingList": []},
+    {"googleId": "89327493284798" , "name": "testAdmin", "email": "testadmin@example.com", "picture": "image2.jpg", "isadmin": true, "likes": [], "shoppingList": []},
 ]
 
 const testUserProfiles: UserProfile[] = testUsers.map(user =>
@@ -67,16 +63,8 @@ const testUserProfiles: UserProfile[] = testUsers.map(user =>
   } as UserProfile)
 );
 
-const testLikes: {userId: number, recipeId: number}[] = [
-  {"recipeId": 1, "userId": testUsers[0].googleId},
-  {"recipeId": 1, "userId": testUsers[1].googleId},
-  {"recipeId": 3, "userId": testUsers[0].googleId},
-  {"recipeId": 3, "userId": testUsers[2].googleId},
-  {"recipeId": 3, "userId": testUsers[3].googleId},
-]
-
-axios.defaults.baseURL = `http://localhost:${PORT}/api/`;
-axios.defaults.withCredentials = true;
+axs.defaults.baseURL = `http://localhost:${PORT}/api/`;
+axs.defaults.withCredentials = true;
 
 beforeEach((done) => {
   initTest().then(() => {
@@ -114,20 +102,11 @@ beforeEach((done) => {
       .then(() => recipeService.addRecipeIngredient(testRecipes[1].id, 4, 4, testRecipes[1].ingredients[1].quantity))
       .then(() => recipeService.addRecipeIngredient(testRecipes[2].id, 5, 5, testRecipes[2].ingredients[0].quantity))
       .then(() => recipeService.addRecipeIngredient(testRecipes[2].id, 6, 6, testRecipes[2].ingredients[1].quantity))
- 
-      //Create users
-      // .then(() => userService.createUser(testUsers[0]))
-      // .then(() => userService.createUser(testUsers[1]))
-      // .then(() => userService.createUser(testUsers[2]))
-      // .then(() => userService.createUser(testUsers[3]))
-      // .then(() => userService.createUser(testUsers[4]))
 
-      //Add likes
-      // .then(() => recipeService.addLike(testLikes[0].recipeId, testLikes[0].userId))
-      // .then(() => recipeService.addLike(testLikes[1].recipeId, testLikes[1].userId))
-      // .then(() => recipeService.addLike(testLikes[2].recipeId, testLikes[2].userId))
-      // .then(() => recipeService.addLike(testLikes[3].recipeId, testLikes[3].userId))
-      // .then(() => recipeService.addLike(testLikes[4].recipeId, testLikes[4].userId))
+      // Register the admin user
+      .then(() => userService.findOrCreate(testUserProfiles[1]))
+      .then(() => userService.setAdmin(testUserProfiles[1].id, true))
+ 
       .then(() => done())
   })    
 })
@@ -139,21 +118,37 @@ afterAll((done) => {
 });
 
 test("GET /api/auth/profile without login (200 OK)", (done) => {
-    axios.get(`/auth/profile`, {withCredentials: true}).then((response) => {
+    axs.get(`/auth/profile`, {withCredentials: true}).then((response) => {
         expect(response.status).toEqual(200);
         expect(response.data).toEqual(false);
         done();
     });
 });
 
-test("Sign in with test user ", (done) => {
+test("Register new test user", (done) => {
+  // Test a user that is not registered
   strategy.setProfile(testUserProfiles[0]);
 
-  axios.get(`/auth/google/callback`, {withCredentials: true}).then((response) => {
+  axs.get(`/auth/google/callback`, {withCredentials: true}).then((cb_response) => {
+    expect(cb_response.status).toEqual(200);
 
-    axios.get("/auth/profile", {withCredentials: true}).then((response) => {
+    axs.get("/auth/profile", {withCredentials: true}).then((response) => {
       expect(response.status).toEqual(200);
-      console.log(response.data);
+      expect(response.data).toEqual(testUsers[0]);
+      done();
+    });
+  });
+});
+
+test("Sign in with existing admin user", (done) => {
+  // Test an existing user and their admin status
+  strategy.setProfile(testUserProfiles[1]);
+  axs.get(`/auth/google/callback`, {withCredentials: true}).then((cb_response) => {
+    expect(cb_response.status).toEqual(200);
+
+    axs.get("/auth/profile", {withCredentials: true}).then((response) => {
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual(testUsers[1]);
       done();
     });
   });

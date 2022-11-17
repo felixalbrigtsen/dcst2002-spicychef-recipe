@@ -13,7 +13,7 @@ class MockPassportStrategy extends passport.Strategy {
         super();
         this.verify = verify;
         this.profile = {
-            id: -1,
+            id: "-1",
             displayName: "Invalid User",
             emails: [{ value: ""}],
             photos: [{ value: ""}]
@@ -21,14 +21,13 @@ class MockPassportStrategy extends passport.Strategy {
     }
 
     public authenticate(req: express.Request, _options: object) {
-        console.log("AUTHENTICATING");
         // Profile id -1 represents a failed login
         // All other profiles are automatically logged in
-        if (this.profile.id === -1) {
+        if (this.profile.id === "-1") {
             this.fail();
             return;
         }
-        this.verify(req, null, null, this.profile, ()=>{console.log("MockAuth done"); console.log(req.session.user); req.session.user && this.success(req.session.user);});
+        this.verify(req, null, null, this.profile, ()=>{ req.session.user && this.success(req.session.user); });
     }
 
     // Use this method in tests to set the profile id to a valid user

@@ -92,7 +92,7 @@ export class UserService {
     });
   }
 
-  setAdmin(googleId: number, isAdmin: boolean): Promise<void> {
+  setAdmin(googleId: string, isAdmin: boolean): Promise<void> {
     return new Promise((resolve, reject) => {
       pool.query(
         'UPDATE user SET isadmin = ? WHERE googleId = ?',
