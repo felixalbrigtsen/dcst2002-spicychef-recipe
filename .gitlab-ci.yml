@@ -58,7 +58,9 @@ server_jest:
   script:
     - cd server/
     - echo "$CI_SRV_TEST_ENV" > .env.test
-    - export $(cat .env | xargs)
+    - export $(cat .env.test | xargs)
+    - apt-get update
+    - apt-get -y upgrade
     - apt-get -y install default-mysql-server
     - service mariadb start
     - mysqladmin create $MYSQL_DATABASE
