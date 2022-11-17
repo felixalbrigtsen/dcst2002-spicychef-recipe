@@ -351,14 +351,14 @@ router.delete('/list/:ingredientId', requireLogin , async (req, res) => {
 
 
 /**
- * @name POST(/recipes/:recipeId)
+ * @name PUT(/recipes/:recipeId)
  * @function
  * @memberof module:recipe-router
  * @param {number} recipeId - The ID of the recipe to edit
  * 
  * Takes the recipe with the given ID and updates it with the data in the request body
  */
-router.post('/recipes/:recipeId', requireAdmin , async (req, res) => {
+router.put('/recipes/:recipeId', requireAdmin , async (req, res) => {
   let recipeId = parseInt(req.params.recipeId);
   if (isNaN(recipeId)) {
     res.status(400).send('Bad request');

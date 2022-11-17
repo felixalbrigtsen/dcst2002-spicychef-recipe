@@ -1,7 +1,7 @@
-import axios from 'axios';
-import { Ingredient } from '../models/Ingredient';
-import ingredientService from './ingredient-service';
-import type { User } from '../models/User';
+import axios from "axios";
+import { Ingredient } from "../models/Ingredient";
+import ingredientService from "./ingredient-service";
+import type { User } from "../models/User";
 
 /**
  * @module
@@ -11,7 +11,6 @@ import type { User } from '../models/User';
  */
 
 class ListService {
-
   /**
    * @function
    * @name getIngredients
@@ -22,15 +21,16 @@ class ListService {
 
   getIngredients(): Promise<[Ingredient][]> {
     return new Promise((resolve, reject) => {
-      axios.get(process.env.REACT_APP_API_URL + '/auth/profile')
-      .then((response) => {
-        resolve(response.data);
-      })
-      .catch((error) => {
-        reject(error);
-      });
+      axios
+        .get(process.env.REACT_APP_API_URL + "/auth/profile")
+        .then((response) => {
+          resolve(response.data);
+        })
+        .catch((error) => {
+          reject(error);
+        });
     });
-  };
+  }
 
   /**
    * @function
@@ -43,7 +43,8 @@ class ListService {
 
   addIngredient(id: number): Promise<number> {
     return new Promise((resolve, reject) => {
-      axios.post(process.env.REACT_APP_API_URL + `/list/${id}`)
+      axios
+        .post(process.env.REACT_APP_API_URL + `/list/${id}`)
         .then((response) => {
           resolve(response.status);
         })
@@ -64,7 +65,8 @@ class ListService {
 
   removeIngredient(id: number): Promise<number> {
     return new Promise((resolve, reject) => {
-      axios.delete(process.env.REACT_APP_API_URL +  `/list/${id}`)
+      axios
+        .delete(process.env.REACT_APP_API_URL + `/list/${id}`)
         .then((response) => {
           resolve(response.status);
         })
@@ -93,17 +95,20 @@ class ListService {
    * @description
    * This function will get the shopping list for the current user
    */
-  
-  getShoppingListItems(user:User): Promise<{id: number, name: string}[]> {
+
+  getShoppingListItems(user: User): Promise<{ id: number; name: string }[]> {
     return new Promise(async (resolve, reject) => {
       const ingredients = await ingredientService.getIngredients();
 
       const shoppingList = ingredients.filter((ingredient) => {
         return user.shoppingList.includes(ingredient.id);
       });
-      resolve(shoppingList.map(ingredient => {return {id: ingredient.id, name: ingredient.name}}));
+      resolve(
+        shoppingList.map((ingredient) => {
+          return { id: ingredient.id, name: ingredient.name };
+        })
+      );
     });
-    
   }
 }
 
