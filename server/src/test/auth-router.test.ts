@@ -52,6 +52,7 @@ const testIngredients: Ingredient[] = [
 const testUsers: User[] = [
     {"googleId": "29130921380099" , "name": "testUser", "email": "testuser@example.com", "picture": "image1.jpg", "isadmin": false, "likes": [], "shoppingList": []},
     {"googleId": "89327493284798" , "name": "testAdmin", "email": "testadmin@example.com", "picture": "image2.jpg", "isadmin": true, "likes": [], "shoppingList": []},
+    {"googleId": "-1" , "name": "invalid user", "email": "", "picture": "", "isadmin": false, "likes": [], "shoppingList": []}, // Automatically fails login because of the special googleId
 ]
 
 const testUserProfiles: UserProfile[] = testUsers.map(user =>
@@ -72,13 +73,6 @@ beforeEach((done) => {
       .then(() => recipeService.addRecipe(testRecipes[1].title, testRecipes[1].summary, testRecipes[1].instructions, testRecipes[1].servings, testRecipes[1].imageUrl, testRecipes[1].videoUrl))
       .then(() => recipeService.addRecipe(testRecipes[2].title, testRecipes[2].summary, testRecipes[2].instructions, testRecipes[2].servings, testRecipes[2].imageUrl, testRecipes[2].videoUrl))
       
-      //Add recipe tags
-      .then(() => recipeService.addRecipeTag(1,testTags[0].name))
-      .then(() => recipeService.addRecipeTag(1,testTags[1].name))
-      .then(() => recipeService.addRecipeTag(1,testTags[2].name))
-      .then(() => recipeService.addRecipeTag(2,testTags[3].name))
-      .then(() => recipeService.addRecipeTag(3,testTags[4].name))
-
       //Add ingredients
       .then(() => recipeService.addIngredient(testRecipeIngredients[0].ingredientName))
       .then(() => recipeService.addIngredient(testRecipeIngredients[1].ingredientName))
@@ -117,22 +111,34 @@ afterAll((done) => {
   done()
 });
 
+function loginUser(profile: UserProfile) {
+  // Signs a user in, using the given profile
+  return new Promise((resolve, reject) => {
+    strategy.setProfile(profile);
+    axs.get('/auth/google/callback')
+      .then((res) => {
+        resolve(res)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
+}
+
 test("GET /api/auth/profile without login (200 OK)", (done) => {
-    axs.get(`/auth/profile`, {withCredentials: true}).then((response) => {
-        expect(response.status).toEqual(200);
-        expect(response.data).toEqual(false);
-        done();
-    });
+  jar.removeAllCookies();
+  axs.get(`/auth/profile`).then((response) => {
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual(false);
+      done();
+  });
 });
 
 test("Register new test user", (done) => {
+  jar.removeAllCookies();
   // Test a user that is not registered
-  strategy.setProfile(testUserProfiles[0]);
-
-  axs.get(`/auth/google/callback`, {withCredentials: true}).then((cb_response) => {
-    expect(cb_response.status).toEqual(200);
-
-    axs.get("/auth/profile", {withCredentials: true}).then((response) => {
+  loginUser(testUserProfiles[0]).then(() => {
+    axs.get("/auth/profile").then((response) => {
       expect(response.status).toEqual(200);
       expect(response.data).toEqual(testUsers[0]);
       done();
@@ -141,14 +147,31 @@ test("Register new test user", (done) => {
 });
 
 test("Sign in with existing admin user", (done) => {
+  jar.removeAllCookies();
   // Test an existing user and their admin status
-  strategy.setProfile(testUserProfiles[1]);
-  axs.get(`/auth/google/callback`, {withCredentials: true}).then((cb_response) => {
-    expect(cb_response.status).toEqual(200);
-
-    axs.get("/auth/profile", {withCredentials: true}).then((response) => {
+  loginUser(testUserProfiles[1]).then(() => { 
+    axs.get("/auth/profile").then((response) => {
       expect(response.status).toEqual(200);
       expect(response.data).toEqual(testUsers[1]);
+      done();
+    });
+  });
+});
+
+test("Failed sign in, invalid google user (403)", (done) => {
+  jar.removeAllCookies();
+  // Test a user that is not registered, and is not allowed to sign in
+  loginUser(testUserProfiles[2])
+    .then(() => {
+      done.fail("Should not be able to sign in with invalid user");
+    })
+  .catch((err) => {
+    expect(err.response.status).toEqual(403);
+
+    axs.get("/auth/profile").then((response) => {
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual(false);
+
       done();
     });
   });

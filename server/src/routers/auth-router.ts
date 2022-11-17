@@ -49,7 +49,7 @@ export function enableSession(app: express.Application) {
     cookie: {
       secure: (process.env.SESSION_SECURE_COOKIE == 'true'),
       sameSite: 'strict',
-      httpOnly: (process.env.NODE_ENV !== 'test'),
+      httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
     }
   }));
