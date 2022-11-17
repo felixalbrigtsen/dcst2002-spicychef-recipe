@@ -9,6 +9,7 @@ export const Alerts = () => {
       <Container>
       {alerts.map((alert, index) => (
           <Notification
+            style={{animation: "fade 0.5s", WebkitAnimation: "fade 0.5s"}}
             key={index}
             color={alert.type}
             onClick={() => {
