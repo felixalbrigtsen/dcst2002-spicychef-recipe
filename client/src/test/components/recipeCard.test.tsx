@@ -32,7 +32,7 @@ describe('Test RecipeCard renders correctly', () => {
         const {getByRole} = render(<Router><RecipeCard recipe={Recipe}/></Router>)
 
         expect(getByRole('button')).toBeInTheDocument();
-        expect(getByRole('button')).toHaveTextContent('Like')
+        expect(getByRole('button')).toHaveTextContent(`${Recipe.likes}`)
 
         fireEvent.click(getByRole('button'));
         // expect(getByRole('button')).toHaveTextContent('Liked')

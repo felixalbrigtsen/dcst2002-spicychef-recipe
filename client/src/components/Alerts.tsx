@@ -1,12 +1,13 @@
 import React from 'react';
 import { Button, Container, Notification } from 'react-bulma-components'
 import { useAlert } from '../hooks/Alert';
+import '../styles/alert.css'
 
 
 export const Alerts = () => {
   const { alerts, removeAlert } = useAlert();
   return ( 
-      <Container>
+      <Container className="alert-container">
       {alerts.map((alert, index) => (
           <Notification
             key={index}
@@ -14,7 +15,7 @@ export const Alerts = () => {
             onClick={() => {
               removeAlert(index);
             }}
-            className="mt-2"
+            className="alert-animation"
           >
             {alert.message}
           <Button remove />

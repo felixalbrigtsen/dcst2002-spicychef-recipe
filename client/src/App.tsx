@@ -54,7 +54,6 @@ function App() {
       </Routes>
     </Router>
     <style>{` html { background-color: #f5f5f5; } `}</style>
-    {/* <Footer /> */}
   </>
   );
 }
