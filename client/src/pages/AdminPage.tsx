@@ -25,11 +25,13 @@ import { useAlert } from "../hooks/Alert";
 function AdminView() {
   let [recipeList, setRecipeList] = React.useState<Recipe[]>([]);
 
-  React.useEffect(() => {
+  const updateRecipeList = () => {
     recipeService.getRecipesShort().then((data) => {
       setRecipeList(data);
     });
-  }, []);
+  }
+
+  React.useEffect(updateRecipeList, []);
 
   const { user } = useLogin();
   const { appendAlert } = useAlert();
@@ -46,7 +48,7 @@ function AdminView() {
     console.log("Deleting recipe with id: " + id);
     recipeService
       .deleteRecipe(id)
-      .then(() => appendAlert("Recipe deleted successfully", "success"))
+      .then(() => { appendAlert("Recipe deleted successfully", "success"); updateRecipeList(); })
       .catch(() => appendAlert("Recipe deletion failed", "danger"));
     setConfirmationState(!confirmationState);
     setConfirmItem(-1);

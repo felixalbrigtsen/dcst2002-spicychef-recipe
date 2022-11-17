@@ -15,6 +15,8 @@ import recipeService from "../services/recipe-service";
 import ingredientService from "../services/ingredient-service";
 import { Ingredient } from "../models/Ingredient";
 
+import { useAlert } from "../hooks/Alert";
+
 interface RecipeFormProps {
   recipe: Recipe;
 }
@@ -29,25 +31,27 @@ const animatedComponents = makeAnimated();
 
 function RecipeForm(props: RecipeFormProps) {
   // Values used in multiselect and createable select components
-  let [ingredientOptions, setIngredientOptions] = useState<{ value: number; label: string }[]>([]);
-  let [tagOptions, setTagOptions] = useState<{ value: string; label: string }[]>([]);
-  let [defaultTags, setDefaultTags] = useState<{ value: string; label: string }[]>([]);
+  const [ingredientOptions, setIngredientOptions] = useState<{ value: number; label: string }[]>([]);
+  const [tagOptions, setTagOptions] = useState<{ value: string; label: string }[]>([]);
+  const [defaultTags, setDefaultTags] = useState<{ value: string; label: string }[]>([]);
 
   // Values used in normal input field and textarea, as well as the recipe object
-  let [recipe, setRecipe] = React.useState<Recipe>(props.recipe);
-  let [title, setTitle] = React.useState<string>(props.recipe.title);
-  let [summary, setSummary] = React.useState<string>(props.recipe.summary);
-  let [servings, setServings] = React.useState<number>(props.recipe.servings);
-  let [instructions, setInstructions] = React.useState<string>(props.recipe.instructions);
-  let [imageLink, setImageLink] = React.useState<string>(
+  const [recipe, setRecipe] = React.useState<Recipe>(props.recipe);
+  const [title, setTitle] = React.useState<string>(props.recipe.title);
+  const [summary, setSummary] = React.useState<string>(props.recipe.summary);
+  const [servings, setServings] = React.useState<number>(props.recipe.servings);
+  const [instructions, setInstructions] = React.useState<string>(props.recipe.instructions);
+  const [imageLink, setImageLink] = React.useState<string>(
     props.recipe.imageUrl ? props.recipe.imageUrl : ""
   );
-  let [videoLink, setVideoLink] = React.useState<string>(
+  const [videoLink, setVideoLink] = React.useState<string>(
     props.recipe.videoUrl ? props.recipe.videoUrl : ""
   );
-  let [stdIngredient, setStdIngredient] = React.useState<RecipeIngredient[]>([]);
-  let [ingredients, setIngredients] = React.useState<IngredientItem[]>([]);
-  let [tags, setTags] = React.useState<string[]>([]);
+  const [stdIngredient, setStdIngredient] = React.useState<RecipeIngredient[]>([]);
+  const [ingredients, setIngredients] = React.useState<IngredientItem[]>([]);
+  const [tags, setTags] = React.useState<string[]>([]);
+
+  const { appendAlert } = useAlert();
 
   // Setting all the values
   useEffect(() => {
@@ -84,9 +88,9 @@ function RecipeForm(props: RecipeFormProps) {
 
   useEffect(() => {
     recipeService.getRecipesShort().then((res) => {
-      let tags = res.map((r) => r.tags).flat();
-      let uniqueTags = [...new Set(tags)];
-      let tagObjects = uniqueTags.map((t) => {
+      const tags = res.map((r) => r.tags).flat();
+      const uniqueTags = [...new Set(tags)];
+      const tagObjects = uniqueTags.map((t) => {
         return { value: t, label: t };
       });
       setTagOptions(tagObjects);
@@ -95,7 +99,7 @@ function RecipeForm(props: RecipeFormProps) {
 
   // set tags to be options for react-select
   useEffect(() => {
-    let tagObjects = tags.map((t) => {
+    const tagObjects = tags.map((t) => {
       return { value: t, label: t };
     });
     setDefaultTags(tagObjects);
@@ -103,30 +107,32 @@ function RecipeForm(props: RecipeFormProps) {
 
   // Setting the recipe object on submit
   function handleRecipeSubmit() {
-    let newRecipe = {
-      id: 0,
-      title: "",
-      summary: "",
-      servings: 0,
-      instructions: "",
-      imageUrl: "",
-      videoUrl: "",
-      ingredients: [{ ingredientName: "", quantity: 0, unitName: "" }],
-      tags: [""],
+    const newRecipe = {
+      id: props.recipe.id,
+      title: title,
+      summary: summary,
+      servings: servings,
+      instructions: instructions,
+      imageUrl: imageLink,
+      videoUrl: videoLink,
+      ingredients: ingredients,
+      tags: tags,
     };
-    newRecipe.id = props.recipe.id || -1;
-    newRecipe.title = title;
-    newRecipe.summary = summary;
-    newRecipe.servings = servings;
-    newRecipe.instructions = instructions;
-    newRecipe.imageUrl = imageLink;
-    newRecipe.videoUrl = videoLink;
-    newRecipe.ingredients = ingredients;
-    newRecipe.tags = tags;
     console.log(newRecipe);
-    props.recipe.id !== -1
-      ? recipeService.updateRecipe(newRecipe)
-      : recipeService.createRecipe(newRecipe);
+    const submitMethod = (props.recipe.id === -1
+      ? recipeService.createRecipe
+      : recipeService.updateRecipe);
+
+    submitMethod(newRecipe)
+      .then((res) => {
+        console.log(res);
+        appendAlert("primary", "Recipe saved successfully");
+        window.location.assign("/admin");
+      })
+      .catch((err) => {
+        console.log(err);
+        appendAlert("danger", "Something went wrong");
+      });
   }
 
   // Updating an ingredient in the ingredients array
@@ -165,7 +171,7 @@ function RecipeForm(props: RecipeFormProps) {
               <Form.Input
                 placeholder="Recipe Title"
                 aria-label={"Title"}
-                defaultValue={title}
+                value={title}
                 onChange={(e) => {
                   setTitle(e.currentTarget.value);
                 }}
@@ -181,7 +187,10 @@ function RecipeForm(props: RecipeFormProps) {
               <Form.Textarea
                 placeholder="Recipe Summary"
                 aria-label={"Summary"}
-                defaultValue={summary}
+                value={summary}
+                onChange={(e) => {
+                  setSummary(e.currentTarget.value);
+                }}
               />
             </Form.Control>
           </Tile>
@@ -195,7 +204,7 @@ function RecipeForm(props: RecipeFormProps) {
                 type="number"
                 placeholder="2"
                 aria-label={"Servings"}
-                defaultValue={servings ? servings : 2}
+                value={servings}
                 onChange={(e) => {
                   setServings(Number(e.currentTarget.value));
                 }}
