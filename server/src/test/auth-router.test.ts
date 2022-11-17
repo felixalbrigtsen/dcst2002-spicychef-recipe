@@ -76,6 +76,7 @@ const testLikes: {userId: number, recipeId: number}[] = [
 ]
 
 axios.defaults.baseURL = `http://localhost:${PORT}/api/`;
+axios.defaults.withCredentials = true;
 
 beforeEach((done) => {
   initTest().then(() => {
@@ -138,9 +139,9 @@ afterAll((done) => {
 });
 
 test("GET /api/auth/profile without login (200 OK)", (done) => {
-    axios.get(`/auth/profile`).then((response) => {
-        expect(response.status).toEqual(200)
-        expect(response.data).toEqual(false)
+    axios.get(`/auth/profile`, {withCredentials: true}).then((response) => {
+        expect(response.status).toEqual(200);
+        expect(response.data).toEqual(false);
         done();
     });
 });
@@ -148,18 +149,12 @@ test("GET /api/auth/profile without login (200 OK)", (done) => {
 test("Sign in with test user ", (done) => {
   strategy.setProfile(testUserProfiles[0]);
 
-  axios.get(`/auth/google/callback`).then((response) => {
-    console.log(response);
-    expect(response.status).toEqual(200)
-    expect(response.data).toEqual(true)
+  axios.get(`/auth/google/callback`, {withCredentials: true}).then((response) => {
 
-    axios.get(`/auth/profile`).then((response) => {
-      expect(response.status).toEqual(200)
-      expect(response.data).toEqual(testUsers[0])
-
+    axios.get("/auth/profile", {withCredentials: true}).then((response) => {
+      expect(response.status).toEqual(200);
+      console.log(response.data);
       done();
     });
   });
-
-  
 });

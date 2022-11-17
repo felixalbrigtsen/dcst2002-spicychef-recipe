@@ -88,20 +88,6 @@ authRouter.get('/google/callback',
   }
 );
 
-authRouter.post('/mock',
-  passport.authenticate('mock', {
-    failureRedirect: '/api/auth/google/failure'
-    }), (req, res) => {
-      req.session.user = req.body.user as User;
-      if (req.session.user.email) {
-        console.log("User logged in: " + req.session.user.email);
-      } else {
-        console.log("Invalid user logged in");
-      }
-      res.redirect('/');
-    }
-);
-
 authRouter.get('/google/failure', (req, res) => {
   res.status(403).send('Failed to log in');
 });

@@ -19,8 +19,11 @@ console.log("Serving client from '" + clientBuildPath + "'");
 console.log("Loaded Google Client ID: " + process.env.GOOGLE_OAUTH_ID);
 
 const app = express();
-// Enable logging to console
-app.use(morgan('dev'));
+
+if (process.env.NODE_ENV !== "test") {
+  // Log requests in the console
+  app.use(morgan('dev'));
+}
 
 enableSession(app);
 enablePassport(app);

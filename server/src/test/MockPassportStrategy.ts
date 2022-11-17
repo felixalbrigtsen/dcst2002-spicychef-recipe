@@ -1,6 +1,7 @@
 import passport from 'passport';
 import express from 'express';
 import { UserProfile } from '../models/UserProfile';
+import { User } from '../models/User';
 
 class MockPassportStrategy extends passport.Strategy {
     profile: UserProfile;
@@ -24,9 +25,10 @@ class MockPassportStrategy extends passport.Strategy {
         // Profile id -1 represents a failed login
         // All other profiles are automatically logged in
         if (this.profile.id === -1) {
+            this.fail();
             return;
         }
-        this.verify(req, null, null, this.profile, ()=>{console.log("MockAuth done"); console.log(req.session.user)});
+        this.verify(req, null, null, this.profile, ()=>{console.log("MockAuth done"); console.log(req.session.user); req.session.user && this.success(req.session.user);});
     }
 
     // Use this method in tests to set the profile id to a valid user
