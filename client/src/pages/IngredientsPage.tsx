@@ -47,7 +47,8 @@ export default function IngredientsPage() {
 
   function searchRecipeByIngredients(mode: string) {
     const ingredientIds = selectedIngredients.map(ingredient => ingredient.id);
-    window.location.href=`/search/?ingredients=${encodeURIComponent(ingredientIds.join(','))}`;
+    // window.location.href=`/search/?ingredients=${encodeURIComponent(ingredientIds.join(','))}`;
+    window.location.assign(`/search/?ingredients=${encodeURIComponent(ingredientIds.join(','))}`);
   }
 
   return (
@@ -104,7 +105,7 @@ export default function IngredientsPage() {
                           className='is-centered'
                           checked={selectedIngredients.includes(ingredient)}
                           onChange={() => {handleIngredientClick(ingredient);}}
-                          aria-label={`Already own ${ingredient.name}`}
+                          aria-label={`Select ${ingredient.name}`}
                           aria-required="true"
                         >
                           
