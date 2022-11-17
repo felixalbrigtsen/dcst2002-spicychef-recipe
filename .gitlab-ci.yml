@@ -103,6 +103,8 @@ server_typescript:
   stage: test
   dependencies:
     - server_install
+  needs:
+    - server_install
   script:
     - cd server
     - ./node_modules/.bin/tsc --noEmit --skipLibCheck
