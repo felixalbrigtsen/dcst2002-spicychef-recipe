@@ -1,4 +1,4 @@
-image: node:16
+image: node:16-bullseye
 
 stages:
   - build
@@ -49,6 +49,30 @@ client_typescript:
   only:
     changes:
       - client/*
+
+server_jest:
+  stage: test
+  coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
+  dependencies:
+    - server_install
+  script:
+    - cd server/
+    - echo "$CI_SRV_TEST_ENV" > .env.test
+    - export $(cat .env | xargs)
+    - apt-get -y install default-mysql-server
+    - service mariadb start
+    - mysqladmin create $MYSQL_DATABASE
+    - echo "CREATE TABLE Tasks (id INT NOT NULL AUTO_INCREMENT, title TEXT NOT NULL, description TEXT, done BOOL DEFAULT false, PRIMARY KEY(id));" | mysql $MYSQL_DATABASE
+    - echo "CREATE USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD'; GRANT ALL PRIVILEGES ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%'; FLUSH PRIVILEGES;" | mysql
+    - npm run test:ci
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - ./server/junit.xml
+  only:
+    changes:
+      - server/*
 
 server_install:
   stage: build
