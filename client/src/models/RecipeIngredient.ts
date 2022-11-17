@@ -13,7 +13,7 @@ export type RecipeIngredient = {
    */
   quantity: number;
   /**
-   * Unit ID from the table recipe_ingredient 
+   * Unit ID from the table recipe_ingredient
    */
   unitId: number;
   /**
@@ -21,4 +21,3 @@ export type RecipeIngredient = {
    */
   unitName: string;
 };
-

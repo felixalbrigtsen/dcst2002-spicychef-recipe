@@ -1,5 +1,5 @@
-import axios from 'axios';
-import type { User } from '../models/User';
+import axios from "axios";
+import type { User } from "../models/User";
 
 /**
  * @module
@@ -19,7 +19,8 @@ class UserService {
    */
   getUsers(): Promise<User[]> {
     return new Promise((resolve, reject) => {
-      axios.get(process.env.REACT_APP_API_URL + '/users')
+      axios
+        .get(process.env.REACT_APP_API_URL + "/users")
         .then((response) => {
           resolve(response.data);
         })
@@ -39,7 +40,8 @@ class UserService {
    */
   getSessionUser(): Promise<User> {
     return new Promise((resolve, reject) => {
-      axios.get(process.env.REACT_APP_API_URL + '/auth/profile')
+      axios
+        .get(process.env.REACT_APP_API_URL + "/auth/profile")
         .then((response) => {
           resolve(response.data);
         })
@@ -52,5 +54,3 @@ class UserService {
 
 const userService = new UserService();
 export default userService;
-
-

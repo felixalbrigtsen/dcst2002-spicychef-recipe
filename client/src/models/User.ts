@@ -7,4 +7,3 @@ export type User = {
   likes: number[];
   shoppingList: number[];
 };
-
