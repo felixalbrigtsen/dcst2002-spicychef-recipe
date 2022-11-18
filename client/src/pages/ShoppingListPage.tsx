@@ -3,6 +3,7 @@ import listService from "../services/list-service";
 import recipeService from "../services/recipe-service";
 import ingredientService from "../services/ingredient-service";
 import { Ingredient } from "../models/Ingredient";
+import NotAuthorized from "../components/NotAuthorized";
 
 import { MdDeleteForever } from "react-icons/md";
 import {
@@ -34,6 +35,10 @@ export default function ShoppingListPage() {
     });
   }
   useEffect(updateListItems, [user]);
+
+  if(!user.googleId) {
+    return <Container className="mt-2"><NotAuthorized color={"info"} /></Container>;
+  }
 
   return (
     <>
