@@ -49,13 +49,6 @@ const testTags: {name: string}[] = [
   {"name": testRecipes[2].tags[0]},
 ]
 
-const testLikes: {userId: number, recipeId: number}[] = [
-  {"recipeId": 2, "userId": 1293912030989},
-  {"recipeId": 2, "userId": 8912830912312},
-  {"recipeId": 3, "userId": 2091380123092},
-  {"recipeId": 3, "userId": 2190301293890},
-  {"recipeId": 3, "userId": 3248329048093},
-]
 
 axios.defaults.baseURL = `http://localhost:${PORT}/api/`;
 
