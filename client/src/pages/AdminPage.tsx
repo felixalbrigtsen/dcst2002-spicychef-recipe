@@ -121,8 +121,8 @@ function AdminView() {
                 </Link>
                 <br />
                 <Form.Label>Search</Form.Label>
-                  <Form.Control className="has-icons-right">
-                  <Form.Input style={{width: "60%"}} placeholder="Recipe" />
+                  <Form.Control style={{width: "60%", margin: "auto"}}className="has-icons-right" >
+                  <Form.Input placeholder="Recipe" />
                   <span className="icon is-small is-right">
                     <MdSearch size={24}/>
                   </span>
