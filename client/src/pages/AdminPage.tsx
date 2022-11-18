@@ -94,18 +94,12 @@ function AdminView() {
             kind="parent"
             className="is-vertical"
           >
-            <Tile
-              kind="child"
-              renderAs={Notification}
-              className="has-text-centered is-12"
-            >
-              <Heading> Recipe Overview </Heading>
-            </Tile>
-            <Tile kind="parent">
+            <Tile kind="parent" className="is-justify-content-space-evenly">
               <Tile
                 kind="child"
-                size={6}
+                size={8}
                 className="has-text-centered"
+                renderAs={Box}
               >
                 <Link to="/create">
                   <Button
@@ -119,23 +113,19 @@ function AdminView() {
                     </span>
                   </Button>
                 </Link>
-                <br />
-                <Form.Label>Search</Form.Label>
-                  <Form.Control style={{width: "60%", margin: "auto"}}className="has-icons-right" >
-                  <Form.Input placeholder="Recipe" />
-                  <span className="icon is-small is-right">
-                    <MdSearch size={24}/>
-                  </span>
-                </Form.Control>
-              </Tile>
-              <Tile
-                kind="child"
-                size={6}
-                className="has-text-centered"
-              >
+                <hr style={{backgroundColor:"lightslategray", borderColor: "lightslategray", color: "lightslategray", width: "85%", margin: "1em auto"}} />
+                <Tile className="is-justify-content-space-evenly">
+                  <Form.Control>
+                  <Form.Input  
+                    aria-label="mealdb-id"
+                    placeholder="MealDB ID" 
+                    type="number"
+                    onInput={(e) => setMealDBRecipe(parseInt((e.target as HTMLInputElement).value))}
+                  ></Form.Input>
+                  </Form.Control>
+                  <br />
                   <Button
                     color="link"
-                    style={{ width: "80%" }}
                     aria-label="ImportRecipe"
                     onClick={() => {
                       recipeService.importRecipe(mealDBRecipe)
@@ -143,21 +133,12 @@ function AdminView() {
                       .catch(() => appendAlert("Recipe import failed", "danger"));
                     }}
                   >
-                    <span>Import Recipe</span>
+                    <span>Import From MealDB</span>
                     <span className="icon">
                       <BiImport />
                     </span>
                   </Button>
-                  <br />
-                  <Form.Label>MealDB-ID</Form.Label>
-                  <Form.Control>
-                  <Form.Input 
-                    style={{width: "60%"}} 
-                    placeholder="Meal ID" 
-                    type="number"
-                    onInput={(e) => setMealDBRecipe(parseInt((e.target as HTMLInputElement).value))}
-                  ></Form.Input>
-                  </Form.Control>
+                  </Tile>
               </Tile>
             </Tile>
             <br />
