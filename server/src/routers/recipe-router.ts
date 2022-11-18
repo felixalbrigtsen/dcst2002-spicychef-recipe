@@ -588,9 +588,6 @@ router.post('/importrecipe/:mealdbid', requireAdmin , async (req, res) => {
   }
 
   mealdbService.getMeal(mealId).then(async (meal) => {
-    if (!meal) {
-      return res.status(404).send('Recipe not found');
-    }
     recipeService.saveMeal(meal).then(async (insertedId) => {
       res.send("OK");
     })
@@ -598,6 +595,10 @@ router.post('/importrecipe/:mealdbid', requireAdmin , async (req, res) => {
       handleServerError(res, err);
     });
   }).catch((err) => {
+    console.log(err);
+    if (err === "Meal not found") {
+      return res.status(404).send('Meal not found');
+    }
     handleServerError(res, err);
   });
 });
