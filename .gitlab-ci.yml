@@ -128,7 +128,6 @@ deploy_production:
     - server_jest
     - api_docs
   script:
-    - export CI=false
     - apk add --no-cache rsync openssh
     - mkdir -p ~/.ssh
     - echo "$CI_SSH_KEY" > ~/.ssh/id_rsa
