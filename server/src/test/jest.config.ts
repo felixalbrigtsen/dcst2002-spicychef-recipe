@@ -11,9 +11,21 @@ const config : Config.InitialOptions = {
   setupFiles: [
     "./test/dotenv-config"
   ],
-
   maxWorkers: 1,
   collectCoverage: true,
+  collectCoverageFrom: [
+    "**/*.{js,ts}",
+    "!test/**",
+    "!coverage/**",
+  ],
+  // coverageThreshold: {
+  //   global: {
+  //     branches: 70,
+  //     functions: 80,
+  //     lines: 70,
+  //     statements: 70
+  //   }
+  // },
 }
 
 export default config
