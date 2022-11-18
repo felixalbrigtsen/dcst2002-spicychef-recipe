@@ -137,7 +137,7 @@ describe('Fetch recipes (GET)', () => {
       });
   });
 
-  test('Fetch task (404 Not Found)', (done) => {
+  test('Fetch recipe that doesnt exist (404 Not Found)', (done) => {
     axios
       .get('/recipes/4')
       .then((_response) => done(new Error()))
