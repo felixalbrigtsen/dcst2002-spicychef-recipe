@@ -77,7 +77,7 @@ describe("Like recipes", () => {
         });
     })
 
-    test("Like recipe that doesnt exist (400)", (done) =>{
+    test("Like recipe that doesnt exist (404)", (done) =>{
         axs.post('/likes/8').then(() => done(new Error()))
         .then((_response) => done(new Error()))
         .catch((error) => {
@@ -108,7 +108,7 @@ describe("Delete likes", () => {
         });
     })
 
-    test("Like recipe that doesnt exist (400)", (done) =>{
+    test("Like recipe that doesnt exist (404)", (done) =>{
         axs.delete('/likes/8').then(() => done(new Error()))
         .then((_response) => done(new Error()))
         .catch((error) => {
@@ -139,7 +139,7 @@ describe("Add ingredients to shopping list", () => {
         });
     })
 
-    test("Delete list item that doesnt exist (400)", (done) =>{
+    test("Delete list item that doesnt exist (404)", (done) =>{
         axs.post('/list/8').then(() => done(new Error()))
         .then((_response) => done(new Error()))
         .catch((error) => {
@@ -170,7 +170,7 @@ describe("Delete ingredients shopping list", () => {
         });
     })
 
-    test("Delete list item that doesnt exist (400)", (done) =>{
+    test("Delete list item that doesnt exist (404)", (done) =>{
         axs.delete('/list/8').then(() => done(new Error()))
         .then((_response) => done(new Error()))
         .catch((error) => {
