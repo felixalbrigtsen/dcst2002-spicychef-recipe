@@ -104,7 +104,7 @@ describe("Edit a recipe", () => {
         });
     })
 
-    test("Edit recipe without property (400)", (done) =>{
+    test("Edit recipe missing a property (400)", (done) =>{
         testBadRecipe.title = ""
         axs.put('/recipes/1', testBadRecipe).then(() => done(new Error()))
         .then((_response) => done(new Error()))
@@ -213,8 +213,112 @@ describe("Edit a recipe", () => {
     })   
 })
 
+describe("Add a recipe", () => {
+    test("Add a recipe (200)", (done) => {
+        axs.post("/recipes", testRecipes[1]).then((response) => {
+            expect(response.status).toEqual(200)
+            expect(response.data).toEqual("OK")
+            done()
+          })
+          .catch((error) => console.log(error))
+    })
 
+    test("Add recipe missing a property (400)", (done) =>{
+        testBadRecipe.title = ""
+        axs.post('/recipes', testBadRecipe).then(() => done(new Error()))
+        .then((_response) => done(new Error()))
+        .catch((error) => {
+            expect(error.response.status).toEqual(400)
+            expect(error.response.data).toEqual('Bad request, missing property');
+            done();
+        })
+        .then(() => testBadRecipe.title = "Bad Recipe")
+    })    
 
+    test("Add recipe with too short title (400)", (done) =>{
+        testBadRecipe.title = "a"
+        axs.post('/recipes', testBadRecipe).then(() => done(new Error()))
+        .then((_response) => done(new Error()))
+        .catch((error) => {
+            expect(error.response.status).toEqual(400)
+            expect(error.response.data).toEqual('Bad request, title must be between 3 and 100 characters');
+            done();
+        })
+        .then(() => testBadRecipe.title = "Bad Recipe")
+    })
+
+    test("Add recipe with too short instructions (400)", (done) =>{
+        testBadRecipe.instructions="b"
+        axs.post('/recipes', testBadRecipe).then(() => done(new Error()))
+        .then((_response) => done(new Error()))
+        .catch((error) => {
+            expect(error.response.status).toEqual(400)
+            expect(error.response.data).toEqual('Bad request, instructions must be between 3 and 10000 characters');
+            done();
+        })
+        .then(() => testBadRecipe.instructions="Add the lamb to a casserole and cook over high heat. When browned, remove from the heat and set aside.")
+    })   
+
+    test("Add recipe with ingredientitem missing property (400)", (done) =>{
+        testBadRecipe.ingredients[2].ingredientName=""
+        axs.post('/recipes', testBadRecipe).then(() => done(new Error()))
+        .then((_response) => done(new Error()))
+        .catch((error) => {
+            expect(error.response.status).toEqual(400)
+            expect(error.response.data).toEqual('Bad request, missing ingredient property');
+            done();
+        })
+        .then(() => testBadRecipe.ingredients[2].ingredientName="Bad ingredient")
+    })  
+    
+    test("Add recipe with ingredientitem with text as quantity (400)", (done) => {
+        testBadRecipe.ingredients[2].quantity="text"
+        axs.post('/recipes', testBadRecipe).then(() => done(new Error()))
+        .then((_response) => done(new Error()))
+        .catch((error) => {
+            expect(error.response.status).toEqual(400)
+            expect(error.response.data).toEqual('Bad request, quantity must be a number');
+            done();
+        })
+        .then(() => testBadRecipe.ingredients[2].quantity=1)
+    })   
+
+    test("Add recipe with ingredientitem with negative quantity (400)", (done) =>{
+        testBadRecipe.ingredients[2].quantity=-1
+        axs.post('/recipes', testBadRecipe).then(() => done(new Error()))
+        .then((_response) => done(new Error()))
+        .catch((error) => {
+            expect(error.response.status).toEqual(400)
+            expect(error.response.data).toEqual('Bad request, quantity must be positive');
+            done();
+        })
+        .then(() => testBadRecipe.ingredients[2].quantity=1)
+    })   
+
+    test("Add recipe with ingredientitem with unitname longer than 20 characters (400)", (done) =>{
+        testBadRecipe.ingredients[2].unitName="This is more than 20 characters"
+        axs.post('/recipes', testBadRecipe).then(() => done(new Error()))
+        .then((_response) => done(new Error()))
+        .catch((error) => {
+            expect(error.response.status).toEqual(400)
+            expect(error.response.data).toEqual('Bad request, unit name must be less than 20 characters');
+            done();
+        })
+        .then(() => testBadRecipe.ingredients[2].unitName="units")
+    })   
+
+    test("Add recipe with ingredientitem with ingredient name longer than 20 characters (400)", (done) =>{
+        testBadRecipe.ingredients[2].ingredientName="This is more than 100 characters, i dont know how useful this test is, but I am doing it anyway, because I can. If you read this, I hope you have a great day!"
+        axs.post('/recipes', testBadRecipe).then(() => done(new Error()))
+        .then((_response) => done(new Error()))
+        .catch((error) => {
+            expect(error.response.status).toEqual(400)
+            expect(error.response.data).toEqual('Bad request, ingredient name must be less than 100 characters');
+            done();
+        })
+        .then(() => testBadRecipe.ingredients[2].ingredientName="units")
+    })   
+})
 
 describe("Delete a recipe", () => {
     test("Delete a recipe (200)", (done) => {
