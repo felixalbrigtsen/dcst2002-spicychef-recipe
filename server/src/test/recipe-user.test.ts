@@ -1,4 +1,3 @@
-import mysql from 'mysql2';
 import axios from 'axios';
 import app from '..';
 import pool from '../mysql-pool';
@@ -8,6 +7,8 @@ import recipeService from '../services/recipe-service';
 import { initTest } from '../utils/initdb'
 import { RecipeIngredient } from '../models/RecipeIngredient';
 import { server } from '..';
+import { loginUser,jar,testUsers,testUserProfiles,axs } from './mock-utils';
+import userService from '../services/user-service';
 
 const PORT = Number(process.env.PORT) || 3000;
 
@@ -49,15 +50,24 @@ const testTags: {name: string}[] = [
   {"name": testRecipes[2].tags[0]},
 ]
 
-const testLikes: {userId: number, recipeId: number}[] = [
-  {"recipeId": 2, "userId": 1293912030989},
-  {"recipeId": 2, "userId": 8912830912312},
-  {"recipeId": 3, "userId": 2091380123092},
-  {"recipeId": 3, "userId": 2190301293890},
-  {"recipeId": 3, "userId": 3248329048093},
+const testLikes: {recipeId: number, userId: string}[] = [
+  {"recipeId": 1, "userId": testUsers[0].googleId},
+  {"recipeId": 2, "userId": testUsers[0].googleId},
 ]
 
-axios.defaults.baseURL = `http://localhost:${PORT}/api/`;
+axs.defaults.baseURL = `http://localhost:${PORT}/api/`;
+axs.defaults.withCredentials = true;
+
+beforeAll((done) => {
+  // Clear the database
+  initTest()
+    // Register the admin user
+    .then(() => userService.findOrCreate(testUserProfiles[1]))
+    .then(() => userService.setAdmin(testUserProfiles[1].id, true))
+    .then(() => loginUser(testUserProfiles[0]))
+
+    .then(() => done());
+})
 
 beforeEach((done) => {
   initTest().then(() => {
@@ -106,182 +116,14 @@ afterAll((done) => {
   done()
 });
 
-test('Default message works (GET)', () => {
-  axios.get('/').then((response) => {
-    response.data = 'Hello World! You have reached the Recipe API server. Did you mean to go <a href="/">home</a>?'
-  })
-})
-
-describe('Fetch recipes (GET)', () => {
-  test('Fetch all recipes (200 OK)', (done) => {
-    axios.get('/recipes').then((response) => {
-      expect(response.status).toEqual(200);
-      let expected = testRecipesShort
-      for (let i = 0; i < response.data.length; i++) {expected[`${i}`].created_at = response.data[i].created_at}
-      expect(response.data).toEqual(expected);
-      for (let i = 0; i < response.data.length; i++) {delete(expected[`${i}`].created_at)}
-      done();
-    });
-  });
-
-  test('Fetch recipe (200 OK)', (done) => {
-    axios.get('/recipes/1').then((response) => {
-      expect(response.status).toEqual(200);
-      response.data.created_at = testRecipes[0].created_at
-      expect(response.data).toEqual(testRecipes[0]);
-      done();
-    });
-  });
-
-  test('Fetch recipe that is not a number (400 Bad Request)', (done) => {
-    axios
-      .get('/recipes/"text"')
-      .then((_response) => done(new Error()))
-      .catch((error) => {
-        expect(error.response.status).toEqual(400)
-        expect(error.response.data).toEqual('Bad request');
-        done();
-      });
-  });
-
-  test('Fetch task (404 Not Found)', (done) => {
-    axios
-      .get('/recipes/4')
-      .then((_response) => done(new Error()))
-      .catch((error) => {
-        expect(error.response.status).toEqual(404)
-        expect(error.response.data).toEqual('Recipe not found');
-        done();
-      });
-  });
-});
-
-describe('Fetch ingredients (GET)', () => {
-  test('Fetch all ingredients (200 OK)', (done) => {
-    axios.get('/ingredients').then((response) => {
-      expect(response.status).toEqual(200);
-      expect(response.data).toEqual(testIngredients);
-      done();
-    });
-  });
-});
-
-describe('Search recipes (GET)', () => {
-  test('Search for chicken (200 OK)', (done) => {
-    axios.get('/search?q=chicken').then((response) => {
-      expect(response.status).toEqual(200);
-      expect(response.data).toEqual([testRecipesShort[2]])
-      done()
+describe("Like recipes", () => {
+    test("Like a recipe", (done) => {
+        axs.post(`/likes/${testLikes[0].recipeId}`).then((response) => {
+            expect(response.status).toEqual(200)
+            expect(response.data).toEqual("OK")
+            done()
+          })
     })
-  })
 
-  test('Empty query (400 Bad request)', (done) => {
-    axios.get('/search?q=').then(() => done(new Error()))
-      .then((_response) => done(new Error()))
-      .catch((error) => {
-        expect(error.response.status).toEqual(400)
-        expect(error.response.data).toEqual('Bad request');
-        done();
-      });
-  });
-
-  test('Short query (400 Bad Request)', (done) => {
-    axios.get('/search?q=ca').then(() => done(new Error()))
-      .then((_response) => done(new Error()))
-      .catch((error) => {
-        expect(error.response.status).toEqual(400)
-        expect(error.response.data).toEqual('Bad query');
-        done();
-      });
-  });
+    // test("Like recipe with text as id")
 })
-
-describe('Fetch tags (GET)', () => {
-  test('Fetch all tags (200 OK)', (done) => {
-    axios.get('/tags').then((response) => {
-      expect(response.status).toEqual(200)
-      expect(response.data).toEqual(testTags)
-      done()
-    })
-  })
-})
-
-/* 
-The below tests test the endpoints requiring authorization (either login or admin).
-These are expected to fail without authorization.
-Tests of the services working WITH authorization can be found in router-user.test.ts and router-admin.test.ts
-*/
-
-describe('Endpoints requiring authorization handle unauthorized requests', () => {
-  test('Post like (403 Forbidden)', (done) => {
-    axios.post('/likes/1').then(() => done(new Error()))
-      .then((_response) => done(new Error()))
-      .catch((error) => {
-        expect(error.response.status).toEqual(403)
-        expect(error.response.data).toEqual("Forbidden")
-        done()
-      })
-  })
-
-  test('Post like (403 Forbidden)', (done) => {
-    axios.delete('/likes/1').then(() => done(new Error()))
-      .then((_response) => done(new Error()))
-      .catch((error) => {
-        expect(error.response.status).toEqual(403)
-        expect(error.response.data).toEqual("Forbidden")
-        done()
-      })
-  })
-
-  test('Post shopping list item (403 Forbidden)', (done) => {
-    axios.post('/list/1').then(() => done(new Error()))
-      .then((_response) => done(new Error()))
-      .catch((error) => {
-        expect(error.response.status).toEqual(403)
-        expect(error.response.data).toEqual("Forbidden")
-        done()
-      })
-  })
-
-  test('Delete item from shopping list (403 Forbidden)', (done) => {
-    axios.delete('/list/1').then(() => done(new Error()))
-      .then((_response) => done(new Error()))
-      .catch((error) => {
-        expect(error.response.status).toEqual(403)
-        expect(error.response.data).toEqual("Forbidden")
-        done()
-      })
-  })
-
-  test('PUT edit a recipe (403 Forbidden)', (done) => {
-    axios.put('/recipes/1').then(() => done(new Error()))
-      .then((_response) => done(new Error()))
-      .catch((error) => {
-        expect(error.response.status).toEqual(403)
-        expect(error.response.data).toEqual("Forbidden")
-        done()
-      })
-  })
-
-  test('POST create new recipe (403 Forbidden)', (done) => {
-    axios.post('/recipes').then(() => done(new Error()))
-      .then((_response) => done(new Error()))
-      .catch((error) => {
-        expect(error.response.status).toEqual(403)
-        expect(error.response.data).toEqual("Forbidden")
-        done()
-      })
-  })
-
-  test('DELETE delete a recipe (403 Forbidden)', (done) => {
-    axios.delete('/recipes/1').then(() => done(new Error()))
-      .then((_response) => done(new Error()))
-      .catch((error) => {
-        expect(error.response.status).toEqual(403)
-        expect(error.response.data).toEqual("Forbidden")
-        done()
-      })
-  })
-})
-
-
