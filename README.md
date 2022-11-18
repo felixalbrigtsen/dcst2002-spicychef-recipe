@@ -32,4 +32,4 @@ SpicyChef is an online recipe application. It is developed by students at NTNU, 
 - The two parts communicate via a REST API, described in [/api-docs](https://recipe.feal.no/api-docs)
 - Changes are verified and tested, before they are automatically deployed by our CI/CD pipelines
 
-![GitLab Pipelines](documentation/pipeline.png)
+![GitLab Pipelines](documentation/full_pipeline.png)
