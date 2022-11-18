@@ -15,6 +15,7 @@ const config : Config.InitialOptions = {
   collectCoverage: true,
   collectCoverageFrom: [
     "**/*.{js,ts}",
+    "!utils/**",
     "!test/**",
     "!coverage/**",
   ],

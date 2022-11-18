@@ -105,42 +105,6 @@ export class UserService {
         });
     });
   }
-
-  deleteUser(googleId: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      pool.query(
-        'DELETE FROM user WHERE googleId = ?',
-        [googleId],
-        (err: QueryError | null, result: RowDataPacket[]) => {
-          if (err) {
-            return reject(err);
-          }
-
-          resolve();
-        });
-    });
-  }
-
-  isAdmin(googleId: string): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      pool.query(
-        'SELECT * FROM user WHERE googleId = ?',
-        [googleId],
-        (err: QueryError | null, rows: RowDataPacket[]) => {
-          if (err) {
-            return reject(err);
-          }
-          const user = rows[0] as User;
-
-          if (user) {
-            return resolve(user.isadmin);
-          }
-
-          reject(new Error('User not found'));
-        });
-    });
-  }
-
 }
 
 const userService = new UserService();

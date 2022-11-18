@@ -126,5 +126,4 @@ describe("Authenticate users", () => {
       });
     });
   });
-
 });
