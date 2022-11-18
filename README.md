@@ -1,18 +1,17 @@
 # dcst2002-recipe-gr2
 
-## Install:
-- Build the client as described in `client/README.md`
-- Start the server as described in `server/README.md`
+## Instructions, descriptions and details cna be found in
+- [client/README.md](client/README.md)
+- [server/README.md](server/README.md)
 
-## See the demo
+## See the live production server
 - https://recipe.feal.no
-
 
 ------------------
 
 # Quick Introduction
 
-SpicyChef is an online recipe application. It is developed by students at NTNU, as course work in DCST2002 Webutvikling.
+SpicyChef is an online recipe application. It is developed by students at NTNU, for an obligatory assignement in DCST2002 Webutvikling.
 
 ![Front page screenshot](documentation/frontpage.png)
 
