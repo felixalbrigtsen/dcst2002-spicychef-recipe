@@ -133,6 +133,6 @@ deploy_production:
     - echo "$CI_SSH_KEY" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-    - ssh ci@192.168.0.103 "cd /var/www/dcst2002-recipe-gr2 && git checkout main && git pull origin main && cd server && npm ci && sudo systemctl restart recipe-app.service && exit"
+    - ssh ci@192.168.0.103 'cd /var/www/dcst2002-recipe-gr2 && git checkout main && git pull origin main && cd server && export PATH=/home/ci/.nvm/versions/node/v16.18.1/bin:$PATH && npm ci && sudo systemctl restart recipe-app.service && exit'
     - mv server/docs client/public/api-docs
     - rsync -rav -e ssh --delete client/public/ ci@192.168.0.103:/var/www/dcst2002-recipe-gr2/client/public/
