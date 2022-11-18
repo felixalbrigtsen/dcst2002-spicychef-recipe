@@ -16,8 +16,9 @@ import {
   Notification,
   Button,
   Modal,
+  Form,
 } from "react-bulma-components";
-import { MdDeleteForever, MdEdit, MdRemoveRedEye, MdAddCircle } from "react-icons/md";
+import { MdDeleteForever, MdEdit, MdRemoveRedEye, MdAddCircle, MdSearch } from "react-icons/md";
 import { BiImport } from "react-icons/bi";
 
 import { useAlert } from "../hooks/Alert";
@@ -36,8 +37,9 @@ function AdminView() {
   const { user } = useLogin();
   const { appendAlert } = useAlert();
 
-  let [confirmationState, setConfirmationState] = React.useState<boolean>(false);
-  let [confirmItem, setConfirmItem] = React.useState<number>(-1);
+  const [confirmationState, setConfirmationState] = React.useState<boolean>(false);
+  const [confirmItem, setConfirmItem] = React.useState<number>(-1);
+  const [mealDBRecipe, setMealDBRecipe] = React.useState<number>(-1);
 
   function showConfirmation(id: number) {
     setConfirmItem(id);
@@ -117,24 +119,45 @@ function AdminView() {
                     </span>
                   </Button>
                 </Link>
+                <br />
+                <Form.Label>Search</Form.Label>
+                  <Form.Control className="has-icons-right">
+                  <Form.Input style={{width: "60%"}} placeholder="Recipe" />
+                  <span className="icon is-small is-right">
+                    <MdSearch size={24}/>
+                  </span>
+                </Form.Control>
               </Tile>
               <Tile
                 kind="child"
                 size={6}
                 className="has-text-centered"
               >
-                <Link to="/import">
                   <Button
                     color="link"
                     style={{ width: "80%" }}
                     aria-label="ImportRecipe"
+                    onClick={() => {
+                      recipeService.importRecipe(mealDBRecipe)
+                      .then(() => { appendAlert("Recipe imported successfully", "success"); updateRecipeList(); })
+                      .catch(() => appendAlert("Recipe import failed", "danger"));
+                    }}
                   >
                     <span>Import Recipe</span>
                     <span className="icon">
                       <BiImport />
                     </span>
                   </Button>
-                </Link>
+                  <br />
+                  <Form.Label>MealDB-ID</Form.Label>
+                  <Form.Control>
+                  <Form.Input 
+                    style={{width: "60%"}} 
+                    placeholder="Meal ID" 
+                    type="number"
+                    onInput={(e) => setMealDBRecipe(parseInt((e.target as HTMLInputElement).value))}
+                  ></Form.Input>
+                  </Form.Control>
               </Tile>
             </Tile>
             <br />
@@ -160,7 +183,7 @@ function AdminView() {
                           {item.title}
                         </Link>
                       </td>
-                      <td className="is-narrow has-text-centered">
+                      <td className="is-narrow has-text-centered"> 
                         <Link to={`/recipes/${item.id}`}>
                           <Button
                             color="dark"
