@@ -7,7 +7,7 @@ export class UserService {
   getUser(googleId: string): Promise<User> {
     return new Promise((resolve, reject) => {
       pool.query(`SELECT * FROM user WHERE user.googleId = ?`, [googleId],
-        async (err: QueryError | null | null, results: RowDataPacket[]) => {
+        async (err: QueryError | null, results: RowDataPacket[]) => {
           if (err) {
             return reject(err);
           }
@@ -30,7 +30,7 @@ export class UserService {
       pool.query(
         'SELECT * FROM user_like WHERE googleId = ?',
         [googleId],
-        (err: QueryError | null | null, results: RowDataPacket[]) => {
+        (err: QueryError | null, results: RowDataPacket[]) => {
           if (err) {
             return reject(err);
           }
@@ -42,7 +42,7 @@ export class UserService {
 
   getShoppingList(googleId: string): Promise<number[]> {
     return new Promise((resolve, reject) => {
-      pool.query(`SELECT * FROM list_ingredient WHERE googleId = ?`, [googleId], (err: QueryError | null | null, results: RowDataPacket[]) => {
+      pool.query(`SELECT * FROM list_ingredient WHERE googleId = ?`, [googleId], (err: QueryError | null, results: RowDataPacket[]) => {
         if (err) {
           return reject(err);
         }
@@ -57,7 +57,7 @@ export class UserService {
       pool.query(
         'INSERT INTO user SET ?',
         user,
-        (err: QueryError | null | null, _results: RowDataPacket[]) => {
+        (err: QueryError | null, _results: RowDataPacket[]) => {
           if (err) {
             return reject(err);
           }
@@ -126,7 +126,7 @@ export class UserService {
       pool.query(
         'SELECT * FROM user WHERE googleId = ?',
         [googleId],
-        (err: QueryError | null | null, rows: RowDataPacket[]) => {
+        (err: QueryError | null, rows: RowDataPacket[]) => {
           if (err) {
             return reject(err);
           }
