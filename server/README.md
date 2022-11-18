@@ -1,6 +1,12 @@
-# Recipe-App Backend
+# SpicyChef Backend
 
 ### [API documentation is found here](https://recipe.feal.no/api-docs)
+# Description
+
+The SpicyChef backend is written entirely in node, using TypeScript, Express.js, Passport.js and other common node libraries.
+
+The backend exposes an API, intended to be used with the SpicyChef client.
+This backend server is configured by default to serve the API on `yourdomain/api/`, and serve the bundled client application on all other paths(eg. `yourdomain/*`).
 
 ## Development setup
 
