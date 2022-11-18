@@ -32,10 +32,13 @@ class RecipeService {
             return reject(err);
           }
           // Then delete recipe
-          pool.query('DELETE FROM recipe WHERE id = ?', [id], (err: QueryError | null, _results: RowDataPacket[]) => {
+          pool.query('DELETE FROM recipe WHERE id = ?', [id], async (err: QueryError | null, _results: RowDataPacket[]) => {
             if (err) {
               return reject(err);
             }
+
+            await this.hoover();
+
             resolve();
           });
         });
@@ -492,6 +495,7 @@ class RecipeService {
         return reject(err);
       }
 
+      // TODO: Upgrade to use updateRecipeIngredients and updateRecipeTags
       try {
         // Insert the ingredient-unit-recipe relationships
         let ingredientUnitRecipeIds = ingredientIds.map(async (ingredientId, index) => {
@@ -511,6 +515,8 @@ class RecipeService {
           reject(err);
         }
       }
+
+      await this.hoover();
 
       return resolve(recipeId);
     });
@@ -545,6 +551,9 @@ class RecipeService {
           for (let i = 0; i < ingredients.length; i++) {
             this.addRecipeIngredient(recipeId, ingredientIds[i], unitIds[i], ingredients[i].quantity);
           }
+
+          await this.hoover();
+
           return resolve(results);
         } catch (err) {
           return reject(err);
@@ -566,10 +575,13 @@ class RecipeService {
           return reject(err);
         }
         // Add tags that are new to the recipe
-        pool.query('INSERT IGNORE INTO recipe_tag(recipeId, name) VALUES ?', [tags.map((tag) => [recipeId, tag])], (err: QueryError | null, results: RowDataPacket[]) => {
+        pool.query('INSERT IGNORE INTO recipe_tag(recipeId, name) VALUES ?', [tags.map((tag) => [recipeId, tag])], async (err: QueryError | null, results: RowDataPacket[]) => {
           if (err) {
             return reject(err);
           }
+
+          await this.hoover();
+
           return resolve(results);
         });
       });
@@ -628,6 +640,54 @@ class RecipeService {
         // @ts-ignore
         resolve(results.insertId);
       });
+    });
+  }
+
+  
+  hooverIngredients(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      pool.query('DELETE FROM ingredient WHERE id NOT IN (SELECT ingredientId FROM recipe_ingredient)', (err: QueryError | null, results: RowDataPacket[]) => {
+        if (err) { return reject(err); }
+        resolve();
+      });
+    });
+  }
+
+  hooverUnits(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      pool.query('DELETE FROM unit WHERE id NOT IN (SELECT unitId FROM recipe_ingredient)', (err: QueryError | null, results: RowDataPacket[]) => {
+        if (err) { return reject(err); }
+        resolve();
+      });
+    });
+  }
+
+  hooverUserListIngredients(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      pool.query('DELETE FROM list_ingredient WHERE ingredientId NOT IN (SELECT id FROM ingredient)', (err: QueryError | null, results: RowDataPacket[]) => {
+        if (err) { return reject(err); }
+        resolve();
+      });
+    });
+  }
+
+  hooverUserLikes(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      pool.query('DELETE FROM user_like WHERE recipeId NOT IN (SELECT id FROM recipe)', (err: QueryError | null, results: RowDataPacket[]) => {
+        if (err) { return reject(err); }
+        resolve();
+      });
+    });
+  }
+
+  hoover(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.hooverIngredients()
+        .then(() => this.hooverUnits())
+        .then(() => this.hooverUserListIngredients())
+        .then(() => this.hooverUserLikes())
+        .then(() => resolve())
+        .catch((err) => reject(err));
     });
   }
 }
