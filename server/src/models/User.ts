@@ -3,7 +3,7 @@
  * @alias User
  */
 export type User = {
-  googleId: number;
+  googleId: string;
   name: string;
   email: string;
   picture: string;
@@ -13,12 +13,12 @@ export type User = {
    * @memberof User
    * @description List of liked recipe ids
    */
-  likes: number[];
+  likes?: number[];
   /**
    * @type {Array.<number>}
    * @memberof User
    * @description List of ingredient ids in users list
    */
-  shoppingList: number[];
+  shoppingList?: number[];
 };
 

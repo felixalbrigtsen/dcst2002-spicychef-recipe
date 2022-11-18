@@ -1,16 +1,17 @@
 import pool from '../mysql-pool';
-import { RowDataPacket } from 'mysql2';
+import { RowDataPacket, QueryError } from 'mysql2';
 import type { User } from '../models/User';
+import type { UserProfile } from '../models/UserProfile';
 
 export class UserService {
-  getUser(googleId: number): Promise<User> {
+  getUser(googleId: string): Promise<User> {
     return new Promise((resolve, reject) => {
       pool.query(`SELECT * FROM user WHERE user.googleId = ?`, [googleId],
-        async (err, rows: RowDataPacket[]) => {
+        async (err: QueryError | null, results: RowDataPacket[]) => {
           if (err) {
             return reject(err);
           }
-          const user = rows[0] as User;
+          const user = results[0] as User;
 
           if (user) {
             user.isadmin = user.isadmin;
@@ -24,29 +25,29 @@ export class UserService {
     });
   }
 
-  getLikes(googleId: number): Promise<number[]> {
+  getLikes(googleId: string): Promise<number[]> {
     return new Promise((resolve, reject) => {
       pool.query(
         'SELECT * FROM user_like WHERE googleId = ?',
         [googleId],
-        (err, rows: RowDataPacket[]) => {
+        (err: QueryError | null, results: RowDataPacket[]) => {
           if (err) {
             return reject(err);
           }
 
-          resolve(rows.map((row) => row.recipeId));
+          resolve(results.map((row) => row.recipeId));
         });
     });
   }
 
-  getShoppingList(googleId: number): Promise<number[]> {
+  getShoppingList(googleId: string): Promise<number[]> {
     return new Promise((resolve, reject) => {
-      pool.query(`SELECT * FROM list_ingredient WHERE googleId = ?`, [googleId], (err, rows: RowDataPacket[]) => {
+      pool.query(`SELECT * FROM list_ingredient WHERE googleId = ?`, [googleId], (err: QueryError | null, results: RowDataPacket[]) => {
         if (err) {
           return reject(err);
         }
 
-        resolve(rows.map((row) => row.ingredientId));
+        resolve(results.map((row) => row.ingredientId));
       });
     });
   }
@@ -56,7 +57,7 @@ export class UserService {
       pool.query(
         'INSERT INTO user SET ?',
         user,
-        (err, result) => {
+        (err: QueryError | null, _results: RowDataPacket[]) => {
           if (err) {
             return reject(err);
           }
@@ -66,7 +67,7 @@ export class UserService {
     });
   }
 
-  findOrCreate(profile: any): Promise<User> {
+  findOrCreate(profile: UserProfile): Promise<User> {
     return new Promise((resolve, reject) => {
       this.getUser(profile.id)
         .then(user => resolve(user))
@@ -91,12 +92,12 @@ export class UserService {
     });
   }
 
-  setAdmin(googleId: number, isAdmin: boolean): Promise<void> {
+  setAdmin(googleId: string, isAdmin: boolean): Promise<void> {
     return new Promise((resolve, reject) => {
       pool.query(
         'UPDATE user SET isadmin = ? WHERE googleId = ?',
         [isAdmin, googleId],
-        (err, _result) => {
+        (err: QueryError | null, _result: RowDataPacket[]) => {
           if (err) {
             return reject(err);
           }
@@ -105,12 +106,12 @@ export class UserService {
     });
   }
 
-  deleteUser(googleId: number): Promise<void> {
+  deleteUser(googleId: string): Promise<void> {
     return new Promise((resolve, reject) => {
       pool.query(
         'DELETE FROM user WHERE googleId = ?',
         [googleId],
-        (err, result) => {
+        (err: QueryError | null, result: RowDataPacket[]) => {
           if (err) {
             return reject(err);
           }
@@ -120,12 +121,12 @@ export class UserService {
     });
   }
 
-  isAdmin(googleId: number): Promise<boolean> {
+  isAdmin(googleId: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
       pool.query(
         'SELECT * FROM user WHERE googleId = ?',
         [googleId],
-        (err, rows: RowDataPacket[]) => {
+        (err: QueryError | null, rows: RowDataPacket[]) => {
           if (err) {
             return reject(err);
           }

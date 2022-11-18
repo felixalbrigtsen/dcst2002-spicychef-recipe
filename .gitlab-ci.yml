@@ -1,4 +1,4 @@
-image: node:16
+image: node:16-bullseye
 
 stages:
   - build
@@ -27,6 +27,8 @@ client_jest:
   coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
   dependencies:
     - client_build
+  needs:
+    - client_build
   script:
     - cd client/
     - npm run test:ci
@@ -42,6 +44,8 @@ client_jest:
 client_typescript:
   stage: test
   dependencies:
+    - client_build
+  needs:
     - client_build
   script:
     - cd client/
@@ -64,17 +68,6 @@ server_install:
     paths:
       - ./server/node_modules/
 
-server_typescript:
-  stage: test
-  dependencies:
-    - server_install
-  script:
-    - cd server
-    - ./node_modules/.bin/tsc --noEmit --skipLibCheck
-  only:
-    changes:
-      - server/*
-
 api_docs:
   stage: build
   artifacts:
@@ -85,6 +78,40 @@ api_docs:
     - cd server/
     - npm install
     - npm run docs
+
+server_jest:
+  stage: test
+  coverage: /All files[^|]*\|[^|]*\s+([\d\.]+)/
+  dependencies:
+    - server_install
+  needs:
+    - server_install
+  script:
+    - cd server/
+    - echo "$CI_SRV_TEST_ENV" > .env.test
+    - npm run test:ci
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - ./server/junit.xml
+  only:
+    changes:
+      - server/*
+
+server_typescript:
+  stage: test
+  dependencies:
+    - server_install
+  needs:
+    - server_install
+  script:
+    - cd server
+    - ./node_modules/.bin/tsc --noEmit --skipLibCheck
+  only:
+    changes:
+      - server/*
+
 
 deploy_production:
   stage: deploy
@@ -97,9 +124,10 @@ deploy_production:
   dependencies:
     - client_build
     - client_jest
+    - server_typescript
+    - server_jest
     - api_docs
   script:
-    - export CI=false
     - apk add --no-cache rsync openssh
     - mkdir -p ~/.ssh
     - echo "$CI_SSH_KEY" > ~/.ssh/id_rsa

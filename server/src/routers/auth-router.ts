@@ -2,14 +2,19 @@ import express from 'express';
 import session from 'express-session';
 import userService from '../services/user-service';
 import type { User } from '../models/User';
+import type { UserProfile } from '../models/UserProfile';
 
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+import MockStrategy from '../test/MockPassportStrategy';
+
 const passport = require('passport');
 
 const authRouter = express.Router();
 export default authRouter;
 
-passport.use(new GoogleStrategy(
+// Configure Passport to use Google OAuth2, unless we're in test mode
+const PassportStrategy = process.env.NODE_ENV === 'test' ? MockStrategy : GoogleStrategy;
+export const strategy = new PassportStrategy(
   {
     clientID: process.env.GOOGLE_OAUTH_ID || "",
     clientSecret: process.env.GOOGLE_OAUTH_SECRET || "",
@@ -17,7 +22,7 @@ passport.use(new GoogleStrategy(
     passReqToCallback: true
   },
   //@ts-ignore
-  function verify(req, accessToken, refreshToken, profile, done) {
+  function verify(req, accessToken, refreshToken, profile: UserProfile, done) {
     userService.findOrCreate(profile)
       .then(user => {
         req.session.user = user;
@@ -25,7 +30,9 @@ passport.use(new GoogleStrategy(
       })
       .catch(err => done(err));
   }
-));
+);
+
+passport.use(strategy);
 
 declare module 'express-session' {
   interface SessionData {
@@ -102,7 +109,7 @@ authRouter.get('/profile', async (req, res) => {
 
 // @ts-ignore
 export async function refreshLogin(req, res) {
-  if (req.session.user.googleId) {
+  if (req.session && req.session.user && req.session.user.googleId) {
     let user = await userService.getUser(req.session.user.googleId);
     req.session.user = user;
   } else {

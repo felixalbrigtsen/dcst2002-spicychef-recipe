@@ -2,7 +2,6 @@ import express, { Express } from 'express';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import * as path from 'path';
-import session from 'express-session';
 
 if (process.env.NODE_ENV !== "test") {
   dotenv.config();
@@ -11,6 +10,7 @@ if (process.env.NODE_ENV !== "test") {
 import router from './routers/recipe-router';
 import { enablePassport, enableSession } from './routers/auth-router';
 import type { User } from './models/User';
+import { doesNotMatch } from 'assert';
 
 
 const port = Number(process.env.PORT) || 3000;
@@ -19,13 +19,16 @@ console.log("Serving client from '" + clientBuildPath + "'");
 console.log("Loaded Google Client ID: " + process.env.GOOGLE_OAUTH_ID);
 
 const app = express();
-// Enable logging to console
-app.use(morgan('dev'));
+
+if (process.env.NODE_ENV !== "test") {
+  // Log requests in the console
+  app.use(morgan('dev'));
+}
 
 enableSession(app);
 enablePassport(app);
 
-app.listen(port, () => {
+export const server = app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
 

@@ -10,7 +10,12 @@ const config : Config.InitialOptions = {
   setupFiles: [
     "./dotenv-config"
   ],
-  "collectCoverage": true
+
+  maxWorkers: 1,
+  collectCoverage: true,
+  collectCoverageFrom: [
+    "/src/**/*.ts",
+  ]
 }
 
 export default config
