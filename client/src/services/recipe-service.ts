@@ -204,6 +204,19 @@ class RecipeService {
         });
     });
   }
+
+  importRecipe(id: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      axios
+        .post(process.env.REACT_APP_API_URL + "/importrecipe/" + id)
+        .then((response) => {
+          resolve();
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
 }
 
 const recipeService = new RecipeService();

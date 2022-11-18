@@ -78,12 +78,9 @@ jest.mock('../../services/recipe-service', () => {
 describe('AdminPage test', () => {
     test('Admin Page Renders', async () => {
         render(<Router><AdminView/></Router>)
-        expect(screen.getByRole('heading', {name: 'Recipe Overview'})).toBeInTheDocument();
-        expect(screen.getByRole('heading', {name: 'Recipe Overview'})).toHaveTextContent('Recipe Overview');
         expect(screen.getByRole('button', {name: 'NewRecipe'})).toBeInTheDocument();
         expect(screen.getByRole('button', {name: "NewRecipe"}).closest('a')).toHaveAttribute('href', '/create')
         expect(screen.getByRole('button', {name: 'ImportRecipe'})).toBeInTheDocument()
-        expect(screen.getByRole('button', {name: 'ImportRecipe'}).closest('a')).toHaveAttribute('href', '/import')
         expect(screen.getByRole('table')).toBeInTheDocument()
         expect(screen.getByRole('row')).toBeInTheDocument()
         expect(screen.getByRole('columnheader', {name: "Recipe Title"})).toBeInTheDocument();
