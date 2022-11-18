@@ -1,4 +1,4 @@
-image: node:16-bullseye
+image: node:16
 
 stages:
   - build
