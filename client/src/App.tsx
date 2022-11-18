@@ -21,8 +21,6 @@ import AdminPage from './pages/AdminPage';
 import CreateRecipe from './pages/CreateRecipePage';
 import EditRecipe from './pages/EditRecipePage';
 import PageNotFound from './pages/PageNotFound';
-import ImportPage from './pages/ImportPage';
-
 
 function App() {
   // Always resume session on page load
@@ -49,7 +47,6 @@ function App() {
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/create" element={<CreateRecipe />} />
         <Route path="/edit/:id" element={<EditRecipe />} />
-        <Route path="/import" element={<ImportPage />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </Router>
