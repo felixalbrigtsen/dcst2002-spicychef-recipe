@@ -16,8 +16,9 @@ import {
   Notification,
   Button,
   Modal,
+  Form,
 } from "react-bulma-components";
-import { MdDeleteForever, MdEdit, MdRemoveRedEye, MdAddCircle } from "react-icons/md";
+import { MdDeleteForever, MdEdit, MdRemoveRedEye, MdAddCircle, MdSearch } from "react-icons/md";
 import { BiImport } from "react-icons/bi";
 
 import { useAlert } from "../hooks/Alert";
@@ -36,8 +37,9 @@ function AdminView() {
   const { user } = useLogin();
   const { appendAlert } = useAlert();
 
-  let [confirmationState, setConfirmationState] = React.useState<boolean>(false);
-  let [confirmItem, setConfirmItem] = React.useState<number>(-1);
+  const [confirmationState, setConfirmationState] = React.useState<boolean>(false);
+  const [confirmItem, setConfirmItem] = React.useState<number>(-1);
+  const [mealDBRecipe, setMealDBRecipe] = React.useState<number>(-1);
 
   function showConfirmation(id: number) {
     setConfirmItem(id);
@@ -92,18 +94,12 @@ function AdminView() {
             kind="parent"
             className="is-vertical"
           >
-            <Tile
-              kind="child"
-              renderAs={Notification}
-              className="has-text-centered is-12"
-            >
-              <Heading> Recipe Overview </Heading>
-            </Tile>
-            <Tile kind="parent">
+            <Tile kind="parent" className="is-justify-content-space-evenly">
               <Tile
                 kind="child"
-                size={6}
+                size={8}
                 className="has-text-centered"
+                renderAs={Box}
               >
                 <Link to="/create">
                   <Button
@@ -117,24 +113,32 @@ function AdminView() {
                     </span>
                   </Button>
                 </Link>
-              </Tile>
-              <Tile
-                kind="child"
-                size={6}
-                className="has-text-centered"
-              >
-                <Link to="/import">
+                <hr style={{backgroundColor:"lightslategray", borderColor: "lightslategray", color: "lightslategray", width: "85%", margin: "1em auto"}} />
+                <Tile className="is-justify-content-space-evenly">
+                  <Form.Control>
+                  <Form.Input  
+                    aria-label="mealdb-id"
+                    placeholder="MealDB ID" 
+                    type="number"
+                    onInput={(e) => setMealDBRecipe(parseInt((e.target as HTMLInputElement).value))}
+                  ></Form.Input>
+                  </Form.Control>
+                  <br />
                   <Button
                     color="link"
-                    style={{ width: "80%" }}
                     aria-label="ImportRecipe"
+                    onClick={() => {
+                      recipeService.importRecipe(mealDBRecipe)
+                      .then(() => { appendAlert("Recipe imported successfully", "success"); updateRecipeList(); })
+                      .catch(() => appendAlert("Recipe import failed", "danger"));
+                    }}
                   >
-                    <span>Import Recipe</span>
+                    <span>Import From MealDB</span>
                     <span className="icon">
                       <BiImport />
                     </span>
                   </Button>
-                </Link>
+                  </Tile>
               </Tile>
             </Tile>
             <br />
@@ -160,7 +164,7 @@ function AdminView() {
                           {item.title}
                         </Link>
                       </td>
-                      <td className="is-narrow has-text-centered">
+                      <td className="is-narrow has-text-centered"> 
                         <Link to={`/recipes/${item.id}`}>
                           <Button
                             color="dark"
