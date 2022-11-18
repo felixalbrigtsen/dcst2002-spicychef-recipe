@@ -122,7 +122,7 @@ function AdminView() {
                 <Tile className="is-justify-content-space-evenly">
                   <Form.Control>
                   <Form.Input  
-                    aria-label="mealdb-id"
+                    aria-label={"mealdb-id"}
                     placeholder="MealDB ID" 
                     type="number"
                     onInput={(e) => setMealDBRecipe(parseInt((e.target as HTMLInputElement).value))}
