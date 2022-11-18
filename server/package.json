@@ -9,7 +9,7 @@
     "initdb": "ts-node src/utils/initdb.ts main",
     "mealdb": "ts-node src/utils/mealdb.ts",
     "test": "jest --config src/test/jest.config.ts",
-    "test:ci": "jest --config src/test/jest.config.ts --ci --watchAll=false --reporters=jest-junit"
+    "test:ci": "jest --config src/test/jest.config.ts --ci --watchAll=false --reporters=jest-junit --reporters=default"
   },
   "devDependencies": {
     "@types/express": "^4.17.14",
