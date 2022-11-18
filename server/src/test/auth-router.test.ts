@@ -3,6 +3,7 @@ import { wrapper } from 'axios-cookiejar-support';
 import { CookieJar } from 'tough-cookie';
 
 import app, { server } from '..';
+import pool from '../mysql-pool';
 import userService from '../services/user-service';
 import { initTest } from '../utils/initdb'
 import { strategy } from '../routers/auth-router';
@@ -47,6 +48,7 @@ beforeAll((done) => {
 // Stop web server and close connection to MySQL server
 afterAll((done) => {
   server.close()
+  pool.end();
   done()
 });
 

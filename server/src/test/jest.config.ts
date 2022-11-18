@@ -10,6 +10,8 @@ const config : Config.InitialOptions = {
   setupFiles: [
     "./dotenv-config"
   ],
+
+  maxWorkers: 1,
   collectCoverage: true,
   collectCoverageFrom: [
     "/src/**/*.ts",
