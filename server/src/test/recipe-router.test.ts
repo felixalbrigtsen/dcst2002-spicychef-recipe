@@ -49,13 +49,6 @@ const testTags: {name: string}[] = [
   {"name": testRecipes[2].tags[0]},
 ]
 
-const testLikes: {userId: number, recipeId: number}[] = [
-  {"recipeId": 2, "userId": 1293912030989},
-  {"recipeId": 2, "userId": 8912830912312},
-  {"recipeId": 3, "userId": 2091380123092},
-  {"recipeId": 3, "userId": 2190301293890},
-  {"recipeId": 3, "userId": 3248329048093},
-]
 
 axios.defaults.baseURL = `http://localhost:${PORT}/api/`;
 
@@ -144,7 +137,7 @@ describe('Fetch recipes (GET)', () => {
       });
   });
 
-  test('Fetch task (404 Not Found)', (done) => {
+  test('Fetch recipe that doesnt exist (404 Not Found)', (done) => {
     axios
       .get('/recipes/4')
       .then((_response) => done(new Error()))
@@ -209,7 +202,7 @@ describe('Fetch tags (GET)', () => {
 /* 
 The below tests test the endpoints requiring authorization (either login or admin).
 These are expected to fail without authorization.
-Tests of the services working WITH authorization can be found in auth-router.test.ts
+Tests of the services working WITH authorization can be found in router-user.test.ts and router-admin.test.ts
 */
 
 describe('Endpoints requiring authorization handle unauthorized requests', () => {

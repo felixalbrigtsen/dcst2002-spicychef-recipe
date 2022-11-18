@@ -158,7 +158,7 @@ class RecipeService {
     });
   }
 
-  getRecipesWithTag(tag: string): Promise<Recipe[]> {
+  getRecipesWithTag(tag: string): Promise<Recipe[]> { //TODO: test
     return new Promise((resolve, reject) => {
       pool.query(`
         SELECT recipe.id, recipe.title, recipe.summary, recipe.created_at
@@ -197,7 +197,7 @@ class RecipeService {
     });
   }
 
-  getRecipesWithAnyIngredients(ingredientIds: number[]): Promise<Recipe[]> {
+  getRecipesWithAnyIngredients(ingredientIds: number[]): Promise<Recipe[]> { //TODO: test
     return new Promise((resolve, reject) => {
       pool.query('SELECT recipeId, COUNT(*) AS matchcount FROM recipe_ingredient WHERE ingredientId IN (?) GROUP BY recipeId', [ingredientIds], (err: QueryError | null, results: RowDataPacket[]) => {
         if (err) {
@@ -295,7 +295,7 @@ class RecipeService {
   }
 
   getUnits(): Promise<Unit[]> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => { //TODO: test
       pool.query('SELECT * FROM unit', (err: QueryError | null, results: RowDataPacket[]) => {
         if (err) {
           return reject(err);
@@ -305,7 +305,7 @@ class RecipeService {
     });
   }
 
-  getUnit(id: number): Promise<Unit> {
+  getUnit(id: number): Promise<Unit> { //TODO: test
     return new Promise((resolve, reject) => {
       pool.query('SELECT * FROM unit WHERE id = ?', [id], (err: QueryError | null, results: RowDataPacket[]) => {
         if (err) {
@@ -463,7 +463,7 @@ class RecipeService {
 
   async saveMeal(meal: Meal): Promise<number> {
     //TODO: Use transactions to avoid partial saves
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve, reject) => { //TODO
       // Find ingredient and unit details
       const ingredientNames = meal.ingredients;
       const quantities = meal.measures.map((measure) => parseFloat(measure.substring(0, measure.indexOf(' ')))); // Everything before first space

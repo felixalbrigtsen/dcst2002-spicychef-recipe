@@ -1,36 +1,13 @@
-import axios, { Axios, AxiosResponse } from 'axios';
-import { wrapper } from 'axios-cookiejar-support';
-import { CookieJar } from 'tough-cookie';
-
 import app, { server } from '..';
 import pool from '../mysql-pool';
 import userService from '../services/user-service';
 import { initTest } from '../utils/initdb'
-import { strategy } from '../routers/auth-router';
+import { axs, jar } from './mock-utils';
+import { testUsers,testUserProfiles } from './mock-utils';
+import { loginUser } from './mock-utils';
 
-import type { User } from '../models/User';
-import type { UserProfile } from '../models/UserProfile';
 
 const PORT = Number(process.env.PORT) || 3000;
-
-const jar = new CookieJar();
-export const axs = wrapper(axios.create({ jar }));
-
-// Users for testing. 0 - normal user, 1 - admin user, 2 - invalid user
-export const testUsers: User[] = [
-    {"googleId": "29130921380099" , "name": "testUser", "email": "testuser@example.com", "picture": "image1.jpg", "isadmin": false, "likes": [], "shoppingList": []},
-    {"googleId": "89327493284798" , "name": "testAdmin", "email": "testadmin@example.com", "picture": "image2.jpg", "isadmin": true, "likes": [], "shoppingList": []},
-    {"googleId": "-1" , "name": "invalid user", "email": "", "picture": "", "isadmin": false, "likes": [], "shoppingList": []}, // Automatically fails login because of the special googleId
-]
-
-export const testUserProfiles: UserProfile[] = testUsers.map(user =>
-  ({
-    id: user.googleId,
-    displayName: user.name,
-    emails: [{value: user.email}],
-    photos: [{value: user.picture}]
-  } as UserProfile)
-);
 
 axs.defaults.baseURL = `http://localhost:${PORT}/api/`;
 axs.defaults.withCredentials = true;
@@ -51,20 +28,6 @@ afterAll((done) => {
   pool.end();
   done()
 });
-
-export function loginUser(profile: UserProfile) {
-  // Signs a user in, using the given profile
-  return new Promise<AxiosResponse>((resolve, reject) => {
-    strategy.setProfile(profile);
-    axs.get('/auth/google/callback')
-      .then((res) => {
-        resolve(res)
-      })
-      .catch((err) => {
-        reject(err)
-      })
-  })
-}
 
 describe("Authenticate users", () => {
 
@@ -126,5 +89,4 @@ describe("Authenticate users", () => {
       });
     });
   });
-
 });
