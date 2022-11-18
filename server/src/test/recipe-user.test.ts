@@ -65,7 +65,12 @@ describe("Like recipes", () => {
         axs.post(`/likes/${testLikes[0].recipeId}`).then((response) => {
             expect(response.status).toEqual(200)
             expect(response.data).toEqual("OK")
-            done()
+
+            axs.get(`/auth/profile`).then((response) => {
+              expect(response.status).toEqual(200)
+              expect(response.data.likes).toEqual([testLikes[0].recipeId, 2])
+              done()
+            })
           })
     })
 
@@ -92,15 +97,20 @@ describe("Like recipes", () => {
 })
 
 describe("Delete likes", () => {
-    test("Like a recipe (200)", (done) => {
+    test("Unlike a recipe (200)", (done) => {
         axs.delete(`/likes/2`).then((response) => {
             expect(response.status).toEqual(200)
             expect(response.data).toEqual("OK")
-            done()
+
+            axs.get(`/auth/profile`).then((response) => {
+              expect(response.status).toEqual(200)
+              expect(response.data.likes).toEqual([])
+              done()
+            })
           })
     })
 
-    test("Like recipe with text as id (400)", (done) =>{
+    test("Unlike recipe with text as id (400)", (done) =>{
         axs.delete('/likes/text').then(() => done(new Error()))
         .then((_response) => done(new Error()))
         .catch((error) => {
@@ -111,7 +121,7 @@ describe("Delete likes", () => {
         });
     })
 
-    test("Like recipe that doesnt exist (404)", (done) =>{
+    test("Unlike recipe that doesnt exist (404)", (done) =>{
         axs.delete('/likes/8').then(() => done(new Error()))
         .then((_response) => done(new Error()))
         .catch((error) => {
