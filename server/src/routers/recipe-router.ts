@@ -110,7 +110,6 @@ router.get('/recipes' , (req, res) => {
  * @example
  * GET /recipes/1
  */
-
 router.get('/recipes/:id' , (req, res) => {
   let id = parseInt(req.params.id);
   if (isNaN(id)) {
@@ -444,6 +443,22 @@ router.put('/recipes/:recipeId', requireAdmin , async (req, res) => {
   });
 });
 
+/**
+ * @name POST /recipes
+ * @function
+ * @memberof module:recipe-router
+ * @param {string} title - The title of the recipe
+ * @param {string} summary - A short summary of the recipe
+ * @param {string} instructions - The instructions for the recipe
+ * @param {number} servings - The number of servings the recipe makes
+ * @param {string} imageUrl - The URL of the image for the recipe
+ * @param {string} videoUrl - The URL of the video for the recipe
+ * @param {string[]} ingredients - The ingredients for the recipe
+ * @param {string[]} tags - The tags for the recipe
+ *
+ * @requires {User} req.user - The user who is creating the recipe
+ * @description Creates a new recipe with the given data. Requires the user to be logged in and have admin privileges.
+ */
 router.post('/recipes', requireAdmin , async (req, res) => {
   let recipe = req.body as Recipe;
   let ingredientItems = {} as {ingredientName: string, quantity: number, unitName: string}[];
@@ -513,6 +528,16 @@ router.post('/recipes', requireAdmin , async (req, res) => {
   });
 });
 
+/**
+ * @name DELETE /recipes/:id
+ * @function
+ * @memberof module:recipe-router
+ * @param {number} id - The id of the recipe to delete
+ * @requires {User} req.user - The user who is deleting the recipe
+ * @description Deletes the recipe with the given id. Requires the user to be logged in and have admin privileges.
+ * @returns {string} "OK" if the recipe was deleted successfully
+ * @returns {string} "Not found" if the recipe was not found
+ */
 router.delete('/recipes/:recipeId', requireAdmin , async (req, res) => {
   let recipeId = parseInt(req.params.recipeId);
   if (isNaN(recipeId)) {
@@ -538,6 +563,18 @@ router.delete('/recipes/:recipeId', requireAdmin , async (req, res) => {
   });
 });
 
+/**
+ * @name POST /importrecipe/:id
+ * @function
+ * @memberof module:recipe-router
+ * @param {number} id - The MealDB id of the recipe to import
+ * @requires {User} req.user - The user who is importing the recipe
+ * @description Imports the recipe with the given MealDB id. Requires the user to be logged in and have admin privileges.
+ * @returns {string} "OK" if the recipe was imported successfully
+ * @returns {string} "Not found" if the recipe was not found
+ *
+ * @see https://www.themealdb.com/api.php
+ */
 router.post('/importrecipe/:mealdbid', requireAdmin , async (req, res) => {
   const idParam = req.params.mealdbid;
   if (!idParam) {
