@@ -45,11 +45,17 @@ const testLikes: {recipeId: number, userId: string}[] = [
 axs.defaults.baseURL = `http://localhost:${PORT}/api/`;
 axs.defaults.withCredentials = true;
 
+beforeAll((done) => {
+    userService.findOrCreate(testUserProfiles[1])
+      .then(() => userService.setAdmin(testUserProfiles[1].id, true))
+      .then(() => loginUser(testUserProfiles[1]))
+      .then(() => done())
+})
+
 beforeEach((done) => {
   initTest().then(() => {
     userService.findOrCreate(testUserProfiles[1])
       .then(() => userService.setAdmin(testUserProfiles[1].id, true))
-      .then(() => loginUser(testUserProfiles[1])) //login as admin
 
       //Add recipes
       .then(() => recipeService.addRecipe(testRecipes[0].title, testRecipes[0].summary, testRecipes[0].instructions, testRecipes[0].servings, testRecipes[0].imageUrl, testRecipes[0].videoUrl))
