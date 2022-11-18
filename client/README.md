@@ -29,7 +29,7 @@ The SpicyChef frontend is built with [React.JS](https://reactjs.org/), [TypeScri
 ### Tests
 - We strive to test all aspects of our application.
 - Run the tests with `npm test`
-- The test do not require a running server instance
+- The tests do not require a running server instance
 
 ### Bundle the client for production
 1. Follow [Development Setup](#development-setup) step 1-4
