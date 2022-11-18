@@ -8,7 +8,8 @@
     "docs": "jsdoc -c jsdoc.conf.json",
     "initdb": "ts-node src/utils/initdb.ts main",
     "mealdb": "ts-node src/utils/mealdb.ts",
-    "test": "jest --config src/test/jest.config.ts",
+    "test": "jest --config src/test/jest.config.ts --silent",
+    "test:debug": "jest --config src/test/jest.config.ts --detectOpenHandles",
     "test:ci": "jest --config src/test/jest.config.ts --ci --watchAll=false --reporters=jest-junit --reporters=default"
   },
   "devDependencies": {
