@@ -77,10 +77,10 @@ authRouter.get('/google/login',
 authRouter.get('/google/callback',
   passport.authenticate('google', {
     failureRedirect: '/api/auth/google/failure'
-  }), (req, res) => {
+  }), async (req, res) => {
     req.session.user = req.user as User;
     if (req.session.user.email) {
-      refreshLogin(req, res);
+      await refreshLogin(req, res);
       console.log("User logged in: " + req.session.user.email);
     } else {
       console.log("Invalid user logged in");

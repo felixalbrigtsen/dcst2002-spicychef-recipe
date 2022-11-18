@@ -253,8 +253,8 @@ describe('Endpoints requiring authorization handle unauthorized requests', () =>
       })
   })
 
-  test('Post recipe (403 Forbidden)', (done) => {
-    axios.post('/recipes/1').then(() => done(new Error()))
+  test('PUT edit a recipe (403 Forbidden)', (done) => {
+    axios.put('/recipes/1').then(() => done(new Error()))
       .then((_response) => done(new Error()))
       .catch((error) => {
         expect(error.response.status).toEqual(403)
@@ -263,7 +263,7 @@ describe('Endpoints requiring authorization handle unauthorized requests', () =>
       })
   })
 
-  test('Post all recipes (403 Forbidden)', (done) => {
+  test('POST create new recipe (403 Forbidden)', (done) => {
     axios.post('/recipes').then(() => done(new Error()))
       .then((_response) => done(new Error()))
       .catch((error) => {
@@ -273,7 +273,7 @@ describe('Endpoints requiring authorization handle unauthorized requests', () =>
       })
   })
 
-  test('Delete recipe (403 Forbidden)', (done) => {
+  test('DELETE delete a recipe (403 Forbidden)', (done) => {
     axios.delete('/recipes/1').then(() => done(new Error()))
       .then((_response) => done(new Error()))
       .catch((error) => {
