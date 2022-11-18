@@ -4,6 +4,7 @@
 
 import express from 'express';
 import recipeService from '../services/recipe-service';
+import mealdbService from '../services/mealdb-service';
 import authRouter from './auth-router';
 
 import type { Recipe } from '../models/Recipe';
@@ -533,6 +534,33 @@ router.delete('/recipes/:recipeId', requireAdmin , async (req, res) => {
     res.send("OK");
   })
   .catch((err) => {
+    handleServerError(res, err);
+  });
+});
+
+router.post('/importrecipe/:mealdbid', requireAdmin , async (req, res) => {
+  const idParam = req.params.mealdbid;
+  if (!idParam) {
+    res.status(400).send('Bad request, missing ID');
+    return;
+  }
+  const mealId = Number(idParam);
+  if (isNaN(mealId)) {
+    res.status(400).send('Bad request, invalid ID');
+    return;
+  }
+
+  mealdbService.getMeal(mealId).then(async (meal) => {
+    if (!meal) {
+      return res.status(404).send('Recipe not found');
+    }
+    recipeService.saveMeal(meal).then(async (insertedId) => {
+      res.send("OK");
+    })
+    .catch((err) => {
+      handleServerError(res, err);
+    });
+  }).catch((err) => {
     handleServerError(res, err);
   });
 });
