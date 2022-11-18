@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useLogin } from "../hooks/Login";
 import { Recipe } from "../models/Recipe";
 import ScrollButton from "../components/ScrollUp";
+import NotAuthorized from "../components/NotAuthorized";
 
 import {
   Table,
@@ -56,6 +57,10 @@ function AdminView() {
     setConfirmItem(-1);
   }
 
+  if(!user.isadmin) {
+    return <Container className="mt-2"><NotAuthorized color={"danger"} /></Container>;
+  }
+    
   return (
     <>
       <Container className="mt-2">
