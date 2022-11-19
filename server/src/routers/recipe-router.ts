@@ -432,6 +432,7 @@ router.put('/recipes/:recipeId', requireAdmin , async (req, res) => {
 
     recipeService.updateRecipeIngredients(recipe.id, ingredientItems).then(async (insertedId) => {
       recipeService.updateRecipeTags(recipe.id, ingredientTags).then(async (insertedId) => {
+        await refreshLogin(req, res);
         return res.send("OK");
       });
     })
@@ -517,6 +518,7 @@ router.post('/recipes', requireAdmin , async (req, res) => {
 
     recipeService.updateRecipeIngredients(recipeId, ingredientItems).then(async (insertedId) => {
       recipeService.updateRecipeTags(recipeId, ingredientTags).then(async (insertedId) => {
+        await refreshLogin(req, res);
         return res.send("OK");
       });
     })
@@ -556,6 +558,7 @@ router.delete('/recipes/:recipeId', requireAdmin , async (req, res) => {
   }
 
   recipeService.deleteRecipe(recipeId).then(async (insertedId) => {
+    await refreshLogin(req, res);
     res.send("OK");
   })
   .catch((err) => {
