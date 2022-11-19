@@ -1,14 +1,14 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
 
-import recipeService from "../services/recipe-service";
-import { Recipe } from "../models/Recipe";
 import { Columns } from "react-bulma-components";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
+import recipeService from "../services/recipe-service";
+import { type Recipe } from "../models/Recipe";
 
-interface ImageSliderProps {
+type ImageSliderProps = {
   slides: Recipe[];
-}
+};
 
 const ImageSlider = (props: ImageSliderProps) => {
   const [current, setCurrent] = useState(0);
@@ -25,7 +25,9 @@ const ImageSlider = (props: ImageSliderProps) => {
     const interval = setInterval(() => {
       goToNext();
     }, 5000);
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+    };
   }, [current]);
 
   return (
@@ -39,7 +41,7 @@ const ImageSlider = (props: ImageSliderProps) => {
             {index === current && (
               <a href={`/recipes/${slide.id}`}>
                 <img
-                  src={slide && slide.imageUrl ? slide.imageUrl : "placeholder"}
+                  src={slide?.imageUrl ?? "placeholder"}
                   alt="recipe"
                   className="image"
                 />

@@ -1,20 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import "bulma/css/bulma.min.css";
 import { Button, Card, Image, Media, Heading, Content, Icon } from "react-bulma-components";
-import { useState } from "react";
+
 import { FaArrowRight, FaThumbsUp } from "react-icons/fa";
-import { useLogin } from "../hooks/Login";
 import { Link } from "react-router-dom";
 import ReactTooltip from "react-tooltip";
 
 import recipeService from "../services/recipe-service";
-import { Recipe } from "../models/Recipe";
+import { type Recipe } from "../models/Recipe";
 
+import { useLogin } from "../hooks/Login";
 import { useAlert } from "../hooks/Alert";
 
-interface RecipeCardProps {
+type RecipeCardProps = {
   recipe: Recipe;
-}
+};
 
 function RecipeCard(props: RecipeCardProps) {
   const { appendAlert } = useAlert();
@@ -51,7 +51,7 @@ function RecipeCard(props: RecipeCardProps) {
                   <Button
                     className="is-rounded"
                     color="success"
-                    onClick={() =>
+                    onClick={async () =>
                       recipeService
                         .removeLike(props.recipe.id)
                         .then(() => {
@@ -70,7 +70,6 @@ function RecipeCard(props: RecipeCardProps) {
                       </Icon>
                     </span>
                   </Button>
-                  {/* TODO: Make this prettier */}
                 </>
               ) : (
                 <>
@@ -78,7 +77,7 @@ function RecipeCard(props: RecipeCardProps) {
                     className="is-rounded"
                     color="info"
                     outlined
-                    onClick={() =>
+                    onClick={async () =>
                       recipeService
                         .addLike(props.recipe.id)
                         .then(() => {
