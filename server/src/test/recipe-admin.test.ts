@@ -319,7 +319,13 @@ describe("Add a recipe", () => {
         axs.post('/recipes', testRecipe)
         .then((response) => {
           expect(response.status).toEqual(200)
-          done()
+
+          recipeService.getAllRecipesShort().then((recipes) => {
+            expect(recipes.length).toEqual(3)
+            expect(recipes[2].title).toEqual(testRecipe.title)
+
+            done()
+          });
         })
         .catch((error) => {
             done(error);
@@ -362,7 +368,14 @@ describe("Import mealdb recipes", () => {
         axs.post(`/importrecipe/52772`).then((response) => {
             expect(response.status).toEqual(200)
             expect(response.data).toEqual("OK")
-            done()
+
+
+            recipeService.getAllRecipesShort().then((recipes) => {
+                expect(recipes.length).toEqual(3)
+                expect(recipes[2].title).toEqual("Teriyaki Chicken Casserole")
+
+                done()
+            });
           })
           .catch((error) => done(error))
     })
