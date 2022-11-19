@@ -22,7 +22,7 @@ import { useAlert } from "../hooks/Alert";
 import { useLogin } from "../hooks/Login";
 
 export default function IngredientsPage() {
-  const { user } = useLogin();
+  const { user, getSessionUser } = useLogin();
   const { appendAlert } = useAlert();
 
   const [ingredients, setIngredients] = React.useState<Ingredient[]>([]);
@@ -98,8 +98,8 @@ export default function IngredientsPage() {
             >
               <Heading> Ingredients List </Heading>
             </Tile>
-            <Box className="has-text-right">
-              <Form.Field className="is-grouped">
+            <Box className="has-text-right columns">
+              <Form.Field className="is-grouped column">
                 <Form.Control
                   className="has-icons-left is-expanded"
                 >
@@ -115,30 +115,36 @@ export default function IngredientsPage() {
                     <MdSearch size={24} />
                   </span>
                 </Form.Control>
+              </Form.Field>
+              <Form.Field className="column m-0">
                 <Button
                   color="warning"
                   aria-label="searchAllIngredients"
-                  className="is-rounded m-1"
+                  className="is-rounded is-fullwidth"
                   onClick={() => {
                     searchRecipeByIngredients("all");
                   }}
                 >
                   Search Recipes With Selected Ingredients
                 </Button>
+              </Form.Field>
+              <Form.Field className="column m-0">
                 {user.googleId && (
                   <Button
                     color="success"
                     aria-label="addSelectedToList"
-                    className="is-rounded m-1"
+                    className="is-rounded is-fullwidth"
                     onClick={addSelectedToList}
                   >
                     Add Selected To List
                   </Button>
                 )}
+              </Form.Field>
+              <Form.Field className="column m-0">
                 <Button
                   color="danger"
                   aria-label="clearSelected"
-                  className="is-rounded m-1"
+                  className="is-rounded is-fullwidth"
                   onClick={() => {
                     setSelectedIngredients([]);
                   }}
@@ -177,8 +183,11 @@ export default function IngredientsPage() {
                           className="is-rounded is-outlined"
                           aria-label={`Add ${ingredient.name} to list`}
                           onClick={() => {
-                            listService.addIngredient(ingredient.id);
+                            listService.addIngredient(ingredient.id)
+                              .then(() => appendAlert("Ingredients added to list", "success"))
+                              .then(getSessionUser);
                           }}
+                          disabled={user?.shoppingList.includes(ingredient.id)}
                         >
                           <MdAddCircle />
                         </Button>
