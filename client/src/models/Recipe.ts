@@ -1,4 +1,4 @@
-import type { RecipeIngredient } from "./RecipeIngredient";
+import { type RecipeIngredient } from "./RecipeIngredient";
 
 /**
  * Recipe
@@ -11,9 +11,9 @@ export type Recipe = {
   summary: string;
   instructions: string;
   servings: number;
-  imageUrl: string | null;
-  videoUrl: string | null;
-  created_at: string | null;
+  imageUrl: string | undefined;
+  videoUrl: string | undefined;
+  created_at: string | undefined;
   ingredients: RecipeIngredient[];
   tags: string[];
   likes: number;
