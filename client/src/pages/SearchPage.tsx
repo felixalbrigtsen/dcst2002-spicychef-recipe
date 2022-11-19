@@ -2,6 +2,8 @@ import * as React from "react";
 // @ts-ignore
 import Select, { InputActionMeta } from "react-select";
 import makeAnimated from "react-select/animated";
+import Fuse from "fuse.js";
+
 import { Heading, Hero, Tile, Tabs, Box, Form, Button, Columns } from "react-bulma-components";
 import { BrowserRouter as Router, Route, Routes, Link, useSearchParams } from "react-router-dom";
 import { Recipe } from "../models/Recipe";
@@ -115,13 +117,6 @@ export default function SearchPage() {
   }
 
   function filterVisibleRecipes(passingRecipes: Recipe[]) {
-    if (newQuery.length > 0) {
-      passingRecipes = passingRecipes.filter((r) =>
-        r.title.toLowerCase().includes(newQuery.toLowerCase())
-      );
-      //TODO: Search by summary, fuzzy search
-    }
-
     if (selectedTags.length > 0) {
       // Filter further by tags
       passingRecipes = passingRecipes.filter((recipe) => {
@@ -133,6 +128,16 @@ export default function SearchPage() {
         });
         return hasAllTags;
       });
+    }
+
+    if (newQuery.length > 0) {
+      let fuse = new Fuse(passingRecipes, {
+        keys: ["title", "summary"],
+        threshold: 0.3,
+      });
+
+      let results = fuse.search(newQuery);
+      passingRecipes = results.map((r) => r.item);
     }
 
     setVisibleRecipes(passingRecipes);
