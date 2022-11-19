@@ -1,4 +1,3 @@
-import mysql from 'mysql2';
 import axios from 'axios';
 import app from '..';
 import pool from '../mysql-pool';
@@ -17,20 +16,13 @@ const testRecipes: Recipe[] = [
     {"id": 3,"title": "Chicken Soup","summary": "SOUP","servings": 4,"instructions": "Boil","imageUrl": "https://assets.epicurious.com/photos/62f16ed5fe4be95d5a460eed/1:1/w_2240,c_limit/RoastChicken_RECIPE_080420_37993.jpg","videoUrl": "https://www.youtube.com/watch?v=rX184PQ1UMI","ingredients": [{"ingredientId":1,"unitId":1,"quantity":1,"ingredientName":"Chicken","unitName":""},{"ingredientId":2,"unitId":2,"quantity":2,"ingredientName":"Chicken Stock","unitName":"oz"}],"tags": ["Chicken"], "likes": 0, "created_at": new Date()}
 ];
 
-const testRecipesShort: { id: number, title: string, summary: string, imageUrl: string | null, likes: number, tags: string[], created_at?: Date | null}[] = [
-  {"id": testRecipes[0].id, "title": testRecipes[0].title, "summary": testRecipes[0].summary, "imageUrl": testRecipes[0].imageUrl, "likes": testRecipes[0].likes, "tags": testRecipes[0].tags},
-  {"id": testRecipes[1].id, "title": testRecipes[1].title, "summary": testRecipes[1].summary, "imageUrl": testRecipes[1].imageUrl, "likes": testRecipes[1].likes, "tags": testRecipes[1].tags},
-  {"id": testRecipes[2].id, "title": testRecipes[2].title, "summary": testRecipes[2].summary, "imageUrl": testRecipes[2].imageUrl, "likes": testRecipes[2].likes, "tags": testRecipes[2].tags}
-]
+const testRecipesShort = testRecipes.map(({ id, title, summary, imageUrl, likes, tags, created_at }: Recipe) => ({ id, title, summary, imageUrl, likes, tags, created_at }))
 
-const testRecipeIngredients: RecipeIngredient[] = [
-  testRecipes[0].ingredients[0],
-  testRecipes[0].ingredients[1],
-  testRecipes[1].ingredients[0],
-  testRecipes[1].ingredients[1],
-  testRecipes[2].ingredients[0],
-  testRecipes[2].ingredients[1],
-]
+const testRecipeIngredients: RecipeIngredient[] = testRecipes.map(recipe => recipe.ingredients).flat();
+
+// All tags as an array of objects
+const testTags = testRecipes.map(recipe => recipe.tags).flat().map(tag => ({name: tag}));
+
 
 const testIngredients: Ingredient[] = [
   {"id": 1, "name": testRecipes[0].ingredients[0].ingredientName},
@@ -40,15 +32,6 @@ const testIngredients: Ingredient[] = [
   {"id": 5, "name": testRecipes[2].ingredients[0].ingredientName},
   {"id": 6, "name": testRecipes[2].ingredients[1].ingredientName},
 ]
-
-const testTags: {name: string}[] = [
-  {"name": testRecipes[0].tags[0]},
-  {"name": testRecipes[0].tags[1]},
-  {"name": testRecipes[0].tags[2]},
-  {"name": testRecipes[1].tags[0]},
-  {"name": testRecipes[2].tags[0]},
-]
-
 
 axios.defaults.baseURL = `http://localhost:${PORT}/api/`;
 
@@ -112,7 +95,8 @@ describe('Fetch recipes (GET)', () => {
       let expected = testRecipesShort
       for (let i = 0; i < response.data.length; i++) {expected[`${i}`].created_at = response.data[i].created_at}
       expect(response.data).toEqual(expected);
-      for (let i = 0; i < response.data.length; i++) {delete(expected[`${i}`].created_at)}
+      // @ts-expect-error
+      for (let i = 0; i < response.data.length; i++) {delete(expected[i].created_at)}
       done();
     });
   });
@@ -154,6 +138,7 @@ describe('Fetch ingredients (GET)', () => {
     axios.get('/ingredients').then((response) => {
       expect(response.status).toEqual(200);
       expect(response.data).toEqual(testIngredients);
+      // expect(response.data).toEqual(testRecipes.map(r => r.ingredients).flat().map(i => {return {name: i.ingredientName, id: i.ingredientId}}));
       done();
     });
   });
