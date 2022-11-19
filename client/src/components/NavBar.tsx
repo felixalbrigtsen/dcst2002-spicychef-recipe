@@ -3,18 +3,8 @@ import "bulma/css/bulma.min.css";
 import { Button, Navbar, Image } from "react-bulma-components";
 import { useState } from "react";
 import { useLogin } from "../hooks/Login";
-
-import Icon from "@mdi/react";
-import {
-  mdiAccountCircle,
-  mdiLogout,
-  mdiListBox,
-  mdiHome,
-  mdiMagnify,
-  mdiThumbsUpDown,
-  mdiCarrot,
-} from "@mdi/js";
-import { MdAdminPanelSettings } from "react-icons/md";
+import { MdAdminPanelSettings, MdAccountCircle, MdLogout, MdListAlt, MdHome, MdSearch, MdThumbsUpDown } from "react-icons/md";
+import { FaCarrot } from "react-icons/fa";
 
 export default function NavBar() {
   const [isActive, setIsActive] = useState(false);
@@ -51,29 +41,26 @@ export default function NavBar() {
         <Navbar.Container>
           <Navbar.Item href="/">
             <span className="icon-text">
-              <Icon
-                path={mdiHome}
-                size={1}
-              />
+              <span className="icon">
+                <MdHome size={64} />
+              </span>
               <span>Home</span>
             </span>
           </Navbar.Item>
           <Navbar.Item href="/search">
             <span className="icon-text">
-              <Icon
-                path={mdiMagnify}
-                size={1}
-              />
+              <span className="icon">
+                <MdSearch size={64} />
+              </span>
               <span>Search</span>
             </span>
           </Navbar.Item>
           {user.googleId && (
             <Navbar.Item href="/likes">
               <span className="icon-text">
-                <Icon
-                  path={mdiThumbsUpDown}
-                  size={1}
-                />
+                <span className="icon">
+                  <MdThumbsUpDown size={64} />
+                </span>
                 <span>My Likes</span>
               </span>
             </Navbar.Item>
@@ -81,20 +68,18 @@ export default function NavBar() {
           {user.googleId && (
             <Navbar.Item href="/list">
               <span className="icon-text">
-                <Icon
-                  path={mdiListBox}
-                  size={1}
-                />
+                <span className="icon">
+                  <MdListAlt size={64} />
+                </span>
                 <span>Shopping List</span>
               </span>
             </Navbar.Item>
           )}
           <Navbar.Item href="/ingredients">
             <span className="icon-text">
-              <Icon
-                path={mdiCarrot}
-                size={1}
-              />
+              <span className="icon">
+                <FaCarrot size={64} />
+              </span>
               <span>Ingredients</span>
             </span>
           </Navbar.Item>
@@ -116,20 +101,18 @@ export default function NavBar() {
               onClick={logout}
             >
               <span className="icon-text">
-                <Icon
-                  path={mdiLogout}
-                  size={1}
-                />
+                <span className="icon">
+                  <MdLogout size={64} />
+                </span>
                 <span>Logout</span>
               </span>
             </Navbar.Item>
           ) : (
             <Navbar.Item href="/login">
               <span className="icon-text">
-                <Icon
-                  path={mdiAccountCircle}
-                  size={1}
-                />
+                <span className="icon">
+                  <MdAccountCircle size={64} />
+                </span>
                 <span>Login</span>
               </span>
             </Navbar.Item>

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 
 import { useParams } from "react-router-dom";
 import { useLogin } from "../hooks/Login";
@@ -17,6 +17,7 @@ import {
   Columns,
 } from "react-bulma-components";
 import { FaPlus, FaMinus, FaToriiGate } from "react-icons/fa";
+import { MdEdit } from "react-icons/md";
 import { FaThumbsUp } from "react-icons/fa";
 import recipeService from "../services/recipe-service";
 import { Recipe } from "../models/Recipe";
@@ -94,8 +95,9 @@ function RecipePage() {
                       </Heading>
                     </Media.Item>
                     <br />
+                    <Container className="is-flex is-justify-content-space-between">
                     {user.googleId ? (
-                      <Media.Item>
+                      <>
                         {user.googleId && user.likes.includes(recipe.id) ? (
                           <Button
                             className="is-rounded"
@@ -142,9 +144,8 @@ function RecipePage() {
                             </span>
                           </Button>
                         )}
-                      </Media.Item>
+                      </>
                     ) : (
-                      <Media.Item>
                         <Button
                           color="info"
                           disabled
@@ -156,8 +157,21 @@ function RecipePage() {
                             <FaThumbsUp />
                           </span>
                         </Button>
-                      </Media.Item>
                     )}
+                    {user.isadmin &&  (
+                        <Link to={`/edit/${recipe.id}`}>
+                        <Button
+                          color="link is-light"
+                          className="is-rounded"
+                          >
+                          <span>Edit</span>
+                          <span className="icon">
+                            <MdEdit />
+                          </span>
+                          </Button>
+                        </Link>
+                        )}
+                    </Container>
                   </Tile>
                 </Tile>
                 <Tile kind="parent">
