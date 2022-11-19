@@ -101,7 +101,7 @@ class ListService {
       const ingredients = await ingredientService.getIngredients();
 
       const shoppingList = ingredients.filter((ingredient) => {
-        return user.shoppingList.includes(ingredient.id);
+        return user.shoppingList?.includes(ingredient.id);
       });
       resolve(
         shoppingList.map((ingredient) => {

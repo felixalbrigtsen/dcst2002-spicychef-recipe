@@ -98,7 +98,7 @@ function RecipePage() {
                     <Container className="is-flex is-justify-content-space-between">
                     {user.googleId ? (
                       <>
-                        {user.googleId && user.likes.includes(recipe.id) ? (
+                        {user.googleId && user.likes?.includes(recipe.id) ? (
                           <Button
                             className="is-rounded"
                             aria-label="removeLike"
@@ -256,10 +256,10 @@ function RecipePage() {
                     >
                       Ingredients
                     </Heading>
-                    {recipe.ingredients?.map((ingredient) => {
+                    {recipe.ingredients?.map((ingredient, index) => {
                       return (
                         <Heading
-                          key={ingredient.ingredientId}
+                          key={index}
                           subtitle
                           size={6}
                         >

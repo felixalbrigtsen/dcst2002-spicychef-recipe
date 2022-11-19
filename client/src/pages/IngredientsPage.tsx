@@ -54,7 +54,7 @@ export default function IngredientsPage() {
   React.useEffect(searchIngredients, [newQuery]);
 
   function handleIngredientClick(ingredient: Ingredient) {
-    if (selectedIngredients.includes(ingredient)) {
+    if (selectedIngredients?.includes(ingredient)) {
       setSelectedIngredients(selectedIngredients.filter((i) => i !== ingredient));
     } else {
       setSelectedIngredients([...selectedIngredients, ingredient]);
@@ -187,7 +187,7 @@ export default function IngredientsPage() {
                               .then(() => appendAlert("Ingredients added to list", "success"))
                               .then(getSessionUser);
                           }}
-                          disabled={user?.shoppingList.includes(ingredient.id)}
+                          disabled={user.shoppingList?.includes(ingredient.id)}
                         >
                           <MdAddCircle />
                         </Button>

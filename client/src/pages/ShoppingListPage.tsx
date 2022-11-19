@@ -1,8 +1,5 @@
 import * as React from "react";
 import listService from "../services/list-service";
-import recipeService from "../services/recipe-service";
-import ingredientService from "../services/ingredient-service";
-import { Ingredient } from "../models/Ingredient";
 import NotAuthorized from "../components/NotAuthorized";
 
 import { MdDeleteForever } from "react-icons/md";
