@@ -1,17 +1,16 @@
 import React from "react";
 import type { AlertMessage } from "../models/AlertMessage";
 
-const ALERT_TIMEOUT = 5000;
 
 const AlertContext = React.createContext({
   alerts: [] as AlertMessage[],
-  appendAlert: (message: string, type: string) => {},
-  removeAlert: (index: number) => {},
+  appendAlert(message: string, type: string) {},
+  removeAlert(index: number) {},
 });
 
-interface AlertProviderChildren {
+type AlertProviderChildren = {
   children: React.ReactNode | React.ReactNode[];
-}
+};
 
 export const AlertProvider = ({ children }: AlertProviderChildren) => {
   const [alerts, setAlerts] = React.useState<AlertMessage[]>([]);
@@ -22,7 +21,7 @@ export const AlertProvider = ({ children }: AlertProviderChildren) => {
     setAlerts([...alerts, { message, type }]);
     setTimeout(() => {
       removeAlert(0);
-    }, ALERT_TIMEOUT);
+    }, 5000);
   };
 
   const removeAlert = (index: number) => {
