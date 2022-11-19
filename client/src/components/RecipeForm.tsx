@@ -124,19 +124,17 @@ function RecipeForm(props: RecipeFormProps) {
     };
 
     if(ingredients.length > 0) {
-      console.log(newRecipe);
       const submitMethod = (props.recipe.id === -1
       ? recipeService.createRecipe
       : recipeService.updateRecipe);
 
     submitMethod(newRecipe)
       .then((res) => {
-        console.log(res);
         appendAlert("Recipe saved successfully","success");
         window.location.assign("/admin");
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         appendAlert("Something went wrong", "danger");
       });
     } else {
