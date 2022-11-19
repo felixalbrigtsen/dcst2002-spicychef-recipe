@@ -357,4 +357,34 @@ describe("Delete a recipe", () => {
     })
 })
 
+describe("Import mealdb recipes", () => {
+    test("Import recipe (200)", (done) => {
+        axs.post(`/importrecipe/52772`).then((response) => {
+            expect(response.status).toEqual(200)
+            expect(response.data).toEqual("OK")
+            done()
+          })
+          .catch((error) => console.log(error))
+    })
+
+    test("Import recipe text as id (400)", (done) => {
+        axs.post('/importrecipe/text').then(() => done(new Error()))
+        .then((_response) => done(new Error()))
+        .catch((error) => {
+            expect(error.response.status).toEqual(400)
+            expect(error.response.data).toEqual('Bad request, invalid ID');
+            done();
+        });
+    })
+
+    test("Import recipe that doesnt exist (404)", (done) => {
+        axs.post('/importrecipe/999999').then(() => done(new Error()))
+        .then((_response) => done(new Error()))
+        .catch((error) => {
+            expect(error.response.status).toEqual(404)
+            expect(error.response.data).toEqual('Meal not found');
+            done();
+        });
+    })
+})
 
