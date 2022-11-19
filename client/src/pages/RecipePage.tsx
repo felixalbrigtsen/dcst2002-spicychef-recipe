@@ -170,8 +170,7 @@ function RecipePage() {
                           </span>
                           </Button>
                         </Link>
-                        )
-                        }
+                        )}
                     </Container>
                   </Tile>
                 </Tile>
