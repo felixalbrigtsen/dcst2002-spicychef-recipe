@@ -45,6 +45,7 @@ beforeEach((done) => {
 
       //Add like (to delete)
       .then(() => recipeService.addLike(2, testUsers[1].googleId))
+
       //Add ingredient to list (to delete)
       .then(() => recipeService.addIngredientToList(2, testUsers[1].googleId))
       .then(() => done())
@@ -60,26 +61,33 @@ afterAll((done) => {
 
 describe("Edit a recipe", () => {
     test("Edit a recipe (200)", (done) => {
-        axs.put("/recipes/1", testRecipes[1]).then((response) => {
+        let editedRecipe = JSON.parse(JSON.stringify(testRecipes[1]));
+        editedRecipe.title = "Edited title";
+        axs.put(`/recipes/${testRecipes[1].id}`, editedRecipe).then((response) => {
             expect(response.status).toEqual(200)
             expect(response.data).toEqual("OK")
-            done()
+
+            recipeService.getRecipe(testRecipes[1].id).then((recipe) => {
+                expect(recipe.title).toEqual(editedRecipe.title)
+                done();
+            });
           })
           .catch((error) => done(error))
     })
 
     test("Edit recipe with text as id (400)", (done) =>{
-        axs.put('/recipes/text').then(() => done(new Error()))
+        axs.put('/recipes/text')
         .then((_response) => done(new Error()))
         .catch((error) => {
             expect(error.response.status).toEqual(400)
             expect(error.response.data).toEqual('Bad request');
+
             done();
         });
     })
 
     test("Edit recipe that doesnt exist (404)", (done) =>{
-        axs.put('/recipes/8').then(() => done(new Error()))
+        axs.put('/recipes/8')
         .then((_response) => done(new Error()))
         .catch((error) => {
             expect(error.response.status).toEqual(404)
@@ -91,7 +99,7 @@ describe("Edit a recipe", () => {
     test("Edit recipe missing a property (400)", (done) =>{
         let testRecipe = JSON.parse(JSON.stringify(testRecipes[0]));
         testRecipe.title = ""
-        axs.put('/recipes/1', testRecipe).then(() => done(new Error()))
+        axs.put('/recipes/1', testRecipe)
         .then((_response) => done(new Error()))
         .catch((error) => {
             expect(error.response.status).toEqual(400)
@@ -103,7 +111,7 @@ describe("Edit a recipe", () => {
     test("Edit recipe with too short title (400)", (done) =>{
         let testRecipe = JSON.parse(JSON.stringify(testRecipes[0]));
         testRecipe.title = "a"
-        axs.put('/recipes/1', testRecipe).then(() => done(new Error()))
+        axs.put('/recipes/1', testRecipe)
         .then((_response) => done(new Error()))
         .catch((error) => {
             expect(error.response.status).toEqual(400)
@@ -115,7 +123,7 @@ describe("Edit a recipe", () => {
     test("Edit recipe with too short instructions (400)", (done) =>{
         let testRecipe = JSON.parse(JSON.stringify(testRecipes[0]));
         testRecipe.instructions="b"
-        axs.put('/recipes/1', testRecipe).then(() => done(new Error()))
+        axs.put('/recipes/1', testRecipe)
         .then((_response) => done(new Error()))
         .catch((error) => {
             expect(error.response.status).toEqual(400)
@@ -127,7 +135,7 @@ describe("Edit a recipe", () => {
     test("Edit recipe with ingredientitem missing property (400)", (done) =>{
         let testRecipe = JSON.parse(JSON.stringify(testRecipes[0]));
         testRecipe.ingredients[0].ingredientName=""
-        axs.put('/recipes/1', testRecipe).then(() => done(new Error()))
+        axs.put('/recipes/1', testRecipe)
         .then((_response) => done(new Error()))
         .catch((error) => {
             expect(error.response.status).toEqual(400)
@@ -139,7 +147,7 @@ describe("Edit a recipe", () => {
     test("Edit recipe with ingredientitem with text as quantity (400)", (done) => {
         let testRecipe: any = JSON.parse(JSON.stringify(testRecipes[0]));
         testRecipe.ingredients[0].quantity="text"
-        axs.put('/recipes/1', testRecipe).then(() => done(new Error()))
+        axs.put('/recipes/1', testRecipe)
         .then((_response) => done(new Error()))
         .catch((error) => {
             expect(error.response.status).toEqual(400)
@@ -151,7 +159,7 @@ describe("Edit a recipe", () => {
     test("Edit recipe with ingredientitem with negative quantity (400)", (done) =>{
         let testRecipe = JSON.parse(JSON.stringify(testRecipes[0]));
         testRecipe.ingredients[0].quantity=-1
-        axs.put('/recipes/1', testRecipe).then(() => done(new Error()))
+        axs.put('/recipes/1', testRecipe)
         .then((_response) => done(new Error()))
         .catch((error) => {
             expect(error.response.status).toEqual(400)
@@ -163,7 +171,7 @@ describe("Edit a recipe", () => {
     test("Edit recipe with ingredientitem with unitname longer than 20 characters (400)", (done) =>{
         let testRecipe = JSON.parse(JSON.stringify(testRecipes[0]));
         testRecipe.ingredients[0].unitName="This is more than 20 characters"
-        axs.put('/recipes/1', testRecipe).then(() => done(new Error()))
+        axs.put('/recipes/1', testRecipe)
         .then((_response) => done(new Error()))
         .catch((error) => {
             expect(error.response.status).toEqual(400)
@@ -176,7 +184,7 @@ describe("Edit a recipe", () => {
     test("Edit recipe with ingredientitem with ingredient name longer than 20 characters (400)", (done) =>{
         let testRecipe = JSON.parse(JSON.stringify(testRecipes[0]));
         testRecipe.ingredients[0].ingredientName="This is more than 100 characters, i dont know how useful this test is, but I am doing it anyway, because I can. If you read this, I hope you have a great day!"
-        axs.put('/recipes/1', testRecipe).then(() => done(new Error()))
+        axs.put('/recipes/1', testRecipe)
         .then((_response) => done(new Error()))
         .catch((error) => {
             expect(error.response.status).toEqual(400)
@@ -188,7 +196,7 @@ describe("Edit a recipe", () => {
     test("Edit recipe with tag with more than 20 characters (400)", (done) =>{
         let testRecipe = JSON.parse(JSON.stringify(testRecipes[0]));
         testRecipe.tags[3]="This is more than 20 characters"
-        axs.put('/recipes/1', testRecipe).then(() => done(new Error()))
+        axs.put('/recipes/1', testRecipe)
         .then((_response) => done(new Error()))
         .catch((error) => {
             expect(error.response.status).toEqual(400)
@@ -212,7 +220,7 @@ describe("Add a recipe", () => {
     test("Add recipe missing a property (400)", (done) =>{
         let testRecipe = JSON.parse(JSON.stringify(testRecipes[0]));
         testRecipe.title = ""
-        axs.post('/recipes', testRecipe).then(() => done(new Error()))
+        axs.post('/recipes', testRecipe)
         .then((_response) => done(new Error()))
         .catch((error) => {
             expect(error.response.status).toEqual(400)
@@ -224,7 +232,7 @@ describe("Add a recipe", () => {
     test("Add recipe with too short title (400)", (done) =>{
         let testRecipe = JSON.parse(JSON.stringify(testRecipes[0]));
         testRecipe.title = "a"
-        axs.post('/recipes', testRecipe).then(() => done(new Error()))
+        axs.post('/recipes', testRecipe)
         .then((_response) => done(new Error()))
         .catch((error) => {
             expect(error.response.status).toEqual(400)
@@ -236,7 +244,7 @@ describe("Add a recipe", () => {
     test("Add recipe with too short instructions (400)", (done) =>{
         let testRecipe = JSON.parse(JSON.stringify(testRecipes[0]));
         testRecipe.instructions="b"
-        axs.post('/recipes', testRecipe).then(() => done(new Error()))
+        axs.post('/recipes', testRecipe)
         .then((_response) => done(new Error()))
         .catch((error) => {
             expect(error.response.status).toEqual(400)
@@ -248,7 +256,7 @@ describe("Add a recipe", () => {
     test("Add recipe with ingredientitem missing property (400)", (done) =>{
         let testRecipe = JSON.parse(JSON.stringify(testRecipes[0]));
         testRecipe.ingredients[0].ingredientName=""
-        axs.post('/recipes', testRecipe).then(() => done(new Error()))
+        axs.post('/recipes', testRecipe)
         .then((_response) => done(new Error()))
         .catch((error) => {
             expect(error.response.status).toEqual(400)
@@ -260,7 +268,7 @@ describe("Add a recipe", () => {
     test("Add recipe with ingredientitem with text as quantity (400)", (done) => {
         let testRecipe = JSON.parse(JSON.stringify(testRecipes[0]));
         testRecipe.ingredients[0].quantity="text"
-        axs.post('/recipes', testRecipe).then(() => done(new Error()))
+        axs.post('/recipes', testRecipe)
         .then((_response) => done(new Error()))
         .catch((error) => {
             expect(error.response.status).toEqual(400)
@@ -272,7 +280,7 @@ describe("Add a recipe", () => {
     test("Add recipe with ingredientitem with negative quantity (400)", (done) =>{
         let testRecipe = JSON.parse(JSON.stringify(testRecipes[0]));
         testRecipe.ingredients[0].quantity=-1
-        axs.post('/recipes', testRecipe).then(() => done(new Error()))
+        axs.post('/recipes', testRecipe)
         .then((_response) => done(new Error()))
         .catch((error) => {
             expect(error.response.status).toEqual(400)
@@ -284,7 +292,7 @@ describe("Add a recipe", () => {
     test("Add recipe with ingredientitem with unitname longer than 20 characters (400)", (done) =>{
         let testRecipe = JSON.parse(JSON.stringify(testRecipes[0]));
         testRecipe.ingredients[0].unitName="This is more than 20 characters"
-        axs.post('/recipes', testRecipe).then(() => done(new Error()))
+        axs.post('/recipes', testRecipe)
         .then((_response) => done(new Error()))
         .catch((error) => {
             expect(error.response.status).toEqual(400)
@@ -296,12 +304,25 @@ describe("Add a recipe", () => {
     test("Add recipe with ingredientitem with ingredient name longer than 20 characters (400)", (done) =>{
         let testRecipe = JSON.parse(JSON.stringify(testRecipes[0]));
         testRecipe.ingredients[0].ingredientName="This is more than 100 characters, i dont know how useful this test is, but I am doing it anyway, because I can. If you read this, I hope you have a great day!"
-        axs.post('/recipes', testRecipe).then(() => done(new Error()))
+        axs.post('/recipes', testRecipe)
         .then((_response) => done(new Error()))
         .catch((error) => {
             expect(error.response.status).toEqual(400)
             expect(error.response.data).toEqual('Bad request, ingredient name must be less than 100 characters');
             done();
+        })
+    })   
+
+    test("Add recipe without ingredients (200)", (done) =>{
+        let testRecipe = JSON.parse(JSON.stringify(testRecipes[0]));
+        testRecipe.ingredients = []
+        axs.post('/recipes', testRecipe)
+        .then((response) => {
+          expect(response.status).toEqual(200)
+          done()
+        })
+        .catch((error) => {
+            done(error);
         })
     })   
 })
@@ -316,7 +337,7 @@ describe("Delete a recipe", () => {
     })
 
     test("Delete recipe with text as id (400)", (done) =>{
-        axs.delete('/recipes/text').then(() => done(new Error()))
+        axs.delete('/recipes/text')
         .then((_response) => done(new Error()))
         .catch((error) => {
             expect(error.response.status).toEqual(400)
@@ -326,7 +347,7 @@ describe("Delete a recipe", () => {
     })
 
     test("Like recipe that doesnt exist (404)", (done) =>{
-        axs.delete('/recipes/8').then(() => done(new Error()))
+        axs.delete('/recipes/8')
         .then((_response) => done(new Error()))
         .catch((error) => {
             expect(error.response.status).toEqual(404)
@@ -347,7 +368,7 @@ describe("Import mealdb recipes", () => {
     })
 
     test("Import recipe text as id (400)", (done) => {
-        axs.post('/importrecipe/text').then(() => done(new Error()))
+        axs.post('/importrecipe/text')
         .then((_response) => done(new Error()))
         .catch((error) => {
             expect(error.response.status).toEqual(400)
@@ -357,7 +378,7 @@ describe("Import mealdb recipes", () => {
     })
 
     test("Import recipe that doesnt exist (404)", (done) => {
-        axs.post('/importrecipe/999999').then(() => done(new Error()))
+        axs.post('/importrecipe/999999')
         .then((_response) => done(new Error()))
         .catch((error) => {
             expect(error.response.status).toEqual(404)
