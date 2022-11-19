@@ -34,13 +34,13 @@ describe('IngredientsPage test', () => {
       });
       expect(screen.getByText('Ingredients List')).toBeInTheDocument()
       expect(screen.getByRole('button', {name: 'searchAllIngredients'})).toBeInTheDocument()
-      expect(screen.getByRole('button', {name: 'searchAllIngredients'})).toHaveTextContent('Find Recipes With These Ingredients')
+      expect(screen.getByRole('button', {name: 'searchAllIngredients'})).toHaveTextContent('Search Recipes With Selected Ingredients')
       expect(screen.getByRole('button', {name: 'clearSelected'})).toBeInTheDocument()
       expect(screen.getByRole('button', {name: 'clearSelected'})).toHaveTextContent('Clear Selection')
       expect(screen.getByRole('table')).toBeInTheDocument()
       expect(screen.getByRole('columnheader', {name: "Ingredient"})).toBeInTheDocument();
-      expect(screen.getByRole('columnheader', {name: "Include"})).toBeInTheDocument();
-      expect(screen.getByRole('columnheader', {name: "Add"})).toBeInTheDocument();
+      expect(screen.getByRole('columnheader', {name: "Include in search"})).toBeInTheDocument();
+      expect(screen.getByRole('columnheader', {name: "Add to shopping list"})).toBeInTheDocument();
     })
     
     test('IngredientsPage renders ingredients', async () => {
