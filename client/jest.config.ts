@@ -13,7 +13,15 @@ const config : Config.InitialOptions = {
   setupFiles: [
     "dotenv/config",
   ],
-  "collectCoverage": true
+  collectCoverage: true,
+  coverageThreshold: {
+    global: {
+      branches: 60,
+      functions: 60,
+      lines: 60,
+      statements: 60
+    }
+  },
 }
 
 export default config
