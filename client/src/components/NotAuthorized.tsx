@@ -2,12 +2,16 @@ import * as React from "react";
 import { Link } from "react-router-dom";
 import { Tile, Notification, Container, Heading, Image, Button } from "react-bulma-components";
 
-function NotAuthorized() {
+interface NotAuthorizedProps {
+    color: string;
+}
+
+function NotAuthorized(props: NotAuthorizedProps) {
     return (
     <>
         <Tile
         className="is-vertical has-text-centered"
-        color="danger"
+        color={props.color}
         renderAs={Notification}
         >
         <Heading>You are not authorized to view this page</Heading>

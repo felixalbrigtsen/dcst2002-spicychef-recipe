@@ -5,10 +5,14 @@ import { Form, Button, Container, Tile, Hero } from "react-bulma-components";
 
 import RecipeForm from "../components/RecipeForm";
 import { Recipe } from "../models/Recipe";
+import {useLogin} from "../hooks/Login";
 
 import { useState, useEffect } from "react";
 
+import NotAuthorized from "../components/NotAuthorized";
+
 function CreateRecipe() {
+  const { user } = useLogin();
   const blankRecipe = {
     id: -1,
     title: "",
@@ -22,8 +26,13 @@ function CreateRecipe() {
     tags: [],
     likes: 0,
   };
+
+  if(!user.isadmin) {
+    return <Container className="mt-2"><NotAuthorized color={"danger"} /></Container>;
+  }
+
   return (
-    <Container>
+    <Container className="mt-2">
       <Hero>
         <Hero.Body>
           <RecipeForm recipe={blankRecipe} />

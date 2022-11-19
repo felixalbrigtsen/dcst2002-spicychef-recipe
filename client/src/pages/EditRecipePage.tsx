@@ -8,8 +8,11 @@ import { useParams } from "react-router-dom";
 import { Recipe } from "../models/Recipe";
 import recipeService from "../services/recipe-service";
 import RecipeForm from "../components/RecipeForm";
+import { useLogin } from "../hooks/Login";
+import NotAuthorized from "../components/NotAuthorized";
 
 function EditRecipe() {
+  const { user } = useLogin();
   let [recipe, setRecipe] = React.useState<Recipe>({
     id: 0,
     title: "",
@@ -31,9 +34,13 @@ function EditRecipe() {
     });
   }, []);
 
+  if (!user.isadmin) {
+    return <Container className="mt-2"><NotAuthorized color={"danger"} /></Container>;
+  }
+
   return (
-    <Container>
-      <Hero>
+    <Container className="mt-2">
+        <Hero>
         <Hero.Body>
           <RecipeForm recipe={recipe} />
         </Hero.Body>

@@ -8,6 +8,7 @@ import RecipeCard from "../components/RecipeCard";
 import recipeService from "../services/recipe-service";
 import ScrollButton from "../components/ScrollUp";
 import { Columns, Heading, Container, Tile, Notification } from "react-bulma-components";
+import NotAuthorized from "../components/NotAuthorized";
 
 export default function LikePage() {
   let [recipeList, setRecipeList] = React.useState<Recipe[]>([]);
@@ -29,6 +30,10 @@ export default function LikePage() {
     });
   }, []);
 
+  if(!user.googleId) {
+    return <Container className="mt-2"><NotAuthorized color={"info"} /></Container>;
+  }
+
   return (
     <>
       <Container className="mt-2 is-centered">
@@ -45,14 +50,14 @@ export default function LikePage() {
           style={{ marginTop: "2rem", marginLeft: "auto", marginRight: "auto" }}
         >
           {recipeList.map((recipe) =>
-            user.likes.includes(recipe.id) ? (
+            user.likes.includes(recipe.id) && (
               <Columns.Column
                 className="is-narrow"
                 key={recipe.id}
               >
                 <RecipeCard recipe={recipe} />
               </Columns.Column>
-            ) : null
+            )
           )}
         </Columns>
         <ScrollButton />
