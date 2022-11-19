@@ -9,17 +9,18 @@ import { Recipe } from "../models/Recipe";
 
 import { useLogin } from "../hooks/Login";
 
-import { Columns, Container, Button, Box, Form, Heading } from "react-bulma-components";
+import { Columns, Container, Button, Notification, Form, Heading } from "react-bulma-components";
 import ScrollButton from "../components/ScrollUp";
 
 export default function RecipeList() {
-  const [recipeList, setRecipeList] = React.useState<Recipe[]>([]);
+  const [allRecipes, setAllRecipes] = useState<Recipe[]>([]);
+  const [visibleRecipes, setVisibleRecipes] = React.useState<Recipe[]>([]);
   const [sorting, setSorting] = useState("likes");
 
   const { user } = useLogin();
 
   React.useEffect(() => {
-    let recipes = [...recipeList];
+    let recipes = [...allRecipes];
 
     switch(sorting) {
       case "likes":
@@ -37,12 +38,12 @@ export default function RecipeList() {
         recipes.sort((a, b) => a.title.localeCompare(b.title));
     }
 
-    setRecipeList(recipes);
-  }, [sorting]);
+    setVisibleRecipes(recipes);
+  }, [sorting, allRecipes]);
 
   React.useEffect(() => {
     recipeService.getRecipesShort().then((data) => {
-      setRecipeList(data);
+      setAllRecipes(data);
     });
   }, [user]);
 
@@ -52,11 +53,11 @@ export default function RecipeList() {
         className="mt-2 is-centered"
         style={{ margin: "auto" }}
       >
-        <Box>
+        <Notification color="primary">
           <Form.Field kind="group" className="is-flex is-flex-direction-row is-vcentered is-justify-content-center">
             <Heading className="is-flex-grow-1 is-expanded">Explore Recipes</Heading>
 
-            <Form.Label className="is-vcentered mr-1" style={{lineHeight: "2"}}> Sort by </Form.Label>
+            <Form.Label className="has-text-white is-vcentered mr-1" style={{lineHeight: "2"}}> Sort by </Form.Label>
             <Form.Select value={sorting} onChange={(event) => setSorting(event.target.value)}>
               <option value="likes">Likes</option>
               <option value="title">Title</option>
@@ -64,12 +65,12 @@ export default function RecipeList() {
               <option value="oldest">Oldest</option>
             </Form.Select>
           </Form.Field>
-        </Box>
+        </Notification>
         <Columns
           className="is-multiline"
           style={{ margin: "2rem auto" }}
         >
-          {recipeList.map((recipe) => (
+          {visibleRecipes.map((recipe) => (
             <Columns.Column
               className="is-narrow"
               key={recipe.id}

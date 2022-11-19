@@ -4,6 +4,7 @@ import { Button, Navbar, Image } from "react-bulma-components";
 import { useState } from "react";
 import { useLogin } from "../hooks/Login";
 import { MdAdminPanelSettings, MdAccountCircle, MdLogout, MdListAlt, MdHome, MdSearch, MdThumbsUpDown } from "react-icons/md";
+import { IoSparklesSharp } from "react-icons/io5";
 import { FaCarrot } from "react-icons/fa";
 
 export default function NavBar() {
@@ -45,6 +46,14 @@ export default function NavBar() {
                 <MdHome size={64} />
               </span>
               <span>Home</span>
+            </span>
+          </Navbar.Item>
+          <Navbar.Item href="/recipes">
+            <span className="icon-text">
+              <span className="icon">
+                <IoSparklesSharp size={64} />
+              </span>
+              <span>Explore</span>
             </span>
           </Navbar.Item>
           <Navbar.Item href="/search">
