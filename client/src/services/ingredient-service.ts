@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Ingredient } from "../models/Ingredient";
+import { type Ingredient } from "../models/Ingredient";
 
 /**
  * @module
@@ -18,7 +18,7 @@ class IngredientService {
    * This function will get ingredients from the API
    */
 
-  getIngredients(): Promise<Ingredient[]> {
+  async getIngredients(): Promise<Ingredient[]> {
     return new Promise((resolve, reject) => {
       axios
         .get(process.env.REACT_APP_API_URL + "/ingredients")

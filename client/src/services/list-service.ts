@@ -1,7 +1,7 @@
 import axios from "axios";
-import { Ingredient } from "../models/Ingredient";
+import { type Ingredient } from "../models/Ingredient";
+import { type User } from "../models/User";
 import ingredientService from "./ingredient-service";
-import type { User } from "../models/User";
 
 /**
  * @module
@@ -19,7 +19,7 @@ class ListService {
    * This function will get all ingredients for the current user from the API
    */
 
-  getIngredients(): Promise<[Ingredient][]> {
+  async getIngredients(): Promise<Array<[Ingredient]>> {
     return new Promise((resolve, reject) => {
       axios
         .get(process.env.REACT_APP_API_URL + "/auth/profile")
@@ -41,7 +41,7 @@ class ListService {
    * This function will add ingredients to the list
    */
 
-  addIngredient(id: number): Promise<number> {
+  async addIngredient(id: number): Promise<number> {
     return new Promise((resolve, reject) => {
       axios
         .post(process.env.REACT_APP_API_URL + `/list/${id}`)
@@ -63,7 +63,7 @@ class ListService {
    * This function will remove an ingredient from a users shopping list
    */
 
-  removeIngredient(id: number): Promise<number> {
+  async removeIngredient(id: number): Promise<number> {
     return new Promise((resolve, reject) => {
       axios
         .delete(process.env.REACT_APP_API_URL + `/list/${id}`)
@@ -76,18 +76,6 @@ class ListService {
     });
   }
 
-  // removeAllIngredients(): Promise<undefined> {
-  //   return new Promise((resolve, reject) => {
-  //     axios.delete(process.env.REACT_APP_API_URL + '/api/list')
-  //       .then((response) => {
-  //         resolve(response.data);
-  //       })
-  //       .catch((error) => {
-  //         reject(error);
-  //       });
-  //   });
-  // }
-
   /**
    * @function
    * @name getShoppingList
@@ -96,12 +84,12 @@ class ListService {
    * This function will get the shopping list for the current user
    */
 
-  getShoppingListItems(user: User): Promise<{ id: number; name: string }[]> {
+  async getShoppingListItems(user: User): Promise<Array<{ id: number; name: string }>> {
     return new Promise(async (resolve, reject) => {
       const ingredients = await ingredientService.getIngredients();
 
       const shoppingList = ingredients.filter((ingredient) => {
-        return user.shoppingList.includes(ingredient.id);
+        return user.shoppingList?.includes(ingredient.id);
       });
       resolve(
         shoppingList.map((ingredient) => {
