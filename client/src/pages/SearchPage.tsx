@@ -7,6 +7,7 @@ import Fuse from "fuse.js";
 import { Heading, Hero, Tile, Tabs, Box, Form, Button, Columns } from "react-bulma-components";
 import { BrowserRouter as Router, Route, Routes, Link, useSearchParams } from "react-router-dom";
 import { Recipe } from "../models/Recipe";
+import { useLogin } from "../hooks/Login";
 import recipeService from "../services/recipe-service";
 import RecipeCard from "../components/RecipeCard";
 import ingredientService from "../services/ingredient-service";
@@ -17,6 +18,7 @@ const animatedComponents = makeAnimated();
 
 export default function SearchPage() {
   const { appendAlert } = useAlert();
+  const { user } = useLogin();
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -70,7 +72,7 @@ export default function SearchPage() {
         console.error(err);
         appendAlert("Could not load ingredients", "danger");
       });
-  }, []);
+  }, [user]);
 
   // Search every time our query, or the available recipes change
   React.useEffect(searchRecipes, [selectedTags, selectedIngredients, newQuery]);
