@@ -16,18 +16,9 @@ import {
   Media,
   Content,
 } from "react-bulma-components";
-
-import Icon from "@mdi/react";
-import {
-  mdiListBox,
-  mdiShakerOutline,
-  mdiFoodDrumstick,
-  mdiFoodSteak,
-  mdiCarrot,
-  mdiMagnify,
-  mdiArrowRight,
-  mdiLoginVariant,
-} from "@mdi/js";
+import { MdListAlt, MdLogin, MdSearch, MdArrowForward } from "react-icons/md";
+import { FaCarrot, FaDrumstickBite } from "react-icons/fa";
+import { TbSalt } from "react-icons/tb";
 import { Recipe } from "../models/Recipe";
 
 import ImageSlider from "../components/ImageSlider";
@@ -105,10 +96,7 @@ function Home() {
                               <Heading subtitle>Explore Recipes</Heading>
                             </span>
                             <span className="icon">
-                              <Icon
-                                path={mdiArrowRight}
-                                size={1}
-                              />
+                                <MdArrowForward />
                             </span>
                           </Button>
                         </Link>
@@ -124,10 +112,7 @@ function Home() {
                           }}
                         />
                         <span className="icon is-small is-right">
-                          <Icon
-                            path={mdiMagnify}
-                            size={1}
-                          />
+                          <MdSearch size={24} />
                         </span>
                       </Form.Control>
                     </Form.Field>
@@ -151,22 +136,9 @@ function Home() {
                         className="is-light is-rounded"
                       >
                         <span>Ingredients</span>
-                        <Icon
-                          path={mdiCarrot}
-                          size={1}
-                        />
-                        <Icon
-                          path={mdiFoodSteak}
-                          size={1}
-                        />
-                        <Icon
-                          path={mdiFoodDrumstick}
-                          size={1}
-                        />
-                        <Icon
-                          path={mdiShakerOutline}
-                          size={1}
-                        />
+                          <FaCarrot style={{marginLeft: ".5rem"}} />
+                          <FaDrumstickBite />
+                          <TbSalt />
                       </Button>
                     </Link>
                     <br />
@@ -176,11 +148,7 @@ function Home() {
                         className="is-light is-rounded mt-2"
                       >
                         <span>Search</span>
-                        <Icon
-                          path={mdiMagnify}
-                          size={1}
-                          style={{ marginLeft: ".5rem" }}
-                        />
+                        <MdSearch style={{marginLeft: ".5rem"}} />
                       </Button>
                     </Link>
                     {user.googleId ? (
@@ -192,10 +160,7 @@ function Home() {
                             className="is-light is-rounded mt-2"
                           >
                             <span>Shopping List</span>
-                            <Icon
-                              path={mdiListBox}
-                              size={1}
-                            />
+                            <MdListAlt style={{marginLeft: ".5rem"}} />
                           </Button>
                         </Link>
                       </>
@@ -208,11 +173,7 @@ function Home() {
                             className="is-light is-rounded mt-2"
                           >
                             <span>Login</span>
-                            <Icon
-                              path={mdiLoginVariant}
-                              size={1}
-                              style={{ marginLeft: ".5rem" }}
-                            />
+                            <MdLogin style={{marginLeft: ".5rem"}} />
                           </Button>
                         </Link>
                       </>
@@ -324,10 +285,7 @@ function Home() {
                       >
                         <span>Read more</span>
                         <span className="icon">
-                          <Icon
-                            path={mdiArrowRight}
-                            size={1}
-                          />
+                          <MdArrowForward />
                         </span>
                       </Button>
                     </Link>
