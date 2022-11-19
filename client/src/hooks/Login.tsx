@@ -39,6 +39,7 @@ export const LoginProvider = ({ children }: LoginProviderChildren) => {
       .get(process.env.REACT_APP_API_URL + "/auth/logout")
       .then((response) => {
         setUser({} as User);
+        appendAlert("Logged out successfully", "success");
       })
       .catch((error) => {
         console.log(error);

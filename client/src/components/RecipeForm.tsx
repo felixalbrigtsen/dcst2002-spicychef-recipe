@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 
 import { Form, Button, Tile, Image, Table, Container } from "react-bulma-components";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import { Recipe } from "../models/Recipe";
 import { RecipeIngredient } from "../models/RecipeIngredient";
@@ -105,8 +105,12 @@ function RecipeForm(props: RecipeFormProps) {
     setDefaultTags(tagObjects);
   }, [tags]);
 
+  const submitRef = useRef<HTMLFormElement>(null);
   // Setting the recipe object on submit
-  function handleRecipeSubmit() {
+  function handleRecipeSubmit(e: any) {
+  if(submitRef.current?.reportValidity()) {
+    e.preventDefault();
+
     const newRecipe = {
       id: props.recipe.id,
       title: title,
@@ -118,22 +122,26 @@ function RecipeForm(props: RecipeFormProps) {
       ingredients: ingredients,
       tags: tags,
     };
-    console.log(newRecipe);
-    const submitMethod = (props.recipe.id === -1
+
+    if(ingredients.length > 0) {
+      const submitMethod = (props.recipe.id === -1
       ? recipeService.createRecipe
       : recipeService.updateRecipe);
 
     submitMethod(newRecipe)
       .then((res) => {
-        console.log(res);
-        appendAlert("primary", "Recipe saved successfully");
+        appendAlert("Recipe saved successfully","success");
         window.location.assign("/admin");
       })
       .catch((err) => {
-        console.log(err);
-        appendAlert("danger", "Something went wrong");
+        console.error(err);
+        appendAlert("Something went wrong", "danger");
       });
+    } else {
+      appendAlert("Please add at least one ingredient", "danger");
+    }    
   }
+}
 
   // Updating an ingredient in the ingredients array
   function handleIngredientPropertyChange(index: number, property: string, value: string) {
@@ -153,6 +161,8 @@ function RecipeForm(props: RecipeFormProps) {
   }
 
   return (
+    <>
+    <form ref={submitRef}>
     <Tile kind="ancestor">
       <Tile
         size={4}
@@ -172,6 +182,8 @@ function RecipeForm(props: RecipeFormProps) {
                 placeholder="Recipe Title"
                 aria-label={"Title"}
                 value={title}
+                required
+                title="Please enter a title"
                 onChange={(e) => {
                   setTitle(e.currentTarget.value);
                 }}
@@ -188,6 +200,8 @@ function RecipeForm(props: RecipeFormProps) {
                 placeholder="Recipe Summary"
                 aria-label={"Summary"}
                 value={summary}
+                required
+                title="Please enter a summary"
                 onChange={(e) => {
                   setSummary(e.currentTarget.value);
                 }}
@@ -205,6 +219,8 @@ function RecipeForm(props: RecipeFormProps) {
                 placeholder="2"
                 aria-label={"Servings"}
                 value={servings}
+                required
+                title="Please enter a number of servings"
                 onChange={(e) => {
                   setServings(Number(e.currentTarget.value));
                 }}
@@ -299,6 +315,8 @@ function RecipeForm(props: RecipeFormProps) {
               aria-label={"Instructions"}
               style={{ whiteSpace: "pre-wrap" }}
               defaultValue={instructions}
+              required
+              title="Please enter instructions"
               onChange={(e) => {
                 setInstructions(e.currentTarget.value);
               }}
@@ -314,6 +332,7 @@ function RecipeForm(props: RecipeFormProps) {
             <CreatableSelect
               placeholder="Ingredients"
               aria-label={"Ingredients"}
+              required
               options={ingredientOptions}
               onCreateOption={(newIngredient) => {
                 setIngredientOptions([...ingredientOptions, { value: 1, label: newIngredient }]);
@@ -344,7 +363,7 @@ function RecipeForm(props: RecipeFormProps) {
               </tr>
             </thead>
             {ingredients
-              ? ingredients.map((ingredient, index) => {
+              && ingredients.map((ingredient, index) => {
                   return (
                     <tbody key={index}>
                       <tr>
@@ -395,7 +414,7 @@ function RecipeForm(props: RecipeFormProps) {
                     </tbody>
                   );
                 })
-              : null}
+              }
           </Table>
         </Tile>
         <Tile
@@ -403,18 +422,19 @@ function RecipeForm(props: RecipeFormProps) {
           renderAs={Form.Field}
           className="has-text-centered"
         >
-          <Button
+          <Form.Input
             color="primary"
             aria-label="Submit"
-            onClick={() => {
-              handleRecipeSubmit();
-            }}
-          >
-            Submit
-          </Button>
+            type="submit"
+            onClick={handleRecipeSubmit}
+            value="Submit"
+            style={{display: "inline-block"}}
+          />
         </Tile>
       </Tile>
     </Tile>
+    </form>
+    </>
   );
 }
 

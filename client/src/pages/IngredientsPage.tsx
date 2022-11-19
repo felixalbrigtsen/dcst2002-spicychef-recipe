@@ -48,7 +48,7 @@ export default function IngredientsPage() {
     selectedIngredients.forEach((ingredient) => {
       listService
         .addIngredient(ingredient.id)
-        .then(() => appendAlert("Added " + ingredient.name + " to list", "success"));
+        .then(() => appendAlert("Ingredients added to list", "success"));
     });
   }
 
