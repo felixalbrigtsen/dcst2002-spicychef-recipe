@@ -10,38 +10,24 @@ import '@testing-library/jest-dom'
 import renderWithLoginContext, { sampleUsers, logout } from '../LoginProviderMock';
 import ShoppingListPage from '../../pages/ShoppingListPage';
 
-jest.mock('../../services/ingredient-service', () => {
-  class ingredientService {
+const mockIngredients = [{"id": 1, "name": "Lamb Mince"}, {"id": 2, "name": "Garlic"}, {"id": 3, "name": "Onion"}]
+
+jest.mock('../../services/list-service', () => {
+  class listService {
     getIngredients() {
-      return Promise.resolve([
-        {
-          "id": 1,
-          "name": "Lamb Mince"
-          },
-          {
-          "id": 2,
-          "name": "Garlic"
-          },
-          {
-          "id": 3,
-          "name": "Onion"
-          },
-          {
-          "id": 4,
-          "name": "Spinach"
-          },
-          {
-          "id": 5,
-          "name": "Tomato Puree"
-          },
-          {
-          "id": 6,
-          "name": "Cumin"
-          }
-      ]);
+      return Promise.resolve();
+    }
+    addIngredient() {
+      return Promise.resolve();
+    }
+    removeIngredient() {
+      return Promise.resolve();
+    }
+    getShoppingListItems() {
+      return Promise.resolve(mockIngredients);
     }
   }
-  return new ingredientService();
+  return new listService();
 });
 
 describe('ShoppingListPage test', () => {
@@ -71,18 +57,60 @@ describe('ShoppingListPage test', () => {
       });      
     });
 
-    test.skip('ShoppingList renders with items', async () => {
+    test('ShoppingList renders with items', async () => {
       act(() => {
         renderWithLoginContext(<Router><ShoppingListPage /></Router>, sampleUsers.normal)
       });
 
       await waitFor(()=>{
-        expect(screen.getByRole("cell", {name: "Garlic"})).toHaveTextContent("Garlic");
-        expect(screen.getByRole("cell", {name: "Spinach"})).toHaveTextContent("Spinach");
-        expect(screen.getByRole("cell", {name: "Cumin"})).toHaveTextContent("Cumin");
-        expect(screen.getByRole("button", {name: "Remove Garlic from shopping list"})).toBeInTheDocument();
-        expect(screen.getByRole("button", {name: "Remove Spinach from shopping list"})).toBeInTheDocument();
-        expect(screen.getByRole("button", {name: "Remove Cumin from shopping list"})).toBeInTheDocument();
+        mockIngredients.forEach(ingredient => {
+          expect(screen.getByRole("cell", {name: ingredient.name})).toHaveTextContent(ingredient.name);
+          expect(screen.getByRole('button', {name: `Remove ${ingredient.name} from shopping list`})).toBeInTheDocument();
+        });
+      });
+    });
+
+    test.skip('Remove an item', async () => {
+      act(() => {
+        renderWithLoginContext(<Router><ShoppingListPage /></Router>, sampleUsers.normal)
+      });
+
+      await waitFor(()=>{
+        expect(screen.getByRole("cell", {name: "Lamb Mince"})).toHaveTextContent("Lamb Mince");
+        expect(screen.getByRole("button", {name: "Remove Lamb Mince from shopping list"})).toBeInTheDocument();
+      });
+
+      act(()=>{
+        fireEvent.click(screen.getByRole("button", {name: "Remove Lamb Mince from shopping list"}));
+      });
+
+      await waitFor(()=>{
+        expect(screen.queryByRole("cell", {name: "Lamb Mince"})).not.toBeInTheDocument();
+        expect(screen.queryByRole("button", {name: "Remove Lamb Mince from shopping list"})).not.toBeInTheDocument();
+      });
+    });
+
+    test.skip('Clear all items', async () => {
+      act(() => {
+        renderWithLoginContext(<Router><ShoppingListPage /></Router>, sampleUsers.normal)
+      });
+
+      await waitFor(()=>{
+        mockIngredients.forEach(ingredient => {
+          expect(screen.getByRole("cell", {name: ingredient.name})).toHaveTextContent(ingredient.name);
+          expect(screen.getByRole('button', {name: `Remove ${ingredient.name} from shopping list`})).toBeInTheDocument();
+        });
+      });
+
+      act(()=>{
+        fireEvent.click(screen.getByRole("button", {name: "clearList"}));
+      });
+
+      await waitFor(()=>{
+        mockIngredients.forEach(ingredient => {
+          expect(screen.queryByRole("cell", {name: ingredient.name})).not.toBeInTheDocument();
+          expect(screen.queryByRole('button', {name: `Remove ${ingredient.name} from shopping list`})).not.toBeInTheDocument();
+        });
       });
     });
 });
