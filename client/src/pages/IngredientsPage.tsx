@@ -128,8 +128,8 @@ export default function IngredientsPage() {
                   Search Recipes With Selected Ingredients
                 </Button>
               </Form.Field>
+              {user.googleId && (
               <Form.Field className="column m-0">
-                {user.googleId && (
                   <Button
                     color="success"
                     aria-label="addSelectedToList"
@@ -138,8 +138,8 @@ export default function IngredientsPage() {
                   >
                     Add Selected To List
                   </Button>
-                )}
               </Form.Field>
+              )}
               <Form.Field className="column m-0">
                 <Button
                   color="danger"
