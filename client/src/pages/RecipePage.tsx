@@ -32,8 +32,9 @@ function RecipePage() {
   const { appendAlert } = useAlert();
   const { user, getSessionUser } = useLogin();
 
+  const [statusCode, setStatusCode] = React.useState<number>(0)
   const [recipe, setRecipe] = React.useState<Recipe>({
-    id: 0,
+    id: -1,
     title: "",
     summary: "",
     instructions: "",
@@ -54,7 +55,10 @@ function RecipePage() {
         setRecipe(data);
       })
       .catch((error) => {
-        console.log(error);
+        if (error.response.status !== 404) {
+          appendAlert("Something went wrong", "danger");
+        }
+        setStatusCode(error.response.status);
       });
   }, [user]);
 
@@ -70,8 +74,7 @@ function RecipePage() {
       setActualServings(1);
     }
   }
-
-  if (!recipe.id) {
+  if (statusCode === 404) {
     return <PageNotFound />
   }
 
