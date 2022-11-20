@@ -48,7 +48,6 @@ function AdminView() {
   }
 
   function handleDelete(id: number) {
-    console.log("Deleting recipe with id: " + id);
     recipeService
       .deleteRecipe(id)
       .then(() => { appendAlert("Recipe deleted successfully", "success"); updateRecipeList(); })
