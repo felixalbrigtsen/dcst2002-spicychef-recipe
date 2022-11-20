@@ -9,6 +9,7 @@ import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom'
 import App from '../../App';
 import Home from '../../pages/Frontpage'
+import recipeService from '../../services/recipe-service';
 
 const shortRecipes = [
   {"id":1,"title":"Tunisian Lamb Soup","summary":"Meal from MealDB","imageUrl":"https://www.themealdb.com/images/media/meals/t8mn9g1560460231.jpg","likes":null,"tags":["Lamb","Soup","Tunisian"]},
@@ -17,6 +18,9 @@ const shortRecipes = [
   {"id":4,"title":"Turkey Meatloaf","summary":"Meal from MealDB","imageUrl":"https://www.themealdb.com/images/media/meals/ypuxtw1511297463.jpg","likes":null,"tags":["Alcoholic","British","Miscellaneous"]},
   {"id":5,"title":"Beef and Oyster pie","summary":"Meal from MealDB","imageUrl":"https://www.themealdb.com/images/media/meals/wrssvt1511556563.jpg","likes":null,"tags":["Beef","British","Pie"]}
 ]
+
+jest.mock('../../services/recipe-service');
+recipeService.getRecipesShort = jest.fn().mockResolvedValue(shortRecipes);
 
 jest.mock('../../services/recipe-service', () => {
   class TaskService {

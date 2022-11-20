@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import axios from "axios";
 import type { Recipe } from "../models/Recipe";
 import type { NewRecipe } from "../models/NewRecipe";

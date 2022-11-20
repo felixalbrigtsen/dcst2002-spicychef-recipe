@@ -9,26 +9,11 @@ import { render, screen, waitFor, fireEvent, act } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import renderWithLoginContext, { sampleUsers, logout } from '../LoginProviderMock';
 import ShoppingListPage from '../../pages/ShoppingListPage';
+import listService from '../../services/list-service';
 
 const mockIngredients = [{"id": 1, "name": "Lamb Mince"}, {"id": 2, "name": "Garlic"}, {"id": 3, "name": "Onion"}]
-
-jest.mock('../../services/list-service', () => {
-  class listService {
-    getIngredients() {
-      return Promise.resolve();
-    }
-    addIngredient() {
-      return Promise.resolve();
-    }
-    removeIngredient() {
-      return Promise.resolve();
-    }
-    getShoppingListItems() {
-      return Promise.resolve(mockIngredients);
-    }
-  }
-  return new listService();
-});
+jest.mock('../../services/list-service');
+listService.getShoppingListItems = jest.fn().mockResolvedValue(mockIngredients)
 
 describe('ShoppingListPage test', () => {
     test('ShoppingListPage blocks non-user', async () => {

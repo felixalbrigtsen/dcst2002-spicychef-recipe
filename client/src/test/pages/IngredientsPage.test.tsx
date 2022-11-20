@@ -7,19 +7,13 @@ import {
 } from 'react-router-dom';
 import { render, screen, waitFor, fireEvent, act } from '@testing-library/react';
 import '@testing-library/jest-dom'
-
+import ingredientService from '../../services/ingredient-service';
 import IngredientsPage from '../../pages/IngredientsPage';
 
 const mockIngredients = [{id: 1, name: 'Carrot'},{id: 2, name: 'Potato'},{id: 3, name: 'Onion'},{id: 4, name: 'Garlic'}]
 
-jest.mock('../../services/ingredient-service', () => {
-    class ingredientService {
-      getIngredients() {
-        return Promise.resolve(mockIngredients);
-      }
-    }
-    return new ingredientService();
-})
+jest.mock('../../services/ingredient-service');
+ingredientService.getIngredients = jest.fn().mockResolvedValue(mockIngredients);
 
 const locationAssignMock = jest.fn();
 

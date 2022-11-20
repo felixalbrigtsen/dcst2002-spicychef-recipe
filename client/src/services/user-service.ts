@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 import axios from "axios";
 import type { User } from "../models/User";
 

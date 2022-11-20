@@ -26,6 +26,15 @@ export const sampleUsers = {
     likes: [],
     shoppingList: [],
   } as User,
+  empty: {
+    googleId: '3',
+    name: 'Test User 3',
+    email: '3',
+    picture: '3',
+    isadmin: false,
+    likes: [],
+    shoppingList: [],
+  } as User,
   invalid: null
 };
 
