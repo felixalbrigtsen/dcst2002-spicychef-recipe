@@ -1,11 +1,10 @@
 import * as React from "react";
-// @ts-expect-error
-import Select from "react-select";
+import Select, { type MultiValue } from "react-select";
 import makeAnimated from "react-select/animated";
 import Fuse from "fuse.js";
 
 import { BrowserRouter as Router, Route, Routes, Link, useSearchParams } from "react-router-dom";
-import { Heading, Hero, Tile, Tabs, Box, Form, Button, Columns } from "react-bulma-components";
+import { Heading, Hero, Tile, Box, Form, Button, Columns } from "react-bulma-components";
 import { type Recipe } from "../models/Recipe";
 import RecipeCard from "../components/RecipeCard";
 
@@ -176,9 +175,9 @@ export default function SearchPage() {
                   value={selectedTags.map((t) => {
                     return { value: t, label: t };
                   })}
-                  onChange={(event: any) => {
+                  onChange={(option: MultiValue<{ value: string; label: string; }> ) => {
                     setSelectedTags(
-                      event.map((tag: { value: string; label: string }) => tag.value)
+                      option.map((tag) => tag.value)
                     );
                   }}
                 />
@@ -197,9 +196,9 @@ export default function SearchPage() {
                   value={selectedIngredients.map((i) => {
                     return { value: i, label: ingredients.find((ing) => ing.value === i)?.label };
                   })}
-                  onChange={(event: any) => {
+                  onChange={(option: MultiValue<{ value: number; label: string | undefined; }> ) => {
                     setSelectedIngredients(
-                      event.map((ingredient: { value: string; label: string }) => ingredient.value)
+                      option.map((ingredient) => ingredient.value)
                     );
                   }}
                 />

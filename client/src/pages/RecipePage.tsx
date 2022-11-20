@@ -2,19 +2,19 @@ import * as React from "react";
 import { BrowserRouter as Router, Route, Routes, Link, useParams } from "react-router-dom";
 
 import {
+  Box,
+  Button,
+  Columns,
   Container,
+  Form,
+  Heading,
+  Hero,
   Image,
   Media,
-  Tile,
-  Heading,
   Notification,
-  Button,
-  Form,
-  Box,
-  Hero,
-  Columns,
+  Tile,
 } from "react-bulma-components";
-import { FaPlus, FaMinus, FaToriiGate, FaThumbsUp } from "react-icons/fa";
+import { FaPlus, FaMinus, FaThumbsUp } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 
 import { type Recipe } from "../models/Recipe";
@@ -59,6 +59,14 @@ function RecipePage() {
   React.useEffect(() => {
     setActualServings(recipe.servings);
   }, [recipe.servings]);
+
+  function adjustServings(newCount: number) {
+    if (newCount > 1 && !Number.isNaN(newCount)) {
+      setActualServings(newCount);
+    } else {
+      setActualServings(1);
+    }
+  }
 
   return (
     <>
@@ -206,9 +214,7 @@ function RecipePage() {
                             color="danger"
                             aria-label="reduceServing"
                             onClick={() => {
-                              actualServings > 1
-                                ? setActualServings(actualServings - 1)
-                                : setActualServings(1);
+                              adjustServings(actualServings - 1);
                             }}
                           >
                             <span className="icon">
@@ -224,7 +230,7 @@ function RecipePage() {
                               value={actualServings}
                               min={1}
                               onChange={(event) => {
-                                setActualServings(Number.parseInt(event.target.value, 10));
+                                adjustServings(Number.parseInt(event.target.value, 10));
                               }}
                             />
                           </Form.Control>
@@ -234,7 +240,7 @@ function RecipePage() {
                             color="success"
                             aria-label="increaseServings"
                             onClick={() => {
-                              setActualServings(actualServings + 1);
+                              adjustServings(actualServings + 1);
                             }}
                           >
                             <span className="icon">

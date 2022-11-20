@@ -1,15 +1,7 @@
 import * as React from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 
-import {
-  Table,
-  Container,
-  Tile,
-  Box,
-  Button,
-  Modal,
-  Form,
-} from "react-bulma-components";
+import { Table, Container, Tile, Box, Button, Modal, Form } from "react-bulma-components";
 import { MdDeleteForever, MdEdit, MdRemoveRedEye, MdAddCircle, MdSearch } from "react-icons/md";
 import { BiImport } from "react-icons/bi";
 import { type Recipe } from "../models/Recipe";
@@ -150,7 +142,9 @@ function AdminView() {
                       placeholder="MealDB ID"
                       type="number"
                       onInput={(event) => {
-                        setMealDBRecipe(Number.parseInt((event.target as HTMLInputElement).value, 10));
+                        setMealDBRecipe(
+                          Number.parseInt((event.target as HTMLInputElement).value, 10)
+                        );
                       }}
                     ></Form.Input>
                   </Form.Control>

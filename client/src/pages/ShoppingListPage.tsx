@@ -1,14 +1,6 @@
 import * as React from "react";
 import { MdDeleteForever } from "react-icons/md";
-import {
-  Box,
-  Button,
-  Container,
-  Heading,
-  Notification,
-  Table,
-  Tile,
-} from "react-bulma-components";
+import { Box, Button, Container, Heading, Notification, Table, Tile } from "react-bulma-components";
 import { useEffect } from "react";
 import NotAuthorized from "../components/NotAuthorized";
 
@@ -75,9 +67,10 @@ export default function ShoppingListPage() {
                 aria-label="clearList"
                 className="is-rounded"
                 onClick={() => {
-                  listItems?.map((item, index) => {
+                  for (const item of listItems) {
                     handleRemove(item.id);
-                  });
+                  }
+
                   updateListItems();
                 }}
               >
