@@ -1,40 +1,48 @@
 import * as React from "react";
-import listService from "../services/list-service";
+import { MdDeleteForever } from "react-icons/md";
+import { Box, Button, Container, Heading, Notification, Table, Tile } from "react-bulma-components";
+import { useEffect } from "react";
 import NotAuthorized from "../components/NotAuthorized";
 
-import { MdDeleteForever } from "react-icons/md";
-import {
-  Box,
-  Button,
-  Form,
-  Container,
-  Heading,
-  Hero,
-  Notification,
-  Table,
-  Tile,
-} from "react-bulma-components";
-import { useEffect, useState } from "react";
+import listService from "../services/list-service";
+
 import { useLogin } from "../hooks/Login";
+import { useAlert } from "../hooks/Alert";
 
 export default function ShoppingListPage() {
   const { user, getSessionUser } = useLogin();
+  const { appendAlert } = useAlert();
 
   function handleRemove(ingredientId: number) {
-    listService.removeIngredient(ingredientId).then(getSessionUser);
+    listService
+      .removeIngredient(ingredientId)
+      .then(getSessionUser)
+      .catch((error) => {
+        appendAlert("Error removing ingredient", "danger");
+      });
   }
 
-  let [listItems, setListItems] = React.useState<{ id: number; name: string }[]>([]);
+  const [listItems, setListItems] = React.useState<Array<{ id: number; name: string }>>([]);
 
   function updateListItems() {
-    listService.getShoppingListItems(user).then((items) => {
-      setListItems(items);
-    });
+    listService
+      .getShoppingListItems(user)
+      .then((items) => {
+        setListItems(items);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
+
   useEffect(updateListItems, [user]);
 
-  if(!user.googleId) {
-    return <Container className="mt-2"><NotAuthorized color={"info"} /></Container>;
+  if (!user.googleId) {
+    return (
+      <Container className="mt-2">
+        <NotAuthorized color={"info"} />
+      </Container>
+    );
   }
 
   return (
@@ -59,9 +67,10 @@ export default function ShoppingListPage() {
                 aria-label="clearList"
                 className="is-rounded"
                 onClick={() => {
-                  listItems?.map((item, index) => {
+                  for (const item of listItems) {
                     handleRemove(item.id);
-                  });
+                  }
+
                   updateListItems();
                 }}
               >

@@ -2,21 +2,21 @@ import * as React from "react";
 import { Link } from "react-router-dom";
 import { Tile, Notification, Container, Heading, Image, Button } from "react-bulma-components";
 
-interface NotAuthorizedProps {
-    color: string;
-}
+type NotAuthorizedProps = {
+  color: string;
+};
 
 function NotAuthorized(props: NotAuthorizedProps) {
-    return (
+  return (
     <>
-        <Tile
+      <Tile
         className="is-vertical has-text-centered"
         color={props.color}
         renderAs={Notification}
-        >
+      >
         <Heading>You are not authorized to view this page</Heading>
-        </Tile>
-        <Tile className="is-vertical has-text-centered is-align-items-center">
+      </Tile>
+      <Tile className="is-vertical has-text-centered is-align-items-center">
         <Heading subtitle>Please log in to view this page.</Heading>
         <Link to="/login">
           <Button
@@ -27,9 +27,9 @@ function NotAuthorized(props: NotAuthorizedProps) {
             <Heading subtitle>Login</Heading>
           </Button>
         </Link>
-        </Tile>
+      </Tile>
     </>
-    )
+  );
 }
 
 export default NotAuthorized;

@@ -1,11 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import "bulma/css/bulma.min.css";
-import { Button, Navbar, Image } from "react-bulma-components";
-import { useState } from "react";
-import { useLogin } from "../hooks/Login";
-import { MdAdminPanelSettings, MdAccountCircle, MdLogout, MdListAlt, MdHome, MdSearch, MdThumbsUpDown } from "react-icons/md";
+import { Navbar, Image } from "react-bulma-components";
+
+import {
+  MdAdminPanelSettings,
+  MdAccountCircle,
+  MdLogout,
+  MdListAlt,
+  MdHome,
+  MdSearch,
+  MdThumbsUpDown,
+} from "react-icons/md";
 import { IoSparklesSharp } from "react-icons/io5";
 import { FaCarrot } from "react-icons/fa";
+
+import { useLogin } from "../hooks/Login";
 
 export default function NavBar() {
   const [isActive, setIsActive] = useState(false);

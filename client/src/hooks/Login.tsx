@@ -5,19 +5,19 @@ import { useAlert } from "./Alert";
 
 export const LoginContext = React.createContext({
   user: {} as User,
-  getSessionUser: () => {},
-  logout: () => {},
+  getSessionUser() {},
+  logout() {},
 });
 
-interface LoginProviderChildren {
+type LoginProviderChildren = {
   children: React.ReactNode | React.ReactNode[];
-}
+};
 
 export const LoginProvider = ({ children }: LoginProviderChildren) => {
   const [user, setUser] = React.useState<User>({} as User);
   const { appendAlert } = useAlert();
 
-  //TODO: Move to user-service
+  // TODO: Move to user-service
   const getSessionUser = () => {
     axios
       .get(process.env.REACT_APP_API_URL + "/auth/profile")

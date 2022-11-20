@@ -1,22 +1,19 @@
 import * as React from "react";
 import Fuse from "fuse.js";
-import ingredientService from "../services/ingredient-service";
-import listService from "../services/list-service";
-import { Ingredient } from "../models/Ingredient";
-
 import {
   Box,
   Button,
   Form,
   Container,
   Heading,
-  Hero,
-  Icon,
   Notification,
   Table,
   Tile,
 } from "react-bulma-components";
 import { MdAddCircle, MdSearch } from "react-icons/md";
+import ingredientService from "../services/ingredient-service";
+import listService from "../services/list-service";
+import { type Ingredient } from "../models/Ingredient";
 
 import { useAlert } from "../hooks/Alert";
 import { useLogin } from "../hooks/Login";
@@ -29,7 +26,7 @@ export default function IngredientsPage() {
   const [newQuery, setNewQuery] = React.useState<string>("");
   const [selectedIngredients, setSelectedIngredients] = React.useState<Ingredient[]>([]);
 
-  let [visibleIngredients, setVisibleIngredients] = React.useState<Ingredient[]>([]);
+  const [visibleIngredients, setVisibleIngredients] = React.useState<Ingredient[]>([]);
 
   const fuse = new Fuse(ingredients, {
     keys: ["name"],
@@ -48,7 +45,9 @@ export default function IngredientsPage() {
         setIngredients(ingredients.map((ingredient) => toTitleCase(ingredient)));
         setVisibleIngredients(ingredients);
       })
-      .catch((err) => console.error(err));
+      .catch((error) => {
+        console.error(error);
+      });
   }, []);
 
   React.useEffect(searchIngredients, [newQuery]);
@@ -62,22 +61,29 @@ export default function IngredientsPage() {
   }
 
   function addSelectedToList() {
-    selectedIngredients.forEach((ingredient) => {
+    for (const ingredient of selectedIngredients) {
       listService
         .addIngredient(ingredient.id)
-        .then(() => appendAlert("Ingredients added to list", "success"));
-    });
+        .then(() => {
+          appendAlert("Ingredients added to list", "success");
+        })
+        .catch((error) => {
+          appendAlert("Error adding ingredients to list", "danger");
+        });
+    }
   }
 
   function searchRecipeByIngredients(mode: string) {
     const ingredientIds = selectedIngredients.map((ingredient) => ingredient.id);
-    window.location.assign(`/search/?ingredients=${encodeURIComponent(ingredientIds.join(','))}`);
+    window.location.assign(`/search/?ingredients=${encodeURIComponent(ingredientIds.join(","))}`);
   }
 
-  function searchIngredients () {
+  function searchIngredients() {
     if (newQuery.length === 0) {
-      return setVisibleIngredients(ingredients);
+      setVisibleIngredients(ingredients);
+      return;
     }
+
     const results = fuse.search(newQuery);
     setVisibleIngredients(results.map((result) => result.item));
   }
@@ -105,9 +111,9 @@ export default function IngredientsPage() {
                 >
                   <Form.Input
                     type="text"
-                    onChange={
-                      (event: React.FormEvent) => { setNewQuery((event.target as HTMLInputElement).value); }
-                    }
+                    onChange={(event: React.FormEvent) => {
+                      setNewQuery((event.target as HTMLInputElement).value);
+                    }}
                     placeholder="Search for ingredients"
                     value={newQuery}
                   />
@@ -185,7 +191,10 @@ export default function IngredientsPage() {
                           onClick={() => {
                             listService.addIngredient(ingredient.id)
                               .then(() => appendAlert("Ingredients added to list", "success"))
-                              .then(getSessionUser);
+                              .then(getSessionUser)
+                              .catch((error) => {
+                                appendAlert("Error adding ingredient to list", "danger");
+                              });
                           }}
                           disabled={user.shoppingList?.includes(ingredient.id)}
                         >
