@@ -59,7 +59,7 @@ function RecipeCard(props: RecipeCardProps) {
                           getSessionUser();
                         })
                         .catch(() => {
-                          appendAlert("Failed to remove recipe from likes", "danger");
+                          appendAlert("Failed to remove recipe from liked recipes", "danger");
                         })
                     }
                   >
