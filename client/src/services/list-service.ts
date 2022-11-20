@@ -1,5 +1,3 @@
-/* istanbul ignore file */
-
 import axios from "axios";
 import { Ingredient } from "../models/Ingredient";
 import ingredientService from "./ingredient-service";
