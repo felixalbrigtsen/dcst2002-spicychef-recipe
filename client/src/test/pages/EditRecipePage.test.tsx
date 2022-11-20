@@ -3,13 +3,27 @@ import {
   BrowserRouter as Router, 
   Route, 
   Routes, 
-  Link
+  Link,
+  MemoryRouter
 } from 'react-router-dom';
 import { render, screen, waitFor, fireEvent, act } from '@testing-library/react';
 import '@testing-library/jest-dom'
 import renderWithLoginContext, { sampleUsers, logout } from '../LoginProviderMock';
 
 import EditRecipePage from '../../pages/EditRecipePage';
+
+function renderEditRecipePage(id: number) {
+  act(() => {
+    renderWithLoginContext(
+      <MemoryRouter initialEntries={[`/recipes/${id}`]}>
+        <Routes>
+          <Route path="/recipes/:id" element={<EditRecipePage />} />
+        </Routes>
+      </MemoryRouter>
+      ,sampleUsers.admin
+      );
+    });
+  }
 
 describe('EditRecipePage test', () => {
     test('EditRecipePage blocks user', async () => {
@@ -24,8 +38,6 @@ describe('EditRecipePage test', () => {
       });
     });
     test('Editpage renders for admin', async () => {
-      act(() => {
-        renderWithLoginContext(<Router><EditRecipePage /></Router>, sampleUsers.admin)
-      })
+      renderEditRecipePage(1);
     });
 });
