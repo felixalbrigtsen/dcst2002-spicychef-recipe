@@ -226,7 +226,7 @@ class RecipeService {
 
   getRecipesWithAllIngredients(ingredientIds: number[]): Promise<Recipe[]> {
     return new Promise((resolve, reject) => {
-      pool.query('SELECT recipeId, COUNT(*) AS matchcount FROM recipe_ingredient WHERE ingredientId IN (?) GROUP BY recipeId HAVING matchcount = ?', [ingredientIds, ingredientIds.length], (err: QueryError | null, results: RowDataPacket[]) => {
+      pool.query('SELECT recipeId, COUNT(DISTINCT ingredientId) AS matchcount FROM recipe_ingredient WHERE ingredientId IN (?) GROUP BY recipeId HAVING matchcount = ?', [ingredientIds, ingredientIds.length], (err: QueryError | null, results: RowDataPacket[]) => {
         if (err) {
           return reject(err);
         }
