@@ -14,6 +14,8 @@ import {
   Notification,
   Tile,
 } from "react-bulma-components";
+import ReactTooltip from "react-tooltip";
+
 import { FaPlus, FaMinus, FaThumbsUp } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 
@@ -110,7 +112,7 @@ function RecipePage() {
                     <Container className="is-flex is-justify-content-space-between">
                       {user.googleId ? (
                         <>
-                          {user.googleId && user.likes.includes(recipe.id) ? (
+                          {user.googleId && user.likes?.includes(recipe.id) ? (
                             <Button
                               className="is-rounded"
                               aria-label="removeLike"
@@ -119,11 +121,11 @@ function RecipePage() {
                                 recipeService
                                   .removeLike(recipe.id)
                                   .then(() => {
-                                    appendAlert("Recipe removed from favorites", "info");
+                                    appendAlert("Recipe removed from liked recipes", "info");
                                     getSessionUser();
                                   })
                                   .catch(() => {
-                                    appendAlert("Failed to remove recipe from favorites", "danger");
+                                    appendAlert("Failed to remove recipe from liked recipes", "danger");
                                   });
                               }}
                             >
@@ -142,11 +144,11 @@ function RecipePage() {
                                 recipeService
                                   .addLike(recipe.id)
                                   .then(() => {
-                                    appendAlert("Recipe added to favorites", "info");
+                                    appendAlert("Recipe added to liked recipes", "info");
                                     getSessionUser();
                                   })
                                   .catch(() => {
-                                    appendAlert("Failed to add recipe to favorites", "danger");
+                                    appendAlert("Failed to add recipe to liked recipes", "danger");
                                   });
                               }}
                             >
@@ -158,17 +160,22 @@ function RecipePage() {
                           )}
                         </>
                       ) : (
-                        <Button
-                          color="info"
-                          disabled
-                          className="is-rounded"
-                        >
-                          {" "}
-                          <span>Like</span>
-                          <span className="icon">
-                            <FaThumbsUp />
-                          </span>
-                        </Button>
+                        <>
+                          <div data-tip="Login to like this recipe">
+                            <Button
+                              color="info"
+                              disabled
+                              className="is-rounded"
+                            >
+                              {" "}
+                              <span>Like</span>
+                              <span className="icon">
+                                <FaThumbsUp />
+                              </span>
+                            </Button>
+                          </div>
+                          <ReactTooltip />
+                        </>
                       )}
                       {user.isadmin && (
                         <Link to={`/edit/${recipe.id}`}>
@@ -304,12 +311,17 @@ function RecipePage() {
                         Add Ingredients to List
                       </Button>
                     ) : (
-                      <Button
-                        renderAs={Notification}
-                        disabled
-                      >
-                        Add Ingredients to List
-                      </Button>
+                      <>
+                        <div data-tip="Login to add ingredients to shopping list">
+                          <Button
+                            renderAs={Notification}
+                            disabled
+                          >
+                            Add Ingredients to List
+                          </Button>
+                        </div>
+                        <ReactTooltip />
+                      </>
                     )}
                   </Tile>
                 </Tile>

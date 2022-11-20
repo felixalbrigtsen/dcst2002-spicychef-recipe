@@ -9,8 +9,11 @@ import {
   Notification,
   Table,
   Tile,
+  Card,
 } from "react-bulma-components";
+import ReactTooltip from "react-tooltip";
 import { MdAddCircle, MdSearch } from "react-icons/md";
+
 import ingredientService from "../services/ingredient-service";
 import listService from "../services/list-service";
 import { type Ingredient } from "../models/Ingredient";
@@ -184,22 +187,25 @@ export default function IngredientsPage() {
                         ></Form.Checkbox>
                       </td>
                       <td className="has-text-centered">
-                        <Button
-                          color="success"
-                          className="is-rounded is-outlined"
-                          aria-label={`Add ${ingredient.name} to list`}
-                          onClick={() => {
-                            listService.addIngredient(ingredient.id)
-                              .then(() => appendAlert("Ingredients added to list", "success"))
-                              .then(getSessionUser)
-                              .catch((error) => {
-                                appendAlert("Error adding ingredient to list", "danger");
-                              });
-                          }}
-                          disabled={user.shoppingList?.includes(ingredient.id)}
-                        >
-                          <MdAddCircle />
-                        </Button>
+                        <div data-tip={!user.googleId ? "Login to add this recipe to your shopping list" : ""}>
+                          <Button
+                            color="success"
+                            className="is-rounded is-outlined"
+                            aria-label={`Add ${ingredient.name} to list`}
+                            onClick={() => {
+                              listService.addIngredient(ingredient.id)
+                                .then(() => appendAlert("Ingredients added to list", "success"))
+                                .then(getSessionUser)
+                                .catch((error) => {
+                                  appendAlert("Error adding ingredient to list", "danger");
+                                });
+                              }}
+                            disabled={!user.googleId || user.shoppingList?.includes(ingredient.id)}
+                          >
+                            <MdAddCircle />
+                          </Button>
+                        </div>
+                        <ReactTooltip />
                       </td>
                     </tr>
                   ))}

@@ -19,7 +19,7 @@ SpicyChef is an online recipe application. It is developed by students at NTNU, 
 
 - Recipes can be browsed and searched in [/recipes](https://recipe.feal.no/recpies) and [/search](https://recipe.feal.no/search)
 - Users can sign in using google
-- Users can like recipes, and find their favorites in [/likes](https://recipe.feal.no/likes)
+- Users can like recipes, and find them in [/likes](https://recipe.feal.no/likes)
 - Ingredients can be added to the users shopping list in [/shoppinglist](https://recipe.feal.no/shoppinglist)
 - Recipes can be filtered and found by their tags, categories, area of origin and their number of likes
 - Administrators can easily edit and add new recipes, or automatically import them from TheMealDB

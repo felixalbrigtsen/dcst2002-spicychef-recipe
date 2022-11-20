@@ -55,11 +55,11 @@ function RecipeCard(props: RecipeCardProps) {
                       recipeService
                         .removeLike(props.recipe.id)
                         .then(() => {
-                          appendAlert("Recipe removed from favorites", "info");
+                          appendAlert("Recipe removed from liked recipes", "info");
                           getSessionUser();
                         })
                         .catch(() => {
-                          appendAlert("Failed to remove recipe from favorites", "danger");
+                          appendAlert("Failed to remove recipe from liked recipes", "danger");
                         })
                     }
                   >
@@ -81,11 +81,11 @@ function RecipeCard(props: RecipeCardProps) {
                       recipeService
                         .addLike(props.recipe.id)
                         .then(() => {
-                          appendAlert("Recipe added to favorites", "success");
+                          appendAlert("Recipe added to liked recipes", "success");
                           getSessionUser();
                         })
                         .catch(() => {
-                          appendAlert("Failed to add recipe to favorites", "danger");
+                          appendAlert("Failed to add recipe to liked recipes", "danger");
                         })
                     }
                   >
