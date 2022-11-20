@@ -23,7 +23,7 @@ router.get('/' , (req, res) => {
   res.send('Hello World! You have reached the Recipe API server. Did you mean to go <a href="/">home</a>?');
 });
 
-function handleServerError(res: any, err: any) { //TODO: test
+function handleServerError(res: any, err: any) { 
   if (!err.code || !ignoredErrors.includes(err.code)) {
     console.error(err);
   }
@@ -65,7 +65,7 @@ router.get('/recipes' , (req, res) => {
     const ingredientList = [ ...new Set(ingredients.split(',')) ].map((id: string) => parseInt(id));
 
     // Verify that all ingredients are valid numbers
-    if (ingredientList.some((id: number) => isNaN(id))) { //TODO: test
+    if (ingredientList.some((id: number) => isNaN(id))) {
       res.status(400).send('Invalid ingredient id');
       return;
     }

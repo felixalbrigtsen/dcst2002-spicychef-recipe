@@ -7,6 +7,7 @@ import recipeService from "../services/recipe-service";
 import { initTest } from "../utils/initdb";
 import { RecipeIngredient } from "../models/RecipeIngredient";
 import { server } from "..";
+import mealdbService from "../services/mealdb-service";
 
 const PORT = Number(process.env.PORT) || 3000;
 
@@ -136,8 +137,8 @@ test("Default message works (GET)", () => {
   });
 });
 
-describe("Fetch recipes (GET)", () => {
-  test("Fetch all recipes (200 OK)", (done) => {
+describe("Get recipes (GET)", () => {
+  test("Get all recipes (200)", (done) => {
     axios.get("/recipes").then((response) => {
       expect(response.status).toEqual(200);
       let expected = testRecipesShort;
@@ -153,7 +154,7 @@ describe("Fetch recipes (GET)", () => {
     });
   });
 
-  test("Fetch recipe (200 OK)", (done) => {
+  test("Get recipe (200)", (done) => {
     axios.get("/recipes/1").then((response) => {
       expect(response.status).toEqual(200);
       response.data.created_at = testRecipes[0].created_at;
@@ -162,7 +163,7 @@ describe("Fetch recipes (GET)", () => {
     });
   });
 
-  test("Fetch recipe that is not a number (400 Bad Request)", (done) => {
+  test("Get recipe that is not a number (400)", (done) => {
     axios
       .get('/recipes/"text"')
       .then((_response) => done(new Error()))
@@ -173,7 +174,7 @@ describe("Fetch recipes (GET)", () => {
       });
   });
 
-  test("Fetch recipe that doesnt exist (404 Not Found)", (done) => {
+  test("Get recipe that doesnt exist (404)", (done) => {
     axios
       .get("/recipes/4")
       .then((_response) => done(new Error()))
@@ -185,8 +186,48 @@ describe("Fetch recipes (GET)", () => {
   });
 });
 
-describe("Fetch ingredients (GET)", () => {
-  test("Fetch all ingredients (200 OK)", (done) => {
+describe("Get recipes with specified parameters (200)", () => {
+  test("Get recipe with all of certain ingredients (200)", (done) => {
+    axios.get(`/recipes/?ingredients=${encodeURIComponent("3,4")}&mode=all`).then((response) => {
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual([testRecipesShort[1]]);
+      done();
+    });
+  })
+
+  test("Get recipes with any of certain ingredients (200)", (done) => {
+    axios.get(`/recipes/?ingredients=${encodeURIComponent("1")}&mode=any`).then((response) => {
+      expect(response.status).toEqual(200);
+      expect(response.data).toEqual([testRecipesShort[0]]);
+      done();
+    });
+  })
+
+  test("Get recipes with invalid ingredient id (400)", (done) => {
+    axios
+      .get(`/recipes/?ingredients=${encodeURIComponent("1,text")}&mode=any`)
+      .then((_response) => done(new Error()))
+      .catch((error) => {
+        expect(error.response.status).toEqual(400);
+        expect(error.response.data).toEqual("Invalid ingredient id");
+        done();
+      });
+  });
+
+  test("Get recipes with invalid mode (400)", (done) => {
+    axios
+      .get(`/recipes/?ingredients=${encodeURIComponent("1,2")}&mode=wrong`)
+      .then((_response) => done(new Error()))
+      .catch((error) => {
+        expect(error.response.status).toEqual(400);
+        expect(error.response.data).toEqual("Invalid mode");
+        done();
+      });
+  });
+})
+
+describe("Get ingredients (GET)", () => {
+  test("Get all ingredients (200)", (done) => {
     axios.get("/ingredients").then((response) => {
       expect(response.status).toEqual(200);
       expect(response.data).toEqual(testIngredients);
@@ -197,7 +238,7 @@ describe("Fetch ingredients (GET)", () => {
 });
 
 describe("Search recipes (GET)", () => {
-  test("Search for chicken (200 OK)", (done) => {
+  test("Search for chicken (200)", (done) => {
     axios.get("/search?q=chicken").then((response) => {
       expect(response.status).toEqual(200);
       expect(response.data).toEqual([testRecipesShort[2]]);
@@ -205,7 +246,7 @@ describe("Search recipes (GET)", () => {
     });
   });
 
-  test("Empty query (400 Bad request)", (done) => {
+  test("Empty query (400)", (done) => {
     axios
       .get("/search?q=")
       .then(() => done(new Error()))
@@ -217,7 +258,7 @@ describe("Search recipes (GET)", () => {
       });
   });
 
-  test("Short query (400 Bad Request)", (done) => {
+  test("Short query (400)", (done) => {
     axios
       .get("/search?q=ca")
       .then(() => done(new Error()))
@@ -230,8 +271,8 @@ describe("Search recipes (GET)", () => {
   });
 });
 
-describe("Fetch tags (GET)", () => {
-  test("Fetch all tags (200 OK)", (done) => {
+describe("Get tags (GET)", () => {
+  test("Get all tags (200)", (done) => {
     axios.get("/tags").then((response) => {
       expect(response.status).toEqual(200);
       expect(response.data).toEqual(testTags);
@@ -247,7 +288,7 @@ Tests of the services working WITH authorization can be found in router-user.tes
 */
 
 describe("Endpoints requiring authorization handle unauthorized requests", () => {
-  test("Post like (403 Forbidden)", (done) => {
+  test("Post like (403)", (done) => {
     axios
       .post("/likes/1")
       .then(() => done(new Error()))
@@ -259,7 +300,7 @@ describe("Endpoints requiring authorization handle unauthorized requests", () =>
       });
   });
 
-  test("Post like (403 Forbidden)", (done) => {
+  test("Post like (403)", (done) => {
     axios
       .delete("/likes/1")
       .then(() => done(new Error()))
@@ -271,7 +312,7 @@ describe("Endpoints requiring authorization handle unauthorized requests", () =>
       });
   });
 
-  test("Post shopping list item (403 Forbidden)", (done) => {
+  test("Post shopping list item (403)", (done) => {
     axios
       .post("/list/1")
       .then(() => done(new Error()))
@@ -283,7 +324,7 @@ describe("Endpoints requiring authorization handle unauthorized requests", () =>
       });
   });
 
-  test("Delete item from shopping list (403 Forbidden)", (done) => {
+  test("Delete item from shopping list (403)", (done) => {
     axios
       .delete("/list/1")
       .then(() => done(new Error()))
@@ -295,7 +336,7 @@ describe("Endpoints requiring authorization handle unauthorized requests", () =>
       });
   });
 
-  test("PUT edit a recipe (403 Forbidden)", (done) => {
+  test("PUT edit a recipe (403)", (done) => {
     axios
       .put("/recipes/1")
       .then(() => done(new Error()))
@@ -307,7 +348,7 @@ describe("Endpoints requiring authorization handle unauthorized requests", () =>
       });
   });
 
-  test("POST create new recipe (403 Forbidden)", (done) => {
+  test("POST create new recipe (403)", (done) => {
     axios
       .post("/recipes")
       .then(() => done(new Error()))
@@ -319,7 +360,7 @@ describe("Endpoints requiring authorization handle unauthorized requests", () =>
       });
   });
 
-  test("DELETE delete a recipe (403 Forbidden)", (done) => {
+  test("DELETE delete a recipe (403)", (done) => {
     axios
       .delete("/recipes/1")
       .then(() => done(new Error()))
@@ -331,3 +372,27 @@ describe("Endpoints requiring authorization handle unauthorized requests", () =>
       });
   });
 });
+
+test("Test the one service used in utils, but not in any endpoints", (done) => {
+  mealdbService.getRandomMeal().then((result) => {
+    expect(result).toHaveProperty("idMeal")
+    expect(Number(result.idMeal)).toBeGreaterThan(0)
+    expect(result).toHaveProperty("title")
+    expect(result.title.length).toBeGreaterThan(0)
+    done()
+  })
+})
+
+test("Server error handling from prod (500)", (done) => {
+  pool.end()
+  axios.get("/recipes")
+    .then(() => done(new Error()))
+    .then((_response) => done(new Error()))
+    .catch((error) => {
+      expect(error.response.status).toEqual(500);
+      expect(error.response.data).toEqual("Internal server error");
+      done();
+    });
+})
+
+
