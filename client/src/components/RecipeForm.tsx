@@ -2,11 +2,10 @@ import * as React from "react";
 // @ts-ignore
 import CreatableSelect, { useCreatable } from "react-select/creatable";
 import makeAnimated from "react-select/animated";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 
 import { Form, Button, Tile, Image, Table, Container } from "react-bulma-components";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import { Recipe } from "../models/Recipe";
 import { RecipeIngredient } from "../models/RecipeIngredient";
@@ -31,9 +30,9 @@ const animatedComponents = makeAnimated();
 
 function RecipeForm(props: RecipeFormProps) {
   // Values used in multiselect and createable select components
-  const [ingredientOptions, setIngredientOptions] = useState<{ value: number; label: string }[]>([]);
-  const [tagOptions, setTagOptions] = useState<{ value: string; label: string }[]>([]);
-  const [defaultTags, setDefaultTags] = useState<{ value: string; label: string }[]>([]);
+  const [ingredientOptions, setIngredientOptions] = React.useState<{ value: number; label: string }[]>([]);
+  const [tagOptions, setTagOptions] = React.useState<{ value: string; label: string }[]>([]);
+  const [defaultTags, setDefaultTags] = React.useState<{ value: string; label: string }[]>([]);
 
   // Values used in normal input field and textarea, as well as the recipe object
   const [recipe, setRecipe] = React.useState<Recipe>(props.recipe);
@@ -84,9 +83,7 @@ function RecipeForm(props: RecipeFormProps) {
         })
       );
     });
-  }, []);
 
-  useEffect(() => {
     recipeService.getRecipesShort().then((res) => {
       const tags = res.map((r) => r.tags).flat();
       const uniqueTags = [...new Set(tags)];

@@ -11,6 +11,7 @@ import '@testing-library/jest-dom'
 import renderWithLoginContext, { sampleUsers, logout } from '../LoginProviderMock';
 import RecipePage from '../../pages/RecipePage'
 import recipeService from '../../services/recipe-service';
+import ingredientService from '../../services/ingredient-service';
 
 import listService from '../../services/list-service';
 jest.mock('../../services/recipe-service');
@@ -47,6 +48,9 @@ function renderRecipePage(id: number) {
   recipeService.addLike = jest.fn().mockResolvedValue(true);
   recipeService.removeLike = jest.fn().mockResolvedValue(true);
   recipeService.removeLike = jest.fn().mockResolvedValue(true);
+
+  jest.mock('../../services/ingredient-service');
+  ingredientService.getIngredients = jest.fn().mockResolvedValue(testRecipes.map(recipe => recipe.ingredients).flat());
   
   describe('Recipe page tests', () => {
     test('Correct default text', async () => {

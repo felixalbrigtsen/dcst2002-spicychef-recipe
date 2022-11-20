@@ -8,11 +8,15 @@ import {
 import { render, screen, waitFor, fireEvent, act } from '@testing-library/react';
 import '@testing-library/jest-dom'
 import renderWithLoginContext, { sampleUsers, logout } from '../LoginProviderMock';
+import recipeService from '../../services/recipe-service';
+
+jest.mock('../../services/recipe-service');
+recipeService.getRecipesShort = jest.fn().mockResolvedValue([]);
 
 import CreateRecipePage from '../../pages/CreateRecipePage';
 
 describe('CreateRecipePage test', () => {
-    test('CreateRecipePage blocks user', async () => {
+    test('CreateRecipePage requires admin', async () => {
       act(() => {
         renderWithLoginContext(<Router><CreateRecipePage /></Router>, sampleUsers.normal)
       });
