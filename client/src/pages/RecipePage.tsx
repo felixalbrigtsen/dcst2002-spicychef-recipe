@@ -1,8 +1,6 @@
 import * as React from "react";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Link, useParams } from "react-router-dom";
 
-import { useParams } from "react-router-dom";
-import { useLogin } from "../hooks/Login";
 import {
   Container,
   Image,
@@ -16,21 +14,22 @@ import {
   Hero,
   Columns,
 } from "react-bulma-components";
-import { FaPlus, FaMinus, FaToriiGate } from "react-icons/fa";
+import { FaPlus, FaMinus, FaToriiGate, FaThumbsUp } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
-import { FaThumbsUp } from "react-icons/fa";
+
+import { type Recipe } from "../models/Recipe";
+
 import recipeService from "../services/recipe-service";
-import { Recipe } from "../models/Recipe";
-import { RecipeIngredient } from "../models/RecipeIngredient";
 import listService from "../services/list-service";
 
+import { useLogin } from "../hooks/Login";
 import { useAlert } from "../hooks/Alert";
 
 function RecipePage() {
   const { appendAlert } = useAlert();
   const { user, getSessionUser } = useLogin();
 
-  let [recipe, setRecipe] = React.useState<Recipe>({
+  const [recipe, setRecipe] = React.useState<Recipe>({
     id: 0,
     title: "",
     summary: "",
@@ -44,14 +43,19 @@ function RecipePage() {
     likes: 0,
   });
 
-  let id = Number(useParams().id);
+  const id = Number(useParams().id);
   React.useEffect(() => {
-    recipeService.getRecipe(id).then((data) => {
-      setRecipe(data);
-    });
+    recipeService
+      .getRecipe(id)
+      .then((data) => {
+        setRecipe(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, [user]);
 
-  let [actualServings, setActualServings] = React.useState<number>(recipe.servings);
+  const [actualServings, setActualServings] = React.useState<number>(recipe.servings);
   React.useEffect(() => {
     setActualServings(recipe.servings);
   }, [recipe.servings]);
@@ -96,56 +100,56 @@ function RecipePage() {
                     </Media.Item>
                     <br />
                     <Container className="is-flex is-justify-content-space-between">
-                    {user.googleId ? (
-                      <>
-                        {user.googleId && user.likes.includes(recipe.id) ? (
-                          <Button
-                            className="is-rounded"
-                            aria-label="removeLike"
-                            color="success"
-                            onClick={() => {
-                              recipeService
-                                .removeLike(recipe.id)
-                                .then(() => {
-                                  appendAlert("Recipe removed from favorites", "info"),
+                      {user.googleId ? (
+                        <>
+                          {user.googleId && user.likes.includes(recipe.id) ? (
+                            <Button
+                              className="is-rounded"
+                              aria-label="removeLike"
+                              color="success"
+                              onClick={() => {
+                                recipeService
+                                  .removeLike(recipe.id)
+                                  .then(() => {
+                                    appendAlert("Recipe removed from favorites", "info");
                                     getSessionUser();
-                                })
-                                .catch(() => {
-                                  appendAlert("Failed to remove recipe from favorites", "danger");
-                                });
-                            }}
-                          >
-                            <span>Liked</span>
-                            <span className="icon">
-                              <FaThumbsUp />
-                            </span>
-                          </Button>
-                        ) : (
-                          <Button
-                            className="is-rounded"
-                            aria-label="addLike"
-                            color="info"
-                            outlined
-                            onClick={() => {
-                              recipeService
-                                .addLike(recipe.id)
-                                .then(() => {
-                                  appendAlert("Recipe added to favorites", "info"),
+                                  })
+                                  .catch(() => {
+                                    appendAlert("Failed to remove recipe from favorites", "danger");
+                                  });
+                              }}
+                            >
+                              <span>Liked</span>
+                              <span className="icon">
+                                <FaThumbsUp />
+                              </span>
+                            </Button>
+                          ) : (
+                            <Button
+                              className="is-rounded"
+                              aria-label="addLike"
+                              color="info"
+                              outlined
+                              onClick={() => {
+                                recipeService
+                                  .addLike(recipe.id)
+                                  .then(() => {
+                                    appendAlert("Recipe added to favorites", "info");
                                     getSessionUser();
-                                })
-                                .catch(() => {
-                                  appendAlert("Failed to add recipe to favorites", "danger");
-                                });
-                            }}
-                          >
-                            <span>Like</span>
-                            <span className="icon">
-                              <FaThumbsUp />
-                            </span>
-                          </Button>
-                        )}
-                      </>
-                    ) : (
+                                  })
+                                  .catch(() => {
+                                    appendAlert("Failed to add recipe to favorites", "danger");
+                                  });
+                              }}
+                            >
+                              <span>Like</span>
+                              <span className="icon">
+                                <FaThumbsUp />
+                              </span>
+                            </Button>
+                          )}
+                        </>
+                      ) : (
                         <Button
                           color="info"
                           disabled
@@ -157,20 +161,20 @@ function RecipePage() {
                             <FaThumbsUp />
                           </span>
                         </Button>
-                    )}
-                    {user.isadmin &&  (
+                      )}
+                      {user.isadmin && (
                         <Link to={`/edit/${recipe.id}`}>
-                        <Button
-                          color="link is-light"
-                          className="is-rounded"
+                          <Button
+                            color="link is-light"
+                            className="is-rounded"
                           >
-                          <span>Edit</span>
-                          <span className="icon">
-                            <MdEdit />
-                          </span>
+                            <span>Edit</span>
+                            <span className="icon">
+                              <MdEdit />
+                            </span>
                           </Button>
                         </Link>
-                        )}
+                      )}
                     </Container>
                   </Tile>
                 </Tile>
@@ -220,7 +224,7 @@ function RecipePage() {
                               value={actualServings}
                               min={1}
                               onChange={(event) => {
-                                setActualServings(parseInt(event.target.value));
+                                setActualServings(Number.parseInt(event.target.value, 10));
                               }}
                             />
                           </Form.Control>
@@ -275,16 +279,20 @@ function RecipePage() {
                         renderAs={Notification}
                         aria-label="add to list"
                         onClick={() => {
-                          recipe.ingredients?.forEach((ingredient) => {
-                            listService
-                              .addIngredient(ingredient.ingredientId)
-                              .then(() => {
-                                appendAlert("Ingredients added to shopping list", "success");
-                              })
-                              .catch(() => {
-                                appendAlert("Failed to add ingredients to shopping list", "danger");
-                              });
-                          });
+                          if (recipe.ingredients)
+                            for (const ingredient of recipe.ingredients) {
+                              listService
+                                .addIngredient(ingredient.ingredientId)
+                                .then(() => {
+                                  appendAlert("Ingredients added to shopping list", "success");
+                                })
+                                .catch(() => {
+                                  appendAlert(
+                                    "Failed to add ingredients to shopping list",
+                                    "danger"
+                                  );
+                                });
+                            }
                         }}
                       >
                         Add Ingredients to List

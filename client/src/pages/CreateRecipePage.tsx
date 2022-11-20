@@ -1,15 +1,10 @@
 import * as React from "react";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
-
-import { Form, Button, Container, Tile, Hero } from "react-bulma-components";
+import { Container, Hero } from "react-bulma-components";
 
 import RecipeForm from "../components/RecipeForm";
-import { Recipe } from "../models/Recipe";
-import {useLogin} from "../hooks/Login";
-
-import { useState, useEffect } from "react";
-
 import NotAuthorized from "../components/NotAuthorized";
+
+import { useLogin } from "../hooks/Login";
 
 function CreateRecipe() {
   const { user } = useLogin();
@@ -27,8 +22,12 @@ function CreateRecipe() {
     likes: 0,
   };
 
-  if(!user.isadmin) {
-    return <Container className="mt-2"><NotAuthorized color={"danger"} /></Container>;
+  if (!user.isadmin) {
+    return (
+      <Container className="mt-2">
+        <NotAuthorized color={"danger"} />
+      </Container>
+    );
   }
 
   return (

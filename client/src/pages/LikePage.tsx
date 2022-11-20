@@ -1,37 +1,39 @@
 import * as React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-import { useState } from "react";
-import { useLogin } from "../hooks/Login";
-import { Recipe } from "../models/Recipe";
-import RecipeCard from "../components/RecipeCard";
-import recipeService from "../services/recipe-service";
-import ScrollButton from "../components/ScrollUp";
 import { Columns, Heading, Container, Tile, Notification } from "react-bulma-components";
+
+import { type Recipe } from "../models/Recipe";
+import RecipeCard from "../components/RecipeCard";
+import ScrollButton from "../components/ScrollUp";
 import NotAuthorized from "../components/NotAuthorized";
 
+import recipeService from "../services/recipe-service";
+
+import { useLogin } from "../hooks/Login";
+import { useAlert } from "../hooks/Alert";
+
 export default function LikePage() {
-  let [recipeList, setRecipeList] = React.useState<Recipe[]>([]);
+  const [recipeList, setRecipeList] = React.useState<Recipe[]>([]);
 
   const { user } = useLogin();
-  // const user = {
-  //   googleId: 1,
-  //   name: "hei",
-  //   email: "hi",
-  //   picture: "abc",
-  //   isadmin: true,
-  //   likes: [1,4],
-  //   shoppingList: [1,2,3,4]
-  // }
 
   React.useEffect(() => {
-    recipeService.getRecipesShort().then((data) => {
-      setRecipeList(data);
-    });
+    recipeService
+      .getRecipesShort()
+      .then((data) => {
+        setRecipeList(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }, []);
 
-  if(!user.googleId) {
-    return <Container className="mt-2"><NotAuthorized color={"info"} /></Container>;
+  if (!user.googleId) {
+    return (
+      <Container className="mt-2">
+        <NotAuthorized color={"info"} />
+      </Container>
+    );
   }
 
   return (
@@ -49,15 +51,16 @@ export default function LikePage() {
           className="is-multiline"
           style={{ marginTop: "2rem", marginLeft: "auto", marginRight: "auto" }}
         >
-          {recipeList.map((recipe) =>
-            user.likes.includes(recipe.id) && (
-              <Columns.Column
-                className="is-narrow"
-                key={recipe.id}
-              >
-                <RecipeCard recipe={recipe} />
-              </Columns.Column>
-            )
+          {recipeList.map(
+            (recipe) =>
+              user.likes.includes(recipe.id) && (
+                <Columns.Column
+                  className="is-narrow"
+                  key={recipe.id}
+                >
+                  <RecipeCard recipe={recipe} />
+                </Columns.Column>
+              )
           )}
         </Columns>
         <ScrollButton />

@@ -1,25 +1,29 @@
 import * as React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-
-import { useState } from "react";
-
-import RecipeCard from "../components/RecipeCard";
-import recipeService from "../services/recipe-service";
-import { Recipe } from "../models/Recipe";
-
-import { useLogin } from "../hooks/Login";
 
 import { Columns, Container, Button } from "react-bulma-components";
+import RecipeCard from "../components/RecipeCard";
 import ScrollButton from "../components/ScrollUp";
+import { type Recipe } from "../models/Recipe";
+
+import recipeService from "../services/recipe-service";
+
+import { useAlert } from "../hooks/Alert";
+import { useLogin } from "../hooks/Login";
 
 export default function RecipeList() {
-  let [recipeList, setRecipeList] = React.useState<Recipe[]>([]);
+  const [recipeList, setRecipeList] = React.useState<Recipe[]>([]);
   const { user } = useLogin();
+  const { appendAlert } = useAlert();
 
   React.useEffect(() => {
-    recipeService.getRecipesShort().then((data) => {
-      setRecipeList(data);
-    });
+    recipeService
+      .getRecipesShort()
+      .then((data) => {
+        setRecipeList(data);
+      })
+      .catch((error) => {
+        appendAlert("Error fetching recipes", "danger");
+      });
   }, [user]);
   return (
     <>

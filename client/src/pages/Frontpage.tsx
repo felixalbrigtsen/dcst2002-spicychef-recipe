@@ -1,10 +1,6 @@
 import * as React from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 
-import recipeService from "../services/recipe-service";
-import { useEffect } from "react";
-import { useLogin } from "../hooks/Login";
-
 import {
   Hero,
   Tile,
@@ -19,16 +15,20 @@ import {
 import { MdListAlt, MdLogin, MdSearch, MdArrowForward } from "react-icons/md";
 import { FaCarrot, FaDrumstickBite } from "react-icons/fa";
 import { TbSalt } from "react-icons/tb";
-import { Recipe } from "../models/Recipe";
 
 import ImageSlider from "../components/ImageSlider";
+import { type Recipe } from "../models/Recipe";
+
+import recipeService from "../services/recipe-service";
+
+import { useLogin } from "../hooks/Login";
 
 function Home() {
   const { user } = useLogin();
 
-  // choose a random recipe from the list of recipes
-  let [recipeList, setRecipeList] = React.useState<Recipe[]>([]);
-  let [randomRecipe, setRandomRecipe] = React.useState<Recipe>({
+  // Choose a random recipe from the list of recipes
+  const [recipeList, setRecipeList] = React.useState<Recipe[]>([]);
+  const [randomRecipe, setRandomRecipe] = React.useState<Recipe>({
     id: 0,
     title: "",
     summary: "",
@@ -41,16 +41,21 @@ function Home() {
     tags: [],
     likes: 0,
   });
-  let [query, setQuery] = React.useState<string>("");
+  const [query, setQuery] = React.useState<string>("");
 
   React.useEffect(() => {
-    recipeService.getRecipesShort().then((data) => {
-      setRecipeList(data);
-    });
+    recipeService
+      .getRecipesShort()
+      .then((data) => {
+        setRecipeList(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
 
   React.useEffect(() => {
-    let randomRecipe = recipeList[Math.floor(Math.random() * recipeList.length)];
+    const randomRecipe = recipeList[Math.floor(Math.random() * recipeList.length)];
     setRandomRecipe(randomRecipe);
   }, [recipeList]);
 
@@ -96,7 +101,7 @@ function Home() {
                               <Heading subtitle>Explore Recipes</Heading>
                             </span>
                             <span className="icon">
-                                <MdArrowForward />
+                              <MdArrowForward />
                             </span>
                           </Button>
                         </Link>
@@ -104,7 +109,9 @@ function Home() {
                       <Form.Control className="has-icons-right">
                         <Form.Input
                           placeholder="Search for a recipe"
-                          onChange={(event) => setQuery(event.currentTarget.value)}
+                          onChange={(event) => {
+                            setQuery(event.currentTarget.value);
+                          }}
                           onKeyDown={(event) => {
                             if (event.key === "Enter") {
                               window.location.href = `/search/${query}`;
@@ -136,9 +143,9 @@ function Home() {
                         className="is-light is-rounded"
                       >
                         <span>Ingredients</span>
-                          <FaCarrot style={{marginLeft: ".5rem"}} />
-                          <FaDrumstickBite />
-                          <TbSalt />
+                        <FaCarrot style={{ marginLeft: ".5rem" }} />
+                        <FaDrumstickBite />
+                        <TbSalt />
                       </Button>
                     </Link>
                     <br />
@@ -148,7 +155,7 @@ function Home() {
                         className="is-light is-rounded mt-2"
                       >
                         <span>Search</span>
-                        <MdSearch style={{marginLeft: ".5rem"}} />
+                        <MdSearch style={{ marginLeft: ".5rem" }} />
                       </Button>
                     </Link>
                     {user.googleId ? (
@@ -160,7 +167,7 @@ function Home() {
                             className="is-light is-rounded mt-2"
                           >
                             <span>Shopping List</span>
-                            <MdListAlt style={{marginLeft: ".5rem"}} />
+                            <MdListAlt style={{ marginLeft: ".5rem" }} />
                           </Button>
                         </Link>
                       </>
@@ -173,7 +180,7 @@ function Home() {
                             className="is-light is-rounded mt-2"
                           >
                             <span>Login</span>
-                            <MdLogin style={{marginLeft: ".5rem"}} />
+                            <MdLogin style={{ marginLeft: ".5rem" }} />
                           </Button>
                         </Link>
                       </>
@@ -204,7 +211,7 @@ function Home() {
                                 <Image
                                   size={96}
                                   alt="96x96"
-                                  src={recipe.imageUrl || "/logo.png"}
+                                  src={recipe.imageUrl ?? "/logo.png"}
                                 />
                               </Media.Item>
                               <Media.Item
@@ -252,11 +259,7 @@ function Home() {
                       <Image
                         size={256}
                         alt="256x256"
-                        src={
-                          randomRecipe && randomRecipe.imageUrl
-                            ? randomRecipe.imageUrl
-                            : "https://bulma.io/images/placeholders/256x256.png"
-                        }
+                        src={randomRecipe?.imageUrl ?? "https://bulma.io/images/placeholders/256x256.png"}
                       />
                     </Link>
                   ) : (
