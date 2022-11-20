@@ -26,6 +26,7 @@ import listService from "../services/list-service";
 
 import { useLogin } from "../hooks/Login";
 import { useAlert } from "../hooks/Alert";
+import PageNotFound from "./PageNotFound";
 
 function RecipePage() {
   const { appendAlert } = useAlert();
@@ -68,6 +69,10 @@ function RecipePage() {
     } else {
       setActualServings(1);
     }
+  }
+
+  if (!recipe.id) {
+    return <PageNotFound />
   }
 
   return (
