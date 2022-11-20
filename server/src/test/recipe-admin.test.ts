@@ -459,15 +459,18 @@ describe("Import mealdb recipes", () => {
   });
 });
 
-test("Server error handling in debug mode", (done) => {
-    pool.end()
-    process.env.DEBUG = "true"
-    axs.get("/recipes")
-      .then(() => done(new Error()))
-      .then((_response) => done(new Error()))
-      .catch((error) => {
-        expect(error.message).toEqual("Request failed with status code 500")
-        expect(error.response.status).toEqual(500);
-        done();
-      });
-  })
+describe("Server error handling", () => {
+    test("Server error handling in debug mode", (done) => {
+        pool.end()
+        process.env.DEBUG = "true"
+        axs.get("/recipes")
+          .then(() => done(new Error()))
+          .then((_response) => done(new Error()))
+          .catch((error) => {
+            expect(error.message).toEqual("Request failed with status code 500")
+            expect(error.response.status).toEqual(500);
+            done();
+          });
+      })
+    
+})
