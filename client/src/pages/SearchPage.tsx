@@ -11,12 +11,14 @@ import RecipeCard from "../components/RecipeCard";
 import recipeService from "../services/recipe-service";
 import ingredientService from "../services/ingredient-service";
 
+import { useLogin } from "../hooks/Login";
 import { useAlert } from "../hooks/Alert";
 
 const animatedComponents = makeAnimated();
 
 export default function SearchPage() {
   const { appendAlert } = useAlert();
+  const { user } = useLogin();
 
   const [searchParameters, setSearchParameters] = useSearchParams();
 
@@ -70,7 +72,7 @@ export default function SearchPage() {
         console.error(error);
         appendAlert("Could not load ingredients", "danger");
       });
-  }, []);
+  }, [user]);
 
   // Search every time our query, or the available recipes change
   React.useEffect(searchRecipes, [selectedTags, selectedIngredients, newQuery]);

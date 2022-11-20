@@ -114,7 +114,7 @@ function Home() {
                           }}
                           onKeyDown={(event) => {
                             if (event.key === "Enter") {
-                              window.location.href = `/search/${query}`;
+                              window.location.href = `/search/?q=${query}`;
                             }
                           }}
                         />

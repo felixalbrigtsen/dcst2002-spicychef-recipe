@@ -266,10 +266,10 @@ function RecipePage() {
                     >
                       Ingredients
                     </Heading>
-                    {recipe.ingredients?.map((ingredient) => {
+                    {recipe.ingredients?.map((ingredient, index) => {
                       return (
                         <Heading
-                          key={ingredient.ingredientId}
+                          key={index}
                           subtitle
                           size={6}
                         >

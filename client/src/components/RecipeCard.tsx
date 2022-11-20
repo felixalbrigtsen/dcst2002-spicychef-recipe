@@ -46,7 +46,7 @@ function RecipeCard(props: RecipeCardProps) {
         <Card.Footer>
           {user.googleId ? (
             <Card.Footer.Item>
-              {user.googleId && user.likes.includes(props.recipe.id) ? (
+              {user.googleId && user.likes?.includes(props.recipe.id) ? (
                 <>
                   <Button
                     className="is-rounded"

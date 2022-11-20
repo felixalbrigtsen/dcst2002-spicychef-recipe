@@ -51,16 +51,15 @@ export default function LikePage() {
           className="is-multiline"
           style={{ marginTop: "2rem", marginLeft: "auto", marginRight: "auto" }}
         >
-          {recipeList.map(
-            (recipe) =>
-              user.likes.includes(recipe.id) && (
-                <Columns.Column
-                  className="is-narrow"
-                  key={recipe.id}
-                >
-                  <RecipeCard recipe={recipe} />
-                </Columns.Column>
-              )
+          {recipeList.map((recipe) =>
+            user.likes?.includes(recipe.id) && (
+              <Columns.Column
+                className="is-narrow"
+                key={recipe.id}
+              >
+                <RecipeCard recipe={recipe} />
+              </Columns.Column>
+            )
           )}
         </Columns>
         <ScrollButton />
