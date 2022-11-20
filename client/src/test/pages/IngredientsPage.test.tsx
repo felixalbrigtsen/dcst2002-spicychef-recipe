@@ -16,7 +16,6 @@ jest.mock('../../services/ingredient-service');
 ingredientService.getIngredients = jest.fn().mockResolvedValue(mockIngredients);
 
 const locationAssignMock = jest.fn();
-
 Object.defineProperty(window, 'location', {
   value: { assign: locationAssignMock }
 });
