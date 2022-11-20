@@ -36,33 +36,23 @@ Object.defineProperty(window, 'location', {
   value: { assign: locationAssignMock }
 });
 
-function renderRecipeForm(index: number) {
-    //TODO: This isn't recognized as "act"?!
-    act(() => {
-        render(
-            <Router>
-                <RecipeForm recipe={testRecipes[index]} />
-            </Router>
-        );
-    });
-}
-
-
 // TODO: Skipping is cheating
 describe('test RecipeForm with complete recipe renders correctly', () => {
-    test('Correct rendering of input field values', () => {
-        renderRecipeForm(1);
+    test('Correct rendering of input field values', async () => {
+        act(() => { render(<Router><RecipeForm recipe={testRecipes[1]} /></Router>); });
 
-        expect(screen.getByRole('textbox', {name: "Title"})).toHaveValue('Tunisian Lamb Soup')
-        expect(screen.getByRole('textbox', {name: "Summary"})).toHaveValue('Meal from MealDB')
-        expect(screen.getByRole('textbox', {name: "Instructions"})).toHaveValue('Add the lamb to a casserole and cook over high heat.')
-        expect(screen.getByRole('spinbutton', {name: "Servings"})).toHaveValue(2)
-        expect(screen.getByRole('textbox', {name: "ImageURL"})).toHaveValue('https://www.themealdb.com/images/media/meals/t8mn9g1560460231.jpg')
-        expect(screen.getByRole('textbox', {name: "VideoURL"})).toHaveValue('https://www.youtube.com/watch?v=w1qgTQmLRe4')
+        await waitFor(() => {
+            expect(screen.getByRole('textbox', {name: "Title"})).toHaveValue('Tunisian Lamb Soup')
+            expect(screen.getByRole('textbox', {name: "Summary"})).toHaveValue('Meal from MealDB')
+            expect(screen.getByRole('textbox', {name: "Instructions"})).toHaveValue('Add the lamb to a casserole and cook over high heat.')
+            expect(screen.getByRole('spinbutton', {name: "Servings"})).toHaveValue(2)
+            expect(screen.getByRole('textbox', {name: "ImageURL"})).toHaveValue('https://www.themealdb.com/images/media/meals/t8mn9g1560460231.jpg')
+            expect(screen.getByRole('textbox', {name: "VideoURL"})).toHaveValue('https://www.youtube.com/watch?v=w1qgTQmLRe4')
+        });
     })
 
     test('All labels render', () => {
-        renderRecipeForm(1);
+        act(() => { render(<Router><RecipeForm recipe={testRecipes[1]} /></Router>); });
 
         expect(screen.getByText('Recipe Title')).toBeInTheDocument()
         expect(screen.getByText('Recipe Summary')).toBeInTheDocument()
@@ -74,16 +64,18 @@ describe('test RecipeForm with complete recipe renders correctly', () => {
         expect(screen.getByText('Recipe Tags')).toBeInTheDocument()
     })
 
-    test('Correct rendering of tags', () => {
-        renderRecipeForm(1);
+    test('Correct rendering of tags', async () => {
+        act(() => { render(<Router><RecipeForm recipe={testRecipes[1]} /></Router>); });
         
-        const tagSelect = screen.getByRole('combobox', {name: "Tags"})
-        expect(tagSelect).toBeInTheDocument()
-        expect(tagSelect).toHaveFormValues({tags: testRecipes[1].tags})
+        await waitFor(() => {
+            const tagSelect = screen.getByRole('combobox', {name: "Tags"})
+            expect(tagSelect).toBeInTheDocument()
+            expect(tagSelect).toHaveValue(testRecipes[1].tags);
+        });
     })
 
     test('Correct options of tags are displayed', () => {
-        renderRecipeForm(1);
+        act(() => { render(<Router><RecipeForm recipe={testRecipes[1]} /></Router>); });
 
         const tagSelect = screen.getByRole('combobox', {name: "Tags"})
 
@@ -96,7 +88,8 @@ describe('test RecipeForm with complete recipe renders correctly', () => {
     })
 
     test('Correct rendering of ingredient table', () => {
-        renderRecipeForm(1);
+        // renderRecipeForm(1);
+        act(() => { render(<Router><RecipeForm recipe={testRecipes[1]} /></Router>); });
 
         expect(screen.getByRole('table')).toBeInTheDocument();
         expect(screen.getByRole('columnheader',{name: "Ingredient"})).toBeInTheDocument();
@@ -115,7 +108,7 @@ describe('test RecipeForm with complete recipe renders correctly', () => {
 
 describe('test RecipeForm functionality', () => {
     test('Title input updates', () => {
-        renderRecipeForm(0);
+        act(() => { render(<Router><RecipeForm recipe={testRecipes[0]} /></Router>); });
 
         const titleInput = screen.getByRole('textbox', {name: "Title"})
         expect(titleInput).toHaveValue('')
@@ -127,7 +120,7 @@ describe('test RecipeForm functionality', () => {
     })
 
     test('Summary input updates', () => {
-        renderRecipeForm(0);    
+        act(() => { render(<Router><RecipeForm recipe={testRecipes[0]} /></Router>); });
     
         const summaryInput = screen.getByRole('textbox', {name: "Summary"})
         expect(summaryInput).toHaveValue('')
@@ -139,7 +132,7 @@ describe('test RecipeForm functionality', () => {
     })
 
     test('Instructions input updates', () => {
-        renderRecipeForm(0);
+        act(() => { render(<Router><RecipeForm recipe={testRecipes[0]} /></Router>); });
         
         const instructionsInput = screen.getByRole('textbox', {name: "Instructions"})
         expect(instructionsInput).toHaveValue('')
@@ -150,7 +143,7 @@ describe('test RecipeForm functionality', () => {
     })
 
     test('Servings input updates', () => {
-        renderRecipeForm(0);
+        act(() => { render(<Router><RecipeForm recipe={testRecipes[0]} /></Router>); });
         
         const servingsInput = screen.getByRole('spinbutton', {name: "Servings"})
         expect(servingsInput).toHaveValue(2)
@@ -162,7 +155,7 @@ describe('test RecipeForm functionality', () => {
     })
 
     test('Image URL input updates', () => {
-        renderRecipeForm(0);
+        act(() => { render(<Router><RecipeForm recipe={testRecipes[0]} /></Router>); });
         
         const imageURLInput = screen.getByRole('textbox', {name: "ImageURL"})
         expect(imageURLInput).toHaveValue('')
@@ -173,7 +166,7 @@ describe('test RecipeForm functionality', () => {
     })
 
     test('Video URL input updates', () => {
-        renderRecipeForm(0);
+        act(() => { render(<Router><RecipeForm recipe={testRecipes[0]} /></Router>); });
         
         const videoURLInput = screen.getByRole('textbox', {name: "VideoURL"})
         expect(videoURLInput).toHaveValue('')
@@ -185,7 +178,7 @@ describe('test RecipeForm functionality', () => {
     })
 
     test('New tag updates tag list', async () => {
-        renderRecipeForm(0);
+        act(() => { render(<Router><RecipeForm recipe={testRecipes[0]} /></Router>); });
         
         const tagSelect = screen.getByRole('combobox', {name: "Tags"})
         expect(tagSelect).toBeInTheDocument()
@@ -204,7 +197,7 @@ describe('test RecipeForm functionality', () => {
     })
 
     test('Remove tag updates tag list', () => {
-        renderRecipeForm(1);
+        act(() => { render(<Router><RecipeForm recipe={testRecipes[1]} /></Router>); });
 
         expect(screen.getByText(testRecipes[1].tags[0])).toBeInTheDocument()
         
@@ -218,7 +211,7 @@ describe('test RecipeForm functionality', () => {
     })
     
     test('Add ingredient updates ingredient table', (done) => {
-        renderRecipeForm(0);
+        act(() => { render(<Router><RecipeForm recipe={testRecipes[0]} /></Router>); });
 
         const ingredientInput = screen.getByRole('combobox', {name: "Ingredients"});
         expect(ingredientInput).toBeInTheDocument();
@@ -237,7 +230,7 @@ describe('test RecipeForm functionality', () => {
     })
 
     test('Remove ingredient updates ingredient table', () => {  
-        renderRecipeForm(1);
+        act(() => { render(<Router><RecipeForm recipe={testRecipes[1]} /></Router>); });
         
         const ingredientSelect = screen.getByRole('combobox', {name: "Ingredients"})
         act(() => {
@@ -255,11 +248,12 @@ describe('test RecipeForm functionality', () => {
     })
 
     test.skip('Form validation stops submission', () => {
-        renderRecipeForm(2);
+        act(() => { render(<Router><RecipeForm recipe={testRecipes[0]} /></Router>); });
+
     });
 
     test('Edit recipe by submitting the form', () => {
-        renderRecipeForm(1);
+        act(() => { render(<Router><RecipeForm recipe={testRecipes[1]} /></Router>); });
         
         act(() => {
             fireEvent.change(screen.getByRole('textbox', {name: "Title"}), {target: {value: 'Tuna Salad Edited'}});
@@ -282,13 +276,13 @@ describe('test RecipeForm functionality', () => {
             delete(ingredient.unitId);
         }
 
-        expect(recipeService.createRecipe).toHaveBeenCalledTimes(0);
-        expect(recipeService.updateRecipe).toHaveBeenCalledTimes(1);
+        expect(recipeService.createRecipe).not.toHaveBeenCalled();
+        expect(recipeService.updateRecipe).toHaveBeenCalled();
         expect(recipeService.updateRecipe).toHaveBeenCalledWith(editRecipe);
     })
 
     test('Create recipe by submitting the form', () => {
-        renderRecipeForm(0);
+        act(() => { render(<Router><RecipeForm recipe={testRecipes[0]} /></Router>); });
 
         act(() => {
             fireEvent.change(screen.getByRole('textbox', {name: "Title"}), {target: {value: testRecipes[1].title}});
@@ -318,8 +312,8 @@ describe('test RecipeForm functionality', () => {
 
         console.log(screen.debug())
 
-        expect(recipeService.updateRecipe).toHaveBeenCalledTimes(0);
-        expect(recipeService.createRecipe).toHaveBeenCalledTimes(1);
+        expect(recipeService.updateRecipe).not.toHaveBeenCalled();
+        expect(recipeService.createRecipe).toHaveBeenCalled();
         expect(recipeService.createRecipe).toHaveBeenCalledWith(testRecipes[1]);
         expect(locationAssignMock).toHaveBeenLastCalledWith('/admin');
     });
