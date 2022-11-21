@@ -19,8 +19,6 @@ const ImageSlider = (props: ImageSliderProps) => {
     setCurrent(newIndex);
   };
 
-  // TODO: Give this a better/smoother transition
-
   useEffect(() => {
     const interval = setInterval(() => {
       goToNext();
