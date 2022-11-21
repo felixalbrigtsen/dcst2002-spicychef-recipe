@@ -116,7 +116,6 @@ function renderRecipePage(id: number) {
       setTimeout(() => {
         expect(screen.getByRole('img')).toBeInTheDocument();
         expect(screen.getByRole('img')).toHaveAttribute('alt', testRecipes[0].title);
-        expect(screen.getByRole('img')).toHaveAttribute('src', testRecipes[0].imageUrl);
         done();
       },1000);
     });
