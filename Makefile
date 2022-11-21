@@ -27,3 +27,8 @@ run:
 	test -f client/public/bundle.js || ( echo "Cannot run without client build, run 'make build' first" && exit 1 )
 	cd server ; \
 	npm start
+
+deliverable: 
+	rsync -avz --exclude "node_modules" --exclude ".git" --exclude "coverage" ./ ../dcst2002-recipe-gr2-deliv
+	7za a -tzip ../dcst2002-recipe-gr2-deliv.zip ../dcst2002-recipe-gr2-deliv
+	rm -rf ../dcst2002-recipe-gr2-deliv
