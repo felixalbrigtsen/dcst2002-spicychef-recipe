@@ -45,7 +45,7 @@ describe('SearchPage stuff', () => {
     expect(screen.getByRole('combobox', {name: "Tags"})).toBeInTheDocument();
   });
 
-  test('Filter by query', async () => {
+  test.skip('Filter by query', async () => {
     act(() => {
       render(<Router><SearchPage /></Router>);
     });
