@@ -31,7 +31,6 @@ export default function IngredientsPage() {
   const [selectedIngredients, setSelectedIngredients] = React.useState<Ingredient[]>([]);
 
   const [visibleIngredients, setVisibleIngredients] = React.useState<Ingredient[]>([]);
-  const [isLoggedIn, setIsLoggedIn] = React.useState<boolean>(false);
 
   const fuse = new Fuse(ingredients, {
     keys: ["name"],
