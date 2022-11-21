@@ -376,7 +376,6 @@ class RecipeService {
     });
   }
 
-  //TODO: Use a RecipeIngredient here
   addRecipeIngredient(recipeId: number, ingredientId: number, unitId: number, quantity: number): Promise<number> {
     return new Promise((resolve, reject) => {
       pool.query('INSERT INTO recipe_ingredient (recipeId, ingredientId, unitId, quantity) VALUES (?, ?, ?, ?)', [recipeId, ingredientId, unitId, quantity], (err: QueryError | null, results: RowDataPacket[]) => {
@@ -404,8 +403,7 @@ class RecipeService {
   }
 
   async saveMeal(meal: Meal): Promise<number> {
-    //TODO: Use transactions to avoid partial saves
-    return new Promise(async (resolve, reject) => { //TODO
+    return new Promise(async (resolve, reject) => { 
       // Find ingredient and unit details
       const ingredientNames = meal.ingredients;
       const quantities = meal.measures.map((measure) => parseFloat(measure.substring(0, measure.indexOf(' ')))); // Everything before first space
@@ -433,8 +431,6 @@ class RecipeService {
       } catch (err) {
         return reject(err);
       }
-
-      // TODO: Upgrade to use updateRecipeIngredients and updateRecipeTags
       try {
         // Insert the ingredient-unit-recipe relationships
         let ingredientUnitRecipeIds = ingredientIds.map(async (ingredientId, index) => {
@@ -460,8 +456,6 @@ class RecipeService {
       return resolve(recipeId);
     });
   }
-
-  //TODO: Consider making a type/model for this
   updateRecipe(id: number, title: string, summary: string, instructions: string, servings: number, imageUrl: string, videoUrl: string) {
     return new Promise((resolve, reject) => {
       pool.query('UPDATE recipe SET title = ?, summary = ?, instructions = ?, servings = ?, imageUrl = ?, videoUrl = ? WHERE id = ?', [title, summary, instructions, servings, imageUrl, videoUrl, id], (err: QueryError | null, results: RowDataPacket[]) => {
@@ -479,10 +473,6 @@ class RecipeService {
         if (err) {
           return reject(err);
         }
-
-        // Make new recipe_ingredient entries
-        // TODO: Use transactions to avoid partial saves
-        // TODO: This removes and re-adds every ingredient, which is inefficient, do it more like updateRecipeTags
         
         try {
           const ingredientIds = await this.getIngredientIds(ingredients.map((ingredient) => ingredient.ingredientName));
@@ -506,8 +496,6 @@ class RecipeService {
     return new Promise((resolve, reject) => {
       // Delete tags that are no longer in the recipe
       // Deletes and inserts many rows in a single query
-      //
-      // TODO: Use transactions to avoid partial saves
      
       pool.query('DELETE FROM recipe_tag WHERE recipeId = ? AND name NOT IN (?)', [recipeId, tags], (err: QueryError | null, results: RowDataPacket[]) => {
         if (err) {
