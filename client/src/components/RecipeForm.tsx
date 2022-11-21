@@ -5,8 +5,6 @@ import makeAnimated from "react-select/animated";
 
 import { Form, Button, Tile, Image, Table, Container } from "react-bulma-components";
 
-import { useEffect, useRef } from "react";
-
 import { Recipe } from "../models/Recipe";
 import { RecipeIngredient } from "../models/RecipeIngredient";
 import { FaTimes } from "react-icons/fa";
@@ -53,7 +51,7 @@ function RecipeForm(props: RecipeFormProps) {
   const { appendAlert } = useAlert();
 
   // Setting all the values
-  useEffect(() => {
+  React.useEffect(() => {
     setRecipe(props.recipe);
     setTitle(props.recipe.title);
     setSummary(props.recipe.summary);
@@ -75,7 +73,7 @@ function RecipeForm(props: RecipeFormProps) {
   }, [props.recipe]);
 
   // Getting ingredients and tags from the database
-  useEffect(() => {
+  React.useEffect(() => {
     ingredientService.getIngredients().then((res) => {
       setIngredientOptions(
         res.map((ingredient: Ingredient) => {
@@ -95,14 +93,14 @@ function RecipeForm(props: RecipeFormProps) {
   }, []);
 
   // set tags to be options for react-select
-  useEffect(() => {
+  React.useEffect(() => {
     const tagObjects = tags.map((t) => {
       return { value: t, label: t };
     });
     setDefaultTags(tagObjects);
   }, [tags]);
 
-  const submitRef = useRef<HTMLFormElement>(null);
+  const submitRef = React.useRef<HTMLFormElement>(null);
   // Setting the recipe object on submit
   function handleRecipeSubmit(e: any) {
   if(submitRef.current?.reportValidity()) {
