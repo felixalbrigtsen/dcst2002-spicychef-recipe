@@ -5,7 +5,7 @@ import {
   Routes, 
   Link
 } from 'react-router-dom';
-import { render, screen, waitFor, fireEvent, getAllByLabelText, getByLabelText } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent, getAllByLabelText, act } from '@testing-library/react';
 import '@testing-library/jest-dom'
 import ScrollButton from '../../components/ScrollUp'
 
@@ -18,26 +18,36 @@ describe('Dynamic ScrollButton test', () => {
         spyScrollTo.mockClear();
     });
 
-    test('Test visibility', () => {
-        const {getByRole} = render(<ScrollButton/>)
-        let button = getByRole("button", {hidden: true})
-        expect(button).not.toBeVisible
+    test('Test visibility', async () => {
+        act(() => {
+            render(<ScrollButton/>)
+        });
+        await waitFor(() => {
+            let button = screen.getByRole("button", {hidden: true})
+            expect(button).not.toBeVisible
 
-        fireEvent.scroll(window, {target: {scrollY: 300}})
-        expect(button).toBeVisible
+            act(() => {fireEvent.scroll(window, {target: {scrollY: 350}})});
+            expect(button).toBeVisible
+        });
+        
     });
 
-    test('Test scroll', () => {
-        fireEvent.scroll(window, {target: {scrollY: 300}})
-
-        const {getByRole} = render(<ScrollButton/>)
-        let button = getByRole("button", {hidden: true})
-        
-        expect(button).toBeVisible
-        fireEvent.click(button)
-        expect(spyScrollTo).toHaveBeenCalledWith({
-            top: 0,
-            behavior: 'smooth',
+    test('Test scroll', async () => {
+        act(() => {
+            render(<ScrollButton/>)
+        });
+        await waitFor(() => {
+            let button = screen.getByRole("button", {hidden: true})
+            
+            act(() => {fireEvent.scroll(window, {target: {scrollY: 350}})});
+            expect(button).toBeVisible
+            
+            act(() => {fireEvent.click(button)});
+            expect(spyScrollTo).toHaveBeenCalledWith({
+                top: 0,
+                behavior: 'smooth',
+            });
+            expect(button).not.toBeVisible();
         });
     });
 });

@@ -62,7 +62,7 @@ function RecipePage() {
       });
   }, [user]);
 
-  const [actualServings, setActualServings] = React.useState<number>(recipe.servings);
+  let [actualServings, setActualServings] = React.useState<number>(recipe?.servings || 2);
   React.useEffect(() => {
     setActualServings(recipe.servings);
   }, [recipe.servings]);
@@ -227,7 +227,7 @@ function RecipePage() {
                         <Columns.Column className="is-narrow">
                           <Button
                             color="danger"
-                            aria-label="reduceServing"
+                            aria-label="reduceServings"
                             onClick={() => {
                               adjustServings(actualServings - 1);
                             }}
@@ -365,6 +365,7 @@ function RecipePage() {
                     <iframe
                       width="90%"
                       height="70%"
+                      title="Embedded youtube"
                       src={recipe.videoUrl.replace("watch?v=", "embed/")}
                       allowFullScreen
                     ></iframe>

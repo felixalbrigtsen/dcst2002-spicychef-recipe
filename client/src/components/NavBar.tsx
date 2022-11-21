@@ -45,6 +45,7 @@ export default function NavBar() {
         />
       </Navbar.Brand>
       <Navbar.Menu
+        data-testid="hamburger"
         id="navbar-example"
         className={isActive ? "is-active" : ""}
       >

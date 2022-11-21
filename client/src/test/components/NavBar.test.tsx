@@ -10,6 +10,11 @@ import '@testing-library/jest-dom'
 import NavBar from '../../components/NavBar'
 import renderWithLoginContext, { sampleUsers, logout } from '../LoginProviderMock';
 
+const resizeWindow = (x: number, y: number) => {
+    window.innerWidth = x;
+    window.innerHeight = y;
+    window.dispatchEvent(new Event('resize'));
+}
 
 describe('Test NavBar renders correctly', () => {
     test('Test rendered text', () => {
@@ -81,6 +86,42 @@ describe('Test NavBar renders correctly', () => {
         act(()=>{
             fireEvent.click(screen.getByText('Logout'));
             expect(logout).toHaveBeenCalled();
+        });
+    });
+
+    test('Hamburger menu works', () => {
+        act(() => {
+            renderWithLoginContext(<Router><NavBar/></Router>, sampleUsers.admin);
+        });
+
+        act(() => {resizeWindow(400, 400)});
+
+        waitFor(() => {
+            expect(screen.getByTestId('hamburger')).not.toHaveAttribute('class', 'is-active');
+
+            expect(screen.getByText('Home')).not.toBeInTheDocument();
+            expect(screen.getByText('Search')).not.toBeInTheDocument();
+            expect(screen.getByText('Ingredients')).not.toBeInTheDocument();
+            expect(screen.getByText('My Likes')).not.toBeInTheDocument();
+            expect(screen.getByText('Shopping List')).not.toBeInTheDocument();
+            expect(screen.getByText('Admin')).not.toBeInTheDocument();
+            expect(screen.getByText('Logout')).not.toBeInTheDocument();
+        });
+
+        act(()=>{
+            fireEvent.click(screen.getByTestId('hamburger'));
+        });
+
+        waitFor(() => {            
+            expect(screen.getByTestId('hamburger')).toHaveAttribute('class', 'is-active');
+
+            expect(screen.getByText('Home')).toBeInTheDocument();
+            expect(screen.getByText('Search')).toBeInTheDocument();
+            expect(screen.getByText('Ingredients')).toBeInTheDocument();
+            expect(screen.getByText('My Likes')).toBeInTheDocument();
+            expect(screen.getByText('Shopping List')).toBeInTheDocument();
+            expect(screen.getByText('Admin')).toBeInTheDocument();
+            expect(screen.getByText('Logout')).toBeInTheDocument();
         });
     });
 })

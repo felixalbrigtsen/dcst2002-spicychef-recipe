@@ -10,9 +10,19 @@ const config : Config.InitialOptions = {
   },
   coverageReporters: ["html", "text", "text-summary" ],
   transformIgnorePatterns: ["node_modules/(?!@testing-library)"],
+  collectCoverageFrom: [
+    "src/**/*.{js,jsx,ts,tsx}",
+    "!src/**/*.d.ts",
+    "!src/test/**/*",
+    "!src/hooks/**/*",
+    "!src/services/**/*",
+    "!src/index.tsx",
+    "!src/setupTests.ts"
+  ],
   setupFiles: [
     "dotenv/config",
   ],
+  verbose: true,
   collectCoverage: true,
   coverageThreshold: {
     global: {

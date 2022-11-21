@@ -31,11 +31,9 @@ const animatedComponents = makeAnimated();
 
 function RecipeForm(props: RecipeFormProps) {
   // Values used in multiselect and createable select components
-  const [ingredientOptions, setIngredientOptions] = useState<
-    Array<{ value: number; label: string }>
-  >([]);
-  const [tagOptions, setTagOptions] = useState<Array<{ value: string; label: string }>>([]);
-  const [defaultTags, setDefaultTags] = useState<Array<{ value: string; label: string }>>([]);
+  const [ingredientOptions, setIngredientOptions] = React.useState<{ value: number; label: string }[]>([]);
+  const [tagOptions, setTagOptions] = React.useState<{ value: string; label: string }[]>([]);
+  const [defaultTags, setDefaultTags] = React.useState<{ value: string; label: string }[]>([]);
 
   // Values used in normal input field and textarea, as well as the recipe object
   const [recipe, setRecipe] = React.useState<Recipe>(props.recipe);
@@ -52,7 +50,7 @@ function RecipeForm(props: RecipeFormProps) {
   const { appendAlert } = useAlert();
 
   // Setting all the values
-  useEffect(() => {
+  React.useEffect(() => {
     setRecipe(props.recipe);
     setTitle(props.recipe.title);
     setSummary(props.recipe.summary);
@@ -74,46 +72,35 @@ function RecipeForm(props: RecipeFormProps) {
   }, [props.recipe]);
 
   // Getting ingredients and tags from the database
-  useEffect(() => {
-    ingredientService
-      .getIngredients()
-      .then((response) => {
-        setIngredientOptions(
-          response.map((ingredient: Ingredient) => {
-            return { value: ingredient.id, label: ingredient.name };
-          })
-        );
-      })
-      .catch((error) => {
-        appendAlert("Something went wrong", "danger");
+  React.useEffect(() => {
+    ingredientService.getIngredients()
+    .then((res) => {
+      setIngredientOptions(
+        res.map((ingredient: Ingredient) => {
+          return { value: ingredient.id, label: ingredient.name };
+        })
+      );
+    });
+
+    recipeService.getRecipesShort()
+    .then((res) => {
+      const tags = res.map((r) => r.tags).flat();
+      const uniqueTags = [...new Set(tags)];
+      const tagObjects = uniqueTags.map((t) => {
+        return { value: t, label: t };
       });
+    });
   }, []);
 
-  useEffect(() => {
-    recipeService
-      .getRecipesShort()
-      .then((response) => {
-        const tags = response.flatMap((recipe) => recipe.tags);
-        const uniqueTags = [...new Set(tags)];
-        const tagObjects = uniqueTags.map((tag) => {
-          return { value: tag, label: tag };
-        });
-        setTagOptions(tagObjects);
-      })
-      .catch((error) => {
-        appendAlert("Something went wrong", "danger");
-      });
-  }, []);
-
-  // Set tags to be options for react-select
-  useEffect(() => {
-    const tagObjects = tags.map((tag) => {
-      return { value: tag, label: tag };
+  // set tags to be options for react-select
+  React.useEffect(() => {
+    const tagObjects = tags.map((t) => {
+      return { value: t, label: t };
     });
     setDefaultTags(tagObjects);
   }, [tags]);
 
-  const submitRef = useRef<HTMLFormElement>(null);
+  const submitRef = React.useRef<HTMLFormElement>(null);
   // Setting the recipe object on submit
   function handleRecipeSubmit(event: React.FormEvent<HTMLFormElement>) {
     if (submitRef.current?.reportValidity()) {
@@ -396,6 +383,7 @@ function RecipeForm(props: RecipeFormProps) {
                         <td>
                           <Form.Input
                             type="number"
+                            aria-label="Quantity"
                             value={Number(ingredients[index].quantity)}
                             onChange={(event) => {
                               handleIngredientPropertyChange(index, "quantity", event.target.value);
@@ -405,9 +393,10 @@ function RecipeForm(props: RecipeFormProps) {
                         <td>
                           <Form.Input
                             value={ingredients[index].unitName}
-                            onChange={(event) => {
-                              handleIngredientPropertyChange(index, "unitName", event.target.value);
-                            }}
+                            aria-label="Unit"
+                            onChange={(event) =>
+                              handleIngredientPropertyChange(index, "unitName", event.target.value)
+                            }
                           ></Form.Input>
                         </td>
                         <td>

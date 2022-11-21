@@ -107,7 +107,7 @@ export default function IngredientsPage() {
             >
               <Heading> Ingredients List </Heading>
             </Tile>
-            <Box className="has-text-right columns">
+            <Box className="has-text-right">
               <Form.Field className="is-grouped column">
                 <Form.Control
                   className="has-icons-left is-expanded"
@@ -125,41 +125,43 @@ export default function IngredientsPage() {
                   </span>
                 </Form.Control>
               </Form.Field>
-              <Form.Field className="column m-0">
-                <Button
-                  color="warning"
-                  aria-label="searchAllIngredients"
-                  className="is-rounded is-fullwidth"
-                  onClick={() => {
-                    searchRecipeByIngredients("all");
-                  }}
-                >
-                  Search Recipes With Selected Ingredients
-                </Button>
-              </Form.Field>
-              <Form.Field className="column m-0">
-                {user.googleId && (
+              <Form.Field className="is-grouped columns">
+                <Form.Field className="column m-0">
                   <Button
-                    color="success"
-                    aria-label="addSelectedToList"
+                    color="warning"
+                    aria-label="searchAllIngredients"
                     className="is-rounded is-fullwidth"
-                    onClick={addSelectedToList}
+                    onClick={() => {
+                      searchRecipeByIngredients("all");
+                    }}
                   >
-                    Add Selected To List
+                    Search Recipes With Selected Ingredients
                   </Button>
+                </Form.Field>
+                {user.googleId && (
+                <Form.Field className="column m-0">
+                    <Button
+                      color="success"
+                      aria-label="addSelectedToList"
+                      className="is-rounded is-fullwidth"
+                      onClick={addSelectedToList}
+                    >
+                      Add Selected To List
+                    </Button>
+                </Form.Field>
                 )}
-              </Form.Field>
-              <Form.Field className="column m-0">
-                <Button
-                  color="danger"
-                  aria-label="clearSelected"
-                  className="is-rounded is-fullwidth"
-                  onClick={() => {
-                    setSelectedIngredients([]);
-                  }}
-                >
-                  Clear Selection
-                </Button>
+                <Form.Field className="column m-0">
+                  <Button
+                    color="danger"
+                    aria-label="clearSelected"
+                    className="is-rounded is-fullwidth"
+                    onClick={() => {
+                      setSelectedIngredients([]);
+                    }}
+                  >
+                    Clear Selection
+                  </Button>
+                </Form.Field>
               </Form.Field>
             </Box>
             <Box>
