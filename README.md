@@ -7,6 +7,10 @@
 ## See the live production server
 - https://recipe.feal.no
 
+## Development repository
+- The project is hosted [here on NTNU IDI GitLab](https://gitlab.stud.idi.ntnu.no/felixalb/dcst2002-recipe-gr2)
+- The repository will be made public after the assignment has been handed in and graded.
+
 ## Quick start
 To get started with the development version, you can use the Makefile.
 
@@ -26,7 +30,7 @@ System requirements: `make`(only for quick start), `node` version 16.18.0 and `n
 
 # Introduction
 
-SpicyChef is an online recipe application. It is developed by students at NTNU, for an obligatory assignement in DCST2002 Webutvikling.
+SpicyChef is an online recipe application. It is developed by students at NTNU, for an obligatory assignment in DCST2002 Webutvikling.
 
 ![Front page screenshot](documentation/frontpage.png)
 
