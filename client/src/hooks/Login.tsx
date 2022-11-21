@@ -16,8 +16,6 @@ type LoginProviderChildren = {
 export const LoginProvider = ({ children }: LoginProviderChildren) => {
   const [user, setUser] = React.useState<User>({} as User);
   const { appendAlert } = useAlert();
-
-  // TODO: Move to user-service
   const getSessionUser = () => {
     axios
       .get(process.env.REACT_APP_API_URL + "/auth/profile")

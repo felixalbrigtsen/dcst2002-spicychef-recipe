@@ -86,11 +86,6 @@ function renderRecipePage(id: number) {
         testRecipes[0].tags.forEach(tag => {
           expect(screen.getByText(tag)).toBeInTheDocument();
         });
-        
-        // TODO: Fix this test
-        // testRecipes[0].ingredients.forEach(ingredient => {
-        //   expect(screen.getByText(`${ingredient.ingredientName} : ${ingredient.quantity} ${ingredient.unitName}`)).toBeInTheDocument();
-        // });
       });
     });
     
@@ -104,10 +99,6 @@ function renderRecipePage(id: number) {
         testRecipes[1].tags.forEach(tag => {
           expect(screen.getByText(tag)).toBeInTheDocument();
         });
-        // TODO: Fix this test
-        // testRecipes[1].ingredients.forEach(ingredient => {
-        //   expect(screen.getByText(`${ingredient.ingredientName} : ${ingredient.quantity} ${ingredient.unitName}`)).toBeInTheDocument();
-        // });
       });
     });
     

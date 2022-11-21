@@ -14,5 +14,3 @@
     ingredients: {ingredientName: string, quantity: number, unitName: string}[];
     tags: string[];
   };
-
-// TODO: JsDoc this

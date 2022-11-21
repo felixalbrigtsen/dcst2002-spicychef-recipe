@@ -36,7 +36,6 @@ Object.defineProperty(window, 'location', {
   value: { assign: locationAssignMock }
 });
 
-// TODO: Skipping is cheating
 describe('test RecipeForm with complete recipe renders correctly', () => {
     test('Correct rendering of input field values', async () => {
         act(() => { render(<Router><RecipeForm recipe={testRecipes[1]} /></Router>); });
@@ -283,7 +282,6 @@ describe('test RecipeForm functionality', () => {
         expect(recipeService.updateRecipe).toHaveBeenCalledWith(editRecipe);
     })
 
-    //TODO: This is broken due to issues with the react-select component?
     test.skip('Create recipe by submitting the form', async () => {
         act(() => { render(<Router><RecipeForm recipe={testRecipes[0]} /></Router>); });
 
