@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Route, Routes, Link, useSearchParams } from "r
 import { Heading, Hero, Tile, Box, Form, Button, Columns } from "react-bulma-components";
 import { type Recipe } from "../models/Recipe";
 import RecipeCard from "../components/RecipeCard";
+import ScrollButton from "../components/ScrollUp";
 
 import recipeService from "../services/recipe-service";
 import ingredientService from "../services/ingredient-service";
@@ -144,96 +145,99 @@ export default function SearchPage() {
   }
 
   return (
-    <Hero>
-      <Hero.Body>
-        <Tile kind="ancestor">
-          <Tile
-            kind="parent"
-            vertical
-            size={3}
-            renderAs={Box}
-          >
-            <Heading>Search</Heading>
-            <Form.Field>
-              <Form.Input
-                type="text"
-                aria-label="Search"
-                onChange={(event: React.FormEvent) => {
-                  setNewQuery((event.target as HTMLInputElement).value);
-                }}
-                placeholder="Search for recipes"
-                value={newQuery}
-              />
-            </Form.Field>
-            <Form.Field>
-              <Form.Label>Tags</Form.Label>
-              <Form.Control>
-                <Select
-                  isMulti
-                  placeholder="Recipe Tags"
-                  aria-label={"Tags"}
-                  name={"Tags"}
-                  components={animatedComponents}
-                  options={tags}
-                  value={selectedTags.map((t) => {
-                    return { value: t, label: t };
-                  })}
-                  onChange={(option: MultiValue<{ value: string; label: string; }> ) => {
-                    setSelectedTags(
-                      option.map((tag) => tag.value)
-                    );
-                  }}
-                />
-              </Form.Control>
-            </Form.Field>
-            <Form.Field>
-              <Form.Label>Ingredients</Form.Label>
-              <Form.Control>
-                <Select
-                  isMulti
-                  placeholder="Ingredients..."
-                  aria-label={"Ingredients"}
-                  name={"Ingredients"}
-                  components={animatedComponents}
-                  options={ingredients}
-                  value={selectedIngredients.map((i) => {
-                    return { value: i, label: ingredients.find((ing) => ing.value === i)?.label };
-                  })}
-                  onChange={(option: MultiValue<{ value: number; label: string | undefined; }> ) => {
-                    setSelectedIngredients(
-                      option.map((ingredient) => ingredient.value)
-                    );
-                  }}
-                />
-              </Form.Control>
-            </Form.Field>
-            <Button
-              color="danger"
-              className="is-outlined"
-              aria-label="clearSearch"
-              onClick={() => {
-                setNewQuery("");
-                setSelectedIngredients([]);
-                setSelectedTags([]);
-              }}
+    <>
+      <Hero>
+        <Hero.Body>
+          <Tile kind="ancestor">
+            <Tile
+              kind="parent"
+              vertical
+              size={3}
+              renderAs={Box}
             >
-              Clear Search
-            </Button>
+              <Heading>Search</Heading>
+              <Form.Field>
+                <Form.Input
+                  type="text"
+                  aria-label="Search"
+                  onChange={(event: React.FormEvent) => {
+                    setNewQuery((event.target as HTMLInputElement).value);
+                  }}
+                  placeholder="Search for recipes"
+                  value={newQuery}
+                />
+              </Form.Field>
+              <Form.Field>
+                <Form.Label>Tags</Form.Label>
+                <Form.Control>
+                  <Select
+                    isMulti
+                    placeholder="Recipe Tags"
+                    aria-label={"Tags"}
+                    name={"Tags"}
+                    components={animatedComponents}
+                    options={tags}
+                    value={selectedTags.map((t) => {
+                      return { value: t, label: t };
+                    })}
+                    onChange={(option: MultiValue<{ value: string; label: string; }> ) => {
+                      setSelectedTags(
+                        option.map((tag) => tag.value)
+                      );
+                    }}
+                  />
+                </Form.Control>
+              </Form.Field>
+              <Form.Field>
+                <Form.Label>Ingredients</Form.Label>
+                <Form.Control>
+                  <Select
+                    isMulti
+                    placeholder="Ingredients..."
+                    aria-label={"Ingredients"}
+                    name={"Ingredients"}
+                    components={animatedComponents}
+                    options={ingredients}
+                    value={selectedIngredients.map((i) => {
+                      return { value: i, label: ingredients.find((ing) => ing.value === i)?.label };
+                    })}
+                    onChange={(option: MultiValue<{ value: number; label: string | undefined; }> ) => {
+                      setSelectedIngredients(
+                        option.map((ingredient) => ingredient.value)
+                      );
+                    }}
+                  />
+                </Form.Control>
+              </Form.Field>
+              <Button
+                color="danger"
+                className="is-outlined"
+                aria-label="clearSearch"
+                onClick={() => {
+                  setNewQuery("");
+                  setSelectedIngredients([]);
+                  setSelectedTags([]);
+                }}
+              >
+                Clear Search
+              </Button>
+            </Tile>
+            <Tile kind="parent">
+              <Columns>
+                {visibleRecipes.map((recipe) => (
+                  <Columns.Column
+                    key={recipe.id}
+                    className="is-narrow"
+                  >
+                    <RecipeCard recipe={recipe} />
+                  </Columns.Column>
+                ))}
+              </Columns>
+            </Tile>
           </Tile>
-          <Tile kind="parent">
-            <Columns>
-              {visibleRecipes.map((recipe) => (
-                <Columns.Column
-                  key={recipe.id}
-                  className="is-narrow"
-                >
-                  <RecipeCard recipe={recipe} />
-                </Columns.Column>
-              ))}
-            </Columns>
-          </Tile>
-        </Tile>
-      </Hero.Body>
-    </Hero>
+        </Hero.Body>
+      </Hero>
+      <ScrollButton />
+    </>
   );
 }

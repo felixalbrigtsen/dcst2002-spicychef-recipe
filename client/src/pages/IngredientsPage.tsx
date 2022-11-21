@@ -16,6 +16,7 @@ import { MdAddCircle, MdSearch } from "react-icons/md";
 
 import ingredientService from "../services/ingredient-service";
 import listService from "../services/list-service";
+import ScrollButton from "../components/ScrollUp";
 import { type Ingredient } from "../models/Ingredient";
 
 import { useAlert } from "../hooks/Alert";
@@ -30,6 +31,7 @@ export default function IngredientsPage() {
   const [selectedIngredients, setSelectedIngredients] = React.useState<Ingredient[]>([]);
 
   const [visibleIngredients, setVisibleIngredients] = React.useState<Ingredient[]>([]);
+  const [isLoggedIn, setIsLoggedIn] = React.useState<boolean>(false);
 
   const fuse = new Fuse(ingredients, {
     keys: ["name"],
@@ -51,7 +53,7 @@ export default function IngredientsPage() {
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  }, [user]);
 
   React.useEffect(searchIngredients, [newQuery]);
 
@@ -217,6 +219,7 @@ export default function IngredientsPage() {
           </Tile>
         </Tile>
       </Container>
+      <ScrollButton />
     </>
   );
 }
