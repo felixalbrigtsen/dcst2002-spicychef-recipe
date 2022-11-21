@@ -16,6 +16,7 @@ import { MdAddCircle, MdSearch } from "react-icons/md";
 
 import ingredientService from "../services/ingredient-service";
 import listService from "../services/list-service";
+import ScrollButton from "../components/ScrollUp";
 import { type Ingredient } from "../models/Ingredient";
 
 import { useAlert } from "../hooks/Alert";
@@ -51,7 +52,7 @@ export default function IngredientsPage() {
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  }, [user]);
 
   React.useEffect(searchIngredients, [newQuery]);
 
@@ -217,6 +218,7 @@ export default function IngredientsPage() {
           </Tile>
         </Tile>
       </Container>
+      <ScrollButton />
     </>
   );
 }

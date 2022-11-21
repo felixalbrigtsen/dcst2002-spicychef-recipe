@@ -7,7 +7,7 @@ The SpicyChef frontend is built with [React.JS](https://reactjs.org/), [TypeScri
 1. Download or clone the project
 2. Install the depenencies
    * `npm install` for updated versions
-   * `npm ci` for our known, working versions
+   * `npm prune && npm ci` for our known, working versions
 3. Configure a backend server
    * Most functions require a backend server to be running
    * The process of configuring a server is described in [server/README.md](../server/README.md).

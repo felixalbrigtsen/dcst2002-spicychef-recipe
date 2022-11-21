@@ -20,7 +20,7 @@ This backend server is configured by default to serve the API on `yourdomain/api
 4. Install npm dependencies
    * `npm install`, alternatively `npm ci` for known exact versions.
 5. Populate the environment file as described below
-   * Use a randomly generated session secret with high entroyp
+   * Use a randomly generated session secret
    * Remember to insert your Google API details and callback URL
 6. Initialize the database
    * `npm run initdb`
@@ -32,7 +32,7 @@ This backend server is configured by default to serve the API on `yourdomain/api
 ### env file example
 The following, modified for your needs, should be placed in `.env` in this directory.
 ```shell
-PORT=3000
+PORT=3001
 CLIENT_BUILD_PATH='/../../client/public'
 MYSQL_HOST=mysql.example.com
 MYSQL_USER=spicychef
@@ -40,8 +40,8 @@ MYSQL_PASSWORD=spicychefpassword
 MYSQL_DATABASE=spicychef
 GOOGLE_OAUTH_ID=YOURGOOGLEID
 GOOGLE_OAUTH_SECRET=YOURGOOGLESECRET
-GOOGLE_CALLBACK_URL=http://yourdomain.com/api/auth/google/callback
-SESSION_SECRET=supersecretcookiepassword
+GOOGLE_CALLBACK_URL=http://YOURDOMAIN.com/api/auth/google/callback
+SESSION_SECRET=RANDOMSECRETHERE
 SESSION_SECURE_COOKIE=true
 DEBUG=false
 ```
