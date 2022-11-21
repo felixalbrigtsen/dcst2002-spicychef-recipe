@@ -40,6 +40,19 @@ function renderRecipePage(id: number) {
       );
     });
   }
+
+  function renderRecipePageLiked(id: number) {
+    act(() => {
+      renderWithLoginContext(
+        <MemoryRouter initialEntries={[`/recipes/${id}`]}>
+          <Routes>
+            <Route path="/recipes/:id" element={<RecipePage />} />
+          </Routes>
+        </MemoryRouter>
+        ,sampleUsers.normal
+        );
+      });
+    }
   
   jest.mock('../../services/recipe-service');
   recipeService.getRecipe = jest.fn().mockImplementation((id: number) => {
@@ -98,13 +111,14 @@ function renderRecipePage(id: number) {
       });
     });
     
-    test('Correct recipe image', async () => {
+    test('Correct recipe image', (done) => {
       renderRecipePage(0);
-      await waitFor(() => {
+      setTimeout(() => {
         expect(screen.getByRole('img')).toBeInTheDocument();
         expect(screen.getByRole('img')).toHaveAttribute('alt', testRecipes[0].title);
         expect(screen.getByRole('img')).toHaveAttribute('src', testRecipes[0].imageUrl);
-      });
+        done();
+      },1000);
     });
     
     test('Correct recipe video', async () => {
@@ -174,8 +188,8 @@ function renderRecipePage(id: number) {
       });
 
     });
-    test.skip("Remove like works", async () => {
-      renderRecipePage(0);
+    test("Remove like works", async () => {
+      renderRecipePageLiked(0);
       await waitFor(() => {
         const removeLike = screen.getByRole('button', {name: 'removeLike'})
         expect(removeLike).toBeInTheDocument();
@@ -184,9 +198,8 @@ function renderRecipePage(id: number) {
         act(() => {
           fireEvent.click(removeLike);
         });
-
-        // TODO: Update when merging into main
-        expect(mockAppendAlert).toHaveBeenLastCalledWith("Recipe unliked", "success");
+        
+        expect(mockAppendAlert).toHaveBeenLastCalledWith("Recipe removed from liked recipes", "info");
         expect(recipeService.removeLike).toHaveBeenLastCalledWith(testRecipes[0].id);
       });
     });
