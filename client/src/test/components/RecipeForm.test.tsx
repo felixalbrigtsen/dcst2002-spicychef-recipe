@@ -110,7 +110,7 @@ describe('test RecipeForm functionality', () => {
     test('Title input updates', async () => {
         act(() => { render(<Router><RecipeForm recipe={testRecipes[0]} /></Router>); });
 
-        const titleInput = screen.getByRole('textbox', {name: "Title"})
+        const titleInput = await screen.getByRole('textbox', {name: "Title"})
         expect(titleInput).toHaveValue('')
 
         act(() => {
@@ -283,38 +283,50 @@ describe('test RecipeForm functionality', () => {
         expect(recipeService.updateRecipe).toHaveBeenCalledWith(editRecipe);
     })
 
-    test.skip('Create recipe by submitting the form', () => {
+    //TODO: This is broken due to issues with the react-select component?
+    test.skip('Create recipe by submitting the form', async () => {
         act(() => { render(<Router><RecipeForm recipe={testRecipes[0]} /></Router>); });
 
-        act(() => {
-            fireEvent.change(screen.getByRole('textbox', {name: "Title"}), {target: {value: testRecipes[1].title}});
-            fireEvent.change(screen.getByRole('textbox', {name: "Summary"}), {target: {value: testRecipes[1].summary}});
-            fireEvent.change(screen.getByRole('textbox', {name: "Instructions"}), {target: {value: testRecipes[1].instructions}});
-            fireEvent.change(screen.getByRole('spinbutton', {name: "Servings"}), {target: {value: testRecipes[1].servings}});
-            fireEvent.change(screen.getByRole('textbox', {name: "ImageURL"}), {target: {value: testRecipes[1].imageUrl}}); 
-            fireEvent.change(screen.getByRole('textbox', {name: "VideoURL"}), {target: {value: testRecipes[1].videoUrl}});
+        await waitFor(() => { 
+            const tagOptions = screen.getByRole('combobox', {name: "Tags"}).querySelectorAll('option')
+            act(() => {
+                fireEvent.change(screen.getByRole('textbox', {name: "Title"}), {target: {value: testRecipes[1].title}});
+                fireEvent.change(screen.getByRole('textbox', {name: "Summary"}), {target: {value: testRecipes[1].summary}});
+                fireEvent.change(screen.getByRole('textbox', {name: "Instructions"}), {target: {value: testRecipes[1].instructions}});
+                fireEvent.change(screen.getByRole('spinbutton', {name: "Servings"}), {target: {value: testRecipes[1].servings}});
+                fireEvent.change(screen.getByRole('textbox', {name: "ImageURL"}), {target: {value: testRecipes[1].imageUrl}}); 
+                fireEvent.change(screen.getByRole('textbox', {name: "VideoURL"}), {target: {value: testRecipes[1].videoUrl}});
 
-            // // Select the first tag
-            // fireEvent.click(screen.getByRole('combobox', {name: "Tags"}))
-            // const tagOptions = screen.getByRole('combobox', {name: "Tags"}).querySelectorAll('option')
-            // fireEvent.change(screen.getByRole('combobox', {name: "Tags"}), {target: {value: tagOptions[1]}})
+                // Add a tag
+                const tagSelect = screen.getByRole('combobox', {name: "Tags"})
+                selectEvent.openMenu(tagSelect)
+                selectEvent.create(tagSelect, testRecipes[1].tags[0]);
 
-            // // Select the first ingredient
-            // fireEvent.click(screen.getByRole('combobox', {name: "Ingredients"}))
-            // const ingredientOptions = screen.getByRole('combobox', {name: "Ingredients"}).querySelectorAll('option')
-            // fireEvent.click(ingredientOptions[0])
+                // Create an ingredient
+                const ingredientSelect = screen.getByRole('combobox', {name: "Ingredients"})
+                selectEvent.openMenu(ingredientSelect)
+                selectEvent.create(ingredientSelect, testRecipes[1].ingredients[0].ingredientName);
+                fireEvent.keyPress(ingredientSelect, {key: 'Enter', code: 13, charCode: 13});
+
+                // Fill out the ingredient fields
+                fireEvent.change(screen.getByRole('textbox', {name: "Quantity"}), {target: {value: testRecipes[1].ingredients[0].quantity}});
+                fireEvent.change(screen.getByRole('textbox', {name: "Unit"}), {target: {value: testRecipes[1].ingredients[0].unitName}});
+
+                
+            });
+
+            // submit the form
+            expect(screen.getByRole('button', {name: "Submit"})).toBeInTheDocument()
+
+            act(() => {
+                fireEvent.click(screen.getByRole('button', {name: "Submit"}))       
+            });
+
+            expect(recipeService.createRecipe).toHaveBeenCalled();
+            expect(recipeService.createRecipe).toHaveBeenCalledWith(testRecipes[1]);
+            expect(locationAssignMock).toHaveBeenLastCalledWith('/admin');
+
         });
-
-        // submit the form
-        expect(screen.getByRole('button', {name: "Submit"})).toBeInTheDocument()
-
-        act(() => {
-            fireEvent.click(screen.getByRole('button', {name: "Submit"}))       
-        });
-
-        expect(recipeService.createRecipe).toHaveBeenCalled();
-        expect(recipeService.createRecipe).toHaveBeenCalledWith(testRecipes[1]);
-        expect(locationAssignMock).toHaveBeenLastCalledWith('/admin');
     });
 
 

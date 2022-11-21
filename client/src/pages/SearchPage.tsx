@@ -160,6 +160,7 @@ export default function SearchPage() {
             <Form.Field>
               <Form.Input
                 type="text"
+                aria-label="Search"
                 onChange={(event: React.FormEvent) =>
                   setNewQuery((event.target as HTMLInputElement).value)
                 }

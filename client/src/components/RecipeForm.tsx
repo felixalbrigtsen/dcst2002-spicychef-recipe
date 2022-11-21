@@ -377,6 +377,7 @@ function RecipeForm(props: RecipeFormProps) {
                         <td>
                           <Form.Input
                             type="number"
+                            aria-label="Quantity"
                             value={Number(ingredients[index].quantity)}
                             onChange={(e) =>
                               handleIngredientPropertyChange(index, "quantity", e.target.value)
@@ -386,6 +387,7 @@ function RecipeForm(props: RecipeFormProps) {
                         <td>
                           <Form.Input
                             value={ingredients[index].unitName}
+                            aria-label="Unit"
                             onChange={(e) =>
                               handleIngredientPropertyChange(index, "unitName", e.target.value)
                             }

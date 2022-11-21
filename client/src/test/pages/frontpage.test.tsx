@@ -29,7 +29,9 @@ jest.mock('../../services/recipe-service');
 recipeService.getRecipesShort = jest.fn().mockResolvedValue(shortRecipes);
 
 test('Navbar is rendered', () => {
-  render(<App />);
+  act(()=> {
+    render(<App />);
+  });
 
   waitFor(() => {
     const navbar = <nav className="navbar is-link" role=" navigation" />
@@ -84,21 +86,28 @@ describe('Frontpage component tests', () => {
     });
   });
 
-  test('Search works', async () => {
+  test('Search works', (done) => {
     act(() => {
       renderWithLoginContext(<Router><Home /></Router>, sampleUsers.normal);
     });
 
-    await waitFor(() => {
-      expect(screen.getByPlaceholderText('Search for a recipe')).toBeInTheDocument();
+    waitFor(() => {
+      const searchInput = screen.getByPlaceholderText('Search for a recipe');
+      expect(searchInput).toBeInTheDocument();
+
       act(() => {
-        fireEvent.change(screen.getByPlaceholderText('Search for a recipe'), { target: { value: 'test' } });
+        fireEvent.change(searchInput, { target: { value: 'test' } });
       });
-      expect(screen.getByPlaceholderText('Search for a recipe')).toHaveValue('test');
-      // act(() => {
-      //   fireEvent.keyPress(screen.getByPlaceholderText('Search for a recipe'), { key: 'Enter', code: 13, charCode: 13 });
-      // })
-      // expect(locationAssignMock).toHaveBeenCalledWith(`/search/?q=test`);
+
+      expect(searchInput).toHaveDisplayValue('test');
+      
+      act(() => {
+        fireEvent.keyDown(searchInput, { key: 'Enter', code: 13, charCode: 13 });
+      })
+  
+
+      expect(locationAssignMock).toHaveBeenCalledWith(`/search/?q=test`);
+      done();
     });
   });
 
