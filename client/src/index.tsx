@@ -4,7 +4,7 @@ import App from "./App";
 import AlertProvider from "./hooks/Alert";
 import LoginProvider from "./hooks/Login";
 
-const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
+const root = ReactDOM.createRoot(document.querySelector("#root")!);
 root.render(
   <React.StrictMode>
     <AlertProvider>

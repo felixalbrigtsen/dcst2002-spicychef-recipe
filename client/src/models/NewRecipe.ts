@@ -11,8 +11,6 @@ export type NewRecipe = {
   instructions: string;
   imageUrl: string;
   videoUrl: string;
-  ingredients: { ingredientName: string; quantity: number; unitName: string }[];
+  ingredients: Array<{ ingredientName: string; quantity: number; unitName: string }>;
   tags: string[];
 };
-
-// TODO: JsDoc this

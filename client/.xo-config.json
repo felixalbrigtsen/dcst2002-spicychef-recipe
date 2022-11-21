@@ -1,0 +1,13 @@
+{
+    "space": true,
+    "unicorn/filename-case": [
+        "error",
+        {
+            "cases": {
+                "kebabCase": true,
+                "pascalCase": true
+            }
+        }
+    ],
+    "prettier": true
+}

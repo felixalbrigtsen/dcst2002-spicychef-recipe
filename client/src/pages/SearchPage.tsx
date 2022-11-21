@@ -1,17 +1,17 @@
 import * as React from "react";
-// @ts-ignore
-import Select, { InputActionMeta } from "react-select";
+import Select, { type MultiValue } from "react-select";
 import makeAnimated from "react-select/animated";
 import Fuse from "fuse.js";
 
-import { Heading, Hero, Tile, Tabs, Box, Form, Button, Columns } from "react-bulma-components";
 import { BrowserRouter as Router, Route, Routes, Link, useSearchParams } from "react-router-dom";
-import { Recipe } from "../models/Recipe";
-import { useLogin } from "../hooks/Login";
-import recipeService from "../services/recipe-service";
+import { Heading, Hero, Tile, Box, Form, Button, Columns } from "react-bulma-components";
+import { type Recipe } from "../models/Recipe";
 import RecipeCard from "../components/RecipeCard";
+
+import recipeService from "../services/recipe-service";
 import ingredientService from "../services/ingredient-service";
 
+import { useLogin } from "../hooks/Login";
 import { useAlert } from "../hooks/Alert";
 
 const animatedComponents = makeAnimated();
@@ -20,25 +20,25 @@ export default function SearchPage() {
   const { appendAlert } = useAlert();
   const { user } = useLogin();
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParameters, setSearchParameters] = useSearchParams();
 
   const [recipes, setRecipes] = React.useState<Recipe[]>([]);
-  const [newQuery, setNewQuery] = React.useState<string>(searchParams.get("query") || "");
-  const [ingredients, setIngredients] = React.useState<{ value: number; label: string }[]>([]);
-  const [tags, setTags] = React.useState<{ value: string; label: string }[]>([]);
+  const [newQuery, setNewQuery] = React.useState<string>(searchParameters.get("query") ?? "");
+  const [ingredients, setIngredients] = React.useState<Array<{ value: number; label: string }>>([]);
+  const [tags, setTags] = React.useState<Array<{ value: string; label: string }>>([]);
 
-  let [visibleRecipes, setVisibleRecipes] = React.useState<Recipe[]>([]);
-  let [selectedIngredients, setSelectedIngredients] = React.useState<number[]>([]);
-  let [selectedTags, setSelectedTags] = React.useState<string[]>([]);
+  const [visibleRecipes, setVisibleRecipes] = React.useState<Recipe[]>([]);
+  const [selectedIngredients, setSelectedIngredients] = React.useState<number[]>([]);
+  const [selectedTags, setSelectedTags] = React.useState<string[]>([]);
 
   React.useEffect(() => {
-    const currentParams = Object.fromEntries([...searchParams]);
-    setNewQuery(currentParams.q || "");
+    const currentParameters = Object.fromEntries(searchParameters);
+    setNewQuery(currentParameters.q || "");
     setSelectedIngredients(
-      currentParams.ingredients ? currentParams.ingredients.split(",").map(Number) : []
+      currentParameters.ingredients ? currentParameters.ingredients.split(",").map(Number) : []
     );
-    setSelectedTags(currentParams.tags ? currentParams.tags.split(",") : []);
-  }, [searchParams]);
+    setSelectedTags(currentParameters.tags ? currentParameters.tags.split(",") : []);
+  }, [searchParameters]);
 
   // On page load, get all recipes and their tags and ingredients
   React.useEffect(() => {
@@ -47,29 +47,29 @@ export default function SearchPage() {
       .then((recipes) => {
         setRecipes(recipes);
 
-        let tags = recipes.map((r) => r.tags).flat();
-        let uniqueTags = [...new Set(tags)];
-        let tagObjects = uniqueTags.map((t) => {
+        const tags = recipes.flatMap((r) => r.tags);
+        const uniqueTags = [...new Set(tags)];
+        const tagObjects = uniqueTags.map((t) => {
           return { value: t, label: t };
         });
         setTags(tagObjects);
       })
-      .catch((err) => {
-        console.error(err);
+      .catch((error) => {
+        console.error(error);
         appendAlert("Could not load recipes", "danger");
       });
 
     ingredientService
       .getIngredients()
       .then((ingredients) => {
-        let uniqueIngredients = [...new Set(ingredients)];
-        let ingredientObjects = uniqueIngredients.map((i) => {
+        const uniqueIngredients = [...new Set(ingredients)];
+        const ingredientObjects = uniqueIngredients.map((i) => {
           return { value: i.id, label: i.name };
         });
         setIngredients(ingredientObjects);
       })
-      .catch((err) => {
-        console.error(err);
+      .catch((error) => {
+        console.error(error);
         appendAlert("Could not load ingredients", "danger");
       });
   }, [user]);
@@ -86,8 +86,8 @@ export default function SearchPage() {
         .then((result) => {
           filterVisibleRecipes(result);
         })
-        .catch((err) => {
-          console.error(err);
+        .catch((error) => {
+          console.error(error);
           appendAlert("Could not load recipes", "danger");
         });
     } else {
@@ -96,23 +96,20 @@ export default function SearchPage() {
     }
 
     // Update the URL corresponding to the current search
-    let queries = [];
+    const queries = [];
     if (newQuery) {
       queries.push(`q=${encodeURIComponent(newQuery)}`);
     }
+
     if (selectedIngredients.length > 0) {
       queries.push(`ingredients=${encodeURIComponent(selectedIngredients.join(","))}`);
     }
+
     if (selectedTags.length > 0) {
       queries.push(`tags=${encodeURIComponent(selectedTags.join(","))}`);
     }
 
-    let newLocation: string;
-    if (queries.length > 0) {
-      newLocation = "/search/?" + queries.join("&");
-    } else {
-      newLocation = "/search";
-    }
+    const newLocation: string = queries.length > 0 ? "/search/?" + queries.join("&") : "/search";
 
     // Change the current URL without a reload
     window.history.replaceState(null, "", newLocation);
@@ -123,22 +120,23 @@ export default function SearchPage() {
       // Filter further by tags
       passingRecipes = passingRecipes.filter((recipe) => {
         let hasAllTags = true;
-        selectedTags.forEach((tag) => {
-          if (!recipe.tags.some((t) => t === tag)) {
+        for (const tag of selectedTags) {
+          if (!recipe.tags.includes(tag)) {
             hasAllTags = false;
           }
-        });
+        }
+
         return hasAllTags;
       });
     }
 
     if (newQuery.length > 0) {
-      let fuse = new Fuse(passingRecipes, {
+      const fuse = new Fuse(passingRecipes, {
         keys: ["title", "summary"],
         threshold: 0.3,
       });
 
-      let results = fuse.search(newQuery);
+      const results = fuse.search(newQuery);
       passingRecipes = results.map((r) => r.item);
     }
 
@@ -149,7 +147,6 @@ export default function SearchPage() {
     <Hero>
       <Hero.Body>
         <Tile kind="ancestor">
-          {/* TODO: Edit size according to breakpoints */}
           <Tile
             kind="parent"
             vertical
@@ -161,9 +158,9 @@ export default function SearchPage() {
               <Form.Input
                 type="text"
                 aria-label="Search"
-                onChange={(event: React.FormEvent) =>
-                  setNewQuery((event.target as HTMLInputElement).value)
-                }
+                onChange={(event: React.FormEvent) => {
+                  setNewQuery((event.target as HTMLInputElement).value);
+                }}
                 placeholder="Search for recipes"
                 value={newQuery}
               />
@@ -181,9 +178,9 @@ export default function SearchPage() {
                   value={selectedTags.map((t) => {
                     return { value: t, label: t };
                   })}
-                  onChange={(event: any) => {
+                  onChange={(option: MultiValue<{ value: string; label: string; }> ) => {
                     setSelectedTags(
-                      event.map((tag: { value: string; label: string }) => tag.value)
+                      option.map((tag) => tag.value)
                     );
                   }}
                 />
@@ -202,9 +199,9 @@ export default function SearchPage() {
                   value={selectedIngredients.map((i) => {
                     return { value: i, label: ingredients.find((ing) => ing.value === i)?.label };
                   })}
-                  onChange={(event: any) => {
+                  onChange={(option: MultiValue<{ value: number; label: string | undefined; }> ) => {
                     setSelectedIngredients(
-                      event.map((ingredient: { value: string; label: string }) => ingredient.value)
+                      option.map((ingredient) => ingredient.value)
                     );
                   }}
                 />

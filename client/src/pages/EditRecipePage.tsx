@@ -1,19 +1,20 @@
 import * as React from "react";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Link, useParams } from "react-router-dom";
 
-import { Form, Button, Container, Tile, Hero } from "react-bulma-components";
+import { Container, Hero } from "react-bulma-components";
 
-import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { Recipe } from "../models/Recipe";
-import recipeService from "../services/recipe-service";
+import { type Recipe } from "../models/Recipe";
 import RecipeForm from "../components/RecipeForm";
-import { useLogin } from "../hooks/Login";
 import NotAuthorized from "../components/NotAuthorized";
+
+import recipeService from "../services/recipe-service";
+
+import { useLogin } from "../hooks/Login";
 
 function EditRecipe() {
   const { user } = useLogin();
-  let [recipe, setRecipe] = React.useState<Recipe>({
+
+  const [recipe, setRecipe] = React.useState<Recipe>({
     id: 0,
     title: "",
     summary: "",
@@ -27,20 +28,29 @@ function EditRecipe() {
     likes: 0,
   });
 
-  let id = Number(useParams().id);
+  const id = Number(useParams().id);
   React.useEffect(() => {
-    recipeService.getRecipe(id).then((data) => {
-      setRecipe(data);
-    });
+    recipeService
+      .getRecipe(id)
+      .then((data) => {
+        setRecipe(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }, []);
 
   if (!user.isadmin) {
-    return <Container className="mt-2"><NotAuthorized color={"danger"} /></Container>;
+    return (
+      <Container className="mt-2">
+        <NotAuthorized color={"danger"} />
+      </Container>
+    );
   }
 
   return (
     <Container className="mt-2">
-        <Hero>
+      <Hero>
         <Hero.Body>
           <RecipeForm recipe={recipe} />
         </Hero.Body>

@@ -250,7 +250,7 @@ describe("Edit a recipe", () => {
 });
 
 describe("Add a recipe", () => {
-  test("Add a recipe (200)", (done) => {
+  test("Add a recipe (200) and Post recipe that already exists (400)", (done) => {
     axs
       .post("/recipes", testRecipes[1])
       .then((response) => {
@@ -421,14 +421,14 @@ describe("Delete a recipe", () => {
 describe("Import mealdb recipes", () => {
   test("Import recipe (200)", (done) => {
     axs
-      .post(`/importrecipe/52772`)
+      .post(`/importrecipe/52784`)
       .then((response) => {
         expect(response.status).toEqual(200);
         expect(response.data).toEqual("OK");
 
         recipeService.getAllRecipesShort().then((recipes) => {
           expect(recipes.length).toEqual(3);
-          expect(recipes[2].title).toEqual("Teriyaki Chicken Casserole");
+          expect(recipes[2].title).toEqual("Smoky Lentil Chili with Squash");
 
           done();
         });
@@ -458,3 +458,19 @@ describe("Import mealdb recipes", () => {
       });
   });
 });
+
+describe("Server error handling", () => {
+    test("Server error handling in debug mode", (done) => {
+        pool.end()
+        process.env.DEBUG = "true"
+        axs.get("/recipes")
+          .then(() => done(new Error()))
+          .then((_response) => done(new Error()))
+          .catch((error) => {
+            expect(error.message).toEqual("Request failed with status code 500")
+            expect(error.response.status).toEqual(500);
+            done();
+          });
+      })
+    
+})

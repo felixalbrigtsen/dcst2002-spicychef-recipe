@@ -7,45 +7,6 @@ import type { Recipe } from '../models/Recipe';
 import type { Unit } from '../models/Unit';
 
 class RecipeService {
-  getRecipes(): Promise<Recipe[]> {
-    return new Promise((resolve, reject) => {
-      pool.query('SELECT * FROM recipe', async (err: QueryError | null, results: RowDataPacket[]) => {
-        if (err) {
-          return reject(err);
-        }
-        let recipes = results as Recipe[];
-        resolve(recipes);
-      });
-    });
-  }
-
-  deleteRecipe(id: number): Promise<void> {
-    return new Promise((resolve, reject) => {
-      // First delete all ingredients in recipe
-      pool.query('DELETE FROM recipe_ingredient WHERE recipeId = ?', [id], (err:QueryError| null, _results: RowDataPacket[]) => {
-        if (err) {
-          return reject(err);
-        }
-        // Then delete all tags in recipe
-        pool.query('DELETE FROM recipe_tag WHERE recipeId = ?', [id], (err: QueryError | null, _results: RowDataPacket[]) => {
-          if (err) {
-            return reject(err);
-          }
-          // Then delete recipe
-          pool.query('DELETE FROM recipe WHERE id = ?', [id], async (err: QueryError | null, _results: RowDataPacket[]) => {
-            if (err) {
-              return reject(err);
-            }
-
-            await this.hoover();
-
-            resolve();
-          });
-        });
-      });
-    });
-  }
-
   getAllRecipesShort(): Promise<Recipe[]> {
     return new Promise((resolve, reject) => {
       pool.query(`SELECT recipe.id, recipe.title, recipe.summary, recipe.imageUrl, recipe.created_at, likes.likes
@@ -112,6 +73,33 @@ class RecipeService {
     });
   }
 
+  deleteRecipe(id: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      // First delete all ingredients in recipe
+      pool.query('DELETE FROM recipe_ingredient WHERE recipeId = ?', [id], (err:QueryError| null, _results: RowDataPacket[]) => {
+        if (err) {
+          return reject(err);
+        }
+        // Then delete all tags in recipe
+        pool.query('DELETE FROM recipe_tag WHERE recipeId = ?', [id], (err: QueryError | null, _results: RowDataPacket[]) => {
+          if (err) {
+            return reject(err);
+          }
+          // Then delete recipe
+          pool.query('DELETE FROM recipe WHERE id = ?', [id], async (err: QueryError | null, _results: RowDataPacket[]) => {
+            if (err) {
+              return reject(err);
+            }
+
+            await this.hoover();
+
+            resolve();
+          });
+        });
+      });
+    });
+  }
+
   getRecipe(id: number): Promise<Recipe> {
     return new Promise((resolve, reject) => {
       pool.query(`SELECT recipe.*, likes.likes FROM recipe 
@@ -123,17 +111,6 @@ class RecipeService {
         }
         if (results && results[0] && !results[0].likes) {
           results[0].likes = 0;
-        }
-        resolve(results[0] as Recipe);
-      });
-    });
-  }
-
-  getRecipeByTitle(title: string): Promise<Recipe> {
-    return new Promise((resolve, reject) => {
-      pool.query('SELECT * FROM recipe WHERE title = ?', [title], (err: QueryError | null, results: RowDataPacket[]) => {
-        if (err) {
-          return reject(err);
         }
         resolve(results[0] as Recipe);
       });
@@ -157,22 +134,6 @@ class RecipeService {
         }).catch((err) => {
           reject(err);
         });
-      });
-    });
-  }
-
-  getRecipesWithTag(tag: string): Promise<Recipe[]> { //TODO: test
-    return new Promise((resolve, reject) => {
-      pool.query(`
-        SELECT recipe.id, recipe.title, recipe.summary, recipe.created_at
-        FROM recipe_tag 
-        LEFT JOIN recipe ON recipe_tag.recipeId = recipe.id 
-        WHERE recipe_tag.name = "dinner" 
-        GROUP BY recipe.id;`, [tag], (err: QueryError | null, results: RowDataPacket[]) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve(results as Recipe[]);
       });
     });
   }
@@ -200,7 +161,7 @@ class RecipeService {
     });
   }
 
-  getRecipesWithAnyIngredients(ingredientIds: number[]): Promise<Recipe[]> { //TODO: test
+  getRecipesWithAnyIngredients(ingredientIds: number[]): Promise<Recipe[]> { 
     return new Promise((resolve, reject) => {
       pool.query('SELECT recipeId, COUNT(*) AS matchcount FROM recipe_ingredient WHERE ingredientId IN (?) GROUP BY recipeId', [ingredientIds], (err: QueryError | null, results: RowDataPacket[]) => {
         if (err) {
@@ -293,28 +254,6 @@ class RecipeService {
           return reject(err);
         }
         resolve(results[0] as Ingredient);
-      });
-    });
-  }
-
-  getUnits(): Promise<Unit[]> {
-    return new Promise((resolve, reject) => { //TODO: test
-      pool.query('SELECT * FROM unit', (err: QueryError | null, results: RowDataPacket[]) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve(results as Unit[]);
-      });
-    });
-  }
-
-  getUnit(id: number): Promise<Unit> { //TODO: test
-    return new Promise((resolve, reject) => {
-      pool.query('SELECT * FROM unit WHERE id = ?', [id], (err: QueryError | null, results: RowDataPacket[]) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve(results[0] as Unit);
       });
     });
   }

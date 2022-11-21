@@ -17,7 +17,7 @@ class UserService {
    * @description
    * Fetch the current user in the active session
    */
-  getSessionUser(): Promise<User> {
+  async getSessionUser(): Promise<User> {
     return new Promise((resolve, reject) => {
       axios
         .get(process.env.REACT_APP_API_URL + "/auth/profile")
