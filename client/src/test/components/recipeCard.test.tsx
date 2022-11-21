@@ -52,14 +52,14 @@ describe('Test RecipeCard renders correctly', () => {
             act(() =>  {
                 fireEvent.click(screen.getByRole('button'));
             });
-            expect(mockAppendAlert).toHaveBeenCalledWith('Recipe added to favorites','success');
+            expect(mockAppendAlert).toHaveBeenCalledWith('Recipe added to liked recipes','success');
             expect(recipeService.addLike).toBeCalledWith(mockRecipe.id);
 
             recipeService.addLike = jest.fn().mockRejectedValue(true);
             act(() =>  {
                 fireEvent.click(screen.getByRole('button'));
             });
-            expect(mockAppendAlert).toHaveBeenCalledWith('Failed to add recipe to favorites','danger');
+            expect(mockAppendAlert).toHaveBeenCalledWith('Failed to add recipe to liked recipes','danger');
             expect(recipeService.addLike).toBeCalledWith(mockRecipe.id);
         });
     });
@@ -78,13 +78,13 @@ describe('Test RecipeCard renders correctly', () => {
             act(() =>  {
                 fireEvent.click(screen.getByRole('button'));
             });
-            expect(mockAppendAlert).toHaveBeenCalledWith('Recipe removed from favorites','info');
+            expect(mockAppendAlert).toHaveBeenCalledWith('Recipe removed from liked recipes','info');
 
             recipeService.removeLike = jest.fn().mockRejectedValue(true);
             act(() =>  {
                 fireEvent.click(screen.getByRole('button'));
             });
-            expect(mockAppendAlert).toHaveBeenCalledWith('Failed to remove recipe from favorites','danger');
+            expect(mockAppendAlert).toHaveBeenCalledWith('Failed to remove recipe from liked recipes','danger');
             expect(recipeService.removeLike).toBeCalledWith(mockRecipe.id);
         });
     });    

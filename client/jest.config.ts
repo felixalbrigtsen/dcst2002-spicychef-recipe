@@ -22,6 +22,7 @@ const config : Config.InitialOptions = {
   setupFiles: [
     "dotenv/config",
   ],
+  verbose: true,
   collectCoverage: true,
   coverageThreshold: {
     global: {

@@ -168,8 +168,7 @@ function renderRecipePage(id: number) {
           fireEvent.click(addLike);
         });
 
-        // TODO: Update when merging into main
-        expect(mockAppendAlert).toHaveBeenLastCalledWith("Recipe added to favorites", "info");
+        expect(mockAppendAlert).toHaveBeenLastCalledWith("Recipe added to liked recipes", "info");
         expect(recipeService.addLike).toHaveBeenLastCalledWith(testRecipes[1].id);
 
       });
